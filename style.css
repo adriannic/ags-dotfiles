@@ -1,0 +1,69 @@
+@import url('../../.cache/wal/colors-waybar.css');
+
+@define-color bg alpha(@background, 0.5);
+@define-color fg @foreground;
+@define-color bg-selected @foreground;
+@define-color fg-selected @background;
+@define-color border @color1;
+
+* {
+  all: unset;
+  font-family: "Inter Nerd Font";
+  font-weight: bold;
+  font-size: 18px;
+  transition: color 0.25s ease-in-out;
+  transition: background 0.25s ease-in-out;
+}
+
+.bar {
+  margin: 0px 5px 5px 5px;
+}
+
+button {
+  min-width: 40px;
+  color: @fg;
+}
+
+button:hover {
+  color: @fg-selected;
+  background: @bg-selected;
+}
+
+.container {
+  background: @bg;
+  border: 2px inset @border;
+  min-height: 40px;
+}
+
+.workspace {
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.active-workspace {
+  min-width: 34px;
+  margin: 3px;
+  padding-top: 3px;
+  border-bottom: 3px solid @fg;
+  transition: border-bottom 0.25s ease-in-out;
+}
+
+.clock {
+  padding: 0px 10px;
+}
+
+menu, tooltip {
+  padding: 5px;
+  border: 2px inset @border;
+  color: @fg;
+  background: @bg;
+}
+
+menu > menuitem:disabled {
+  color: @color8;
+}
+
+menu > menuitem:hover {
+  color: @fg-selected;
+  background: @bg-selected;
+}
