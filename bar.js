@@ -185,8 +185,8 @@ const EndWidgets = ({ monitor }) =>
     halign: "end",
     spacing: 5,
     children: [
-      Utils(),
       SysTray(),
+      Utils(),
       Clock({ monitor }),
     ],
   });
