@@ -67,3 +67,13 @@ menu > menuitem:hover {
   color: @fg-selected;
   background: @bg-selected;
 }
+
+.progress {
+  color: @fg;
+  font-size: 3px;
+  margin: 10px;
+}
+
+.charging {
+  color: green;
+}

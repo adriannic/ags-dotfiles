@@ -1,5 +1,6 @@
-const { Label, Window, CenterBox, Box, Button, Icon } = ags.Widget;
-const { Hyprland, SystemTray } = ags.Service;
+const { Label, Window, CenterBox, Box, Button, Icon, CircularProgress } =
+  ags.Widget;
+const { Hyprland, SystemTray, Battery } = ags.Service;
 
 const AppMenuButton = ({ monitor }) =>
   Box({
@@ -9,7 +10,7 @@ const AppMenuButton = ({ monitor }) =>
       Button({
         onClicked: () =>
           ags.Utils.execAsync(["bash", "-c", "killall wofi || wofi"]).catch(
-            () => { },
+            () => {},
           ),
         child: Icon({
           icon: "start-here-archlinux",
@@ -45,8 +46,8 @@ const Workspaces = ({ monitor }) =>
               connections: [
                 [Hyprland, (label) =>
                   label.className = Hyprland.monitors.map((mon) =>
-                    mon.activeWorkspace
-                  )[monitor].id === workspace.index
+                      mon.activeWorkspace
+                    )[monitor].id === workspace.index
                     ? "active-workspace"
                     : "workspace"],
               ],
@@ -55,6 +56,38 @@ const Workspaces = ({ monitor }) =>
         }),
       })
     ),
+  });
+
+const batteryIcons = {
+  Charging: "󰂄",
+  Discharging: ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+};
+
+const BatteryIndicator = () =>
+  CircularProgress({
+    className: "progress",
+    inverted: false,
+    rounded: false,
+    startAt: 0.75,
+    child: Label({}),
+    connections: [
+      [Battery, (self) => {
+        self.value = 1 - Battery.percent / 100;
+        self.className = Battery.charging ? "charging progress" : "progress";
+        self.child.label = Battery.charging
+          ? batteryIcons.Charging
+          : batteryIcons.Discharging[Math.floor(Battery.percent / 10)];
+      }],
+    ],
+  });
+
+const Utils = () =>
+  Box({
+    className: "container",
+    halign: "end",
+    children: [
+      BatteryIndicator(),
+    ],
   });
 
 const SysTray = () =>
@@ -127,6 +160,7 @@ const EndWidgets = ({ monitor }) =>
     halign: "end",
     spacing: 5,
     children: [
+      Utils(),
       SysTray(),
       Clock({ monitor }),
     ],
