@@ -1,6 +1,6 @@
 const { Label, Window, CenterBox, Box, Button, Icon, CircularProgress } =
   ags.Widget;
-const { Hyprland, SystemTray, Battery } = ags.Service;
+const { Hyprland, SystemTray, Battery, Audio } = ags.Service;
 
 const AppMenuButton = ({ monitor }) =>
   Box({
@@ -58,6 +58,47 @@ const Workspaces = ({ monitor }) =>
     ),
   });
 
+const MicIndicator = () =>
+  CircularProgress({
+    className: "progress",
+    inverted: true,
+    rounded: false,
+    startAt: 0.75,
+    child: Label({
+      style: "margin-left: 1px; margin-right: -1px;",
+    }),
+    connections: [
+      [Audio, (self) => {
+        self.value = Audio.microphone.volume;
+        self.child.label = Audio.microphone["is-muted"] ? "󰍭" : "󰍬";
+      }, "microphone-changed"],
+    ],
+  });
+
+const volumeIcons = {
+  muted: "󰖁",
+  volume: ["󰕿", "󰖀", "󰕾", "󰕾"],
+};
+
+const VolumeIndicator = () =>
+  CircularProgress({
+    className: "progress",
+    inverted: true,
+    rounded: false,
+    startAt: 0.75,
+    child: Label({
+      style: "margin-left: 1px; margin-right: -1px;",
+    }),
+    connections: [
+      [Audio, (self) => {
+        self.value = Audio.speaker.volume;
+        self.child.label = Audio.speaker["is-muted"]
+          ? volumeIcons.muted
+          : volumeIcons.volume[Math.ceil(Audio.speaker.volume * 3)];
+      }, "speaker-changed"],
+    ],
+  });
+
 const BrightnessIndicator = () =>
   CircularProgress({
     className: "progress",
@@ -110,8 +151,10 @@ const Utils = () =>
     className: "container",
     halign: "end",
     children: [
-      BrightnessIndicator(),
       BatteryIndicator(),
+      BrightnessIndicator(),
+      VolumeIndicator(),
+      MicIndicator(),
     ],
   });
 
