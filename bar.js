@@ -10,7 +10,7 @@ const AppMenuButton = ({ monitor }) =>
       Button({
         onClicked: () =>
           ags.Utils.execAsync(["bash", "-c", "killall wofi || wofi"]).catch(
-            () => {},
+            () => { },
           ),
         child: Icon({
           icon: "start-here-archlinux",
@@ -46,8 +46,8 @@ const Workspaces = ({ monitor }) =>
               connections: [
                 [Hyprland, (label) =>
                   label.className = Hyprland.monitors.map((mon) =>
-                      mon.activeWorkspace
-                    )[monitor].id === workspace.index
+                    mon.activeWorkspace
+                  )[monitor].id === workspace.index
                     ? "active-workspace"
                     : "workspace"],
               ],
@@ -56,6 +56,25 @@ const Workspaces = ({ monitor }) =>
         }),
       })
     ),
+  });
+
+const BrightnessIndicator = () =>
+  CircularProgress({
+    className: "progress",
+    inverted: true,
+    rounded: false,
+    startAt: 0.75,
+    child: Label({ label: "󰃟" }),
+    connections: [
+      [
+        100,
+        (self) => {
+          const current = ags.Utils.exec("brightnessctl g");
+          const max = ags.Utils.exec("brightnessctl m");
+          self.value = current / max;
+        },
+      ],
+    ],
   });
 
 const batteryIcons = {
@@ -86,6 +105,7 @@ const Utils = () =>
     className: "container",
     halign: "end",
     children: [
+      BrightnessIndicator(),
       BatteryIndicator(),
     ],
   });
