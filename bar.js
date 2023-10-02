@@ -70,7 +70,7 @@ const BrightnessIndicator = () =>
     }),
     connections: [
       [
-        100,
+        250,
         (self) => {
           const current = ags.Utils.exec("brightnessctl g");
           const max = ags.Utils.exec("brightnessctl m");
