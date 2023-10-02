@@ -64,7 +64,10 @@ const BrightnessIndicator = () =>
     inverted: true,
     rounded: false,
     startAt: 0.75,
-    child: Label({ label: "󰃟" }),
+    child: Label({
+      style: "margin-left: 1px; margin-right: -1px;",
+      label: "󰃟",
+    }),
     connections: [
       [
         100,
@@ -88,7 +91,9 @@ const BatteryIndicator = () =>
     inverted: false,
     rounded: false,
     startAt: 0.75,
-    child: Label({}),
+    child: Label({
+      style: "margin-left: 1px; margin-right: -1px;",
+    }),
     connections: [
       [Battery, (self) => {
         self.value = 1 - Battery.percent / 100;
