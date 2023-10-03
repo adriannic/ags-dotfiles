@@ -58,46 +58,34 @@ const Workspaces = ({ monitor }) =>
     ),
   });
 
-const MicIndicator = () =>
+const BatteryIndicator = () =>
   CircularProgress({
     className: "progress",
-    inverted: true,
+    inverted: false,
     rounded: false,
     startAt: 0.75,
     child: Label({
       style: "margin-left: 1px; margin-right: -1px;",
     }),
     connections: [
-      [Audio, (self) => {
-        self.value = Audio.microphone.volume;
-        self.child.label = Audio.microphone["is-muted"] ? "󰍭" : "󰍬";
-      }, "microphone-changed"],
+      [Battery, (self) => {
+        self.value = 1 - Battery.percent / 100;
+        self.className = Battery.charging ? "charging progress" : "progress";
+        self.child.label = Battery.charging
+          ? batteryIcons.Charging
+          : `${batteryIcons.Discharging[Math.floor(Battery.percent / 10)]}`;
+        self.tooltipText = `${self.value}%`;
+      }],
     ],
+    binds: [
+      ['visible', Battery, 'available']
+    ]
   });
 
 const volumeIcons = {
   muted: "󰖁",
   volume: ["󰕿", "󰖀", "󰕾", "󰕾"],
 };
-
-const VolumeIndicator = () =>
-  CircularProgress({
-    className: "progress",
-    inverted: true,
-    rounded: false,
-    startAt: 0.75,
-    child: Label({
-      style: "margin-left: 1px; margin-right: -1px;",
-    }),
-    connections: [
-      [Audio, (self) => {
-        self.value = Audio.speaker.volume;
-        self.child.label = Audio.speaker["is-muted"]
-          ? volumeIcons.muted
-          : volumeIcons.volume[Math.ceil(Audio.speaker.volume * 3)];
-      }, "speaker-changed"],
-    ],
-  });
 
 const BrightnessIndicator = () =>
   CircularProgress({
@@ -116,8 +104,47 @@ const BrightnessIndicator = () =>
           const current = ags.Utils.exec("brightnessctl g");
           const max = ags.Utils.exec("brightnessctl m");
           self.value = current / max;
+          self.tooltipText = `${self.value * 100}%`
         },
       ],
+    ],
+  });
+
+const VolumeIndicator = () =>
+  CircularProgress({
+    className: "progress",
+    inverted: true,
+    rounded: false,
+    startAt: 0.75,
+    child: Label({
+      style: "margin-left: 1px; margin-right: -1px;",
+    }),
+    connections: [
+      [Audio, (self) => {
+        self.value = Audio.speaker.volume;
+        self.child.label = Audio.speaker["is-muted"]
+          ? volumeIcons.muted
+          : volumeIcons.volume[Math.ceil(Audio.speaker.volume * 3)];
+        self.tooltipText = `${self.value * 100}%`
+      }, "speaker-changed"],
+    ],
+  });
+
+const MicIndicator = () =>
+  CircularProgress({
+    className: "progress",
+    inverted: true,
+    rounded: false,
+    startAt: 0.75,
+    child: Label({
+      style: "margin-left: 1px; margin-right: -1px;",
+    }),
+    connections: [
+      [Audio, (self) => {
+        self.value = Audio.microphone.volume;
+        self.child.label = Audio.microphone["is-muted"] ? "󰍭" : "󰍬";
+        self.tooltipText = `${self.value * 100}%`
+      }, "microphone-changed"],
     ],
   });
 
@@ -125,26 +152,6 @@ const batteryIcons = {
   Charging: "󰂄",
   Discharging: ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
 };
-
-const BatteryIndicator = () =>
-  CircularProgress({
-    className: "progress",
-    inverted: false,
-    rounded: false,
-    startAt: 0.75,
-    child: Label({
-      style: "margin-left: 1px; margin-right: -1px;",
-    }),
-    connections: [
-      [Battery, (self) => {
-        self.value = 1 - Battery.percent / 100;
-        self.className = Battery.charging ? "charging progress" : "progress";
-        self.child.label = Battery.charging
-          ? batteryIcons.Charging
-          : batteryIcons.Discharging[Math.floor(Battery.percent / 10)];
-      }],
-    ],
-  });
 
 const Utils = () =>
   Box({
