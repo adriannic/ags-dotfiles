@@ -1,5 +1,13 @@
-const { Label, Window, CenterBox, Box, Button, Icon, CircularProgress } =
-  ags.Widget;
+const {
+  Label,
+  Window,
+  CenterBox,
+  Box,
+  Button,
+  Icon,
+  Stack,
+  EventBox,
+} = ags.Widget;
 const { Hyprland, SystemTray, Battery, Audio } = ags.Service;
 
 const AppMenuButton = ({ monitor }) =>
@@ -58,28 +66,84 @@ const Workspaces = ({ monitor }) =>
     ),
   });
 
+const batteryIcons = {
+  Charging: "󰂄",
+  Discharging: ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+};
+
 const BatteryIndicator = () =>
-  CircularProgress({
-    className: "progress",
-    inverted: false,
-    rounded: false,
-    startAt: 0.75,
-    child: Label({
-      style: "margin-left: 1px; margin-right: -1px;",
+  EventBox({
+    child: Stack({
+      transition: "slide_up_down",
+      items: [
+        [
+          "icon",
+          Label({
+            style: "min-width: 40px;",
+            label: "",
+            connections: [[
+              Battery,
+              (self) =>
+                self.label = Battery.charging
+                  ? batteryIcons.Charging
+                  : `${batteryIcons.Discharging[Math.floor(Battery.percent / 10)]
+                  }`,
+            ]],
+          }),
+        ],
+        [
+          "value",
+          Label({
+            style: "font-size: 15px;",
+            connections: [[
+              Battery,
+              (self) => self.label = `${Battery.percent}%`,
+            ]],
+          }),
+        ],
+      ],
     }),
-    connections: [
-      [Battery, (self) => {
-        self.value = 1 - Battery.percent / 100;
-        self.className = Battery.charging ? "charging progress" : "progress";
-        self.child.label = Battery.charging
-          ? batteryIcons.Charging
-          : `${batteryIcons.Discharging[Math.floor(Battery.percent / 10)]}`;
-        self.tooltipText = `${self.value}%`;
-      }],
-    ],
+    onHover: (widget) => widget.child.shown = "value",
+    onHoverLost: (widget) => widget.child.shown = "icon",
     binds: [
-      ['visible', Battery, 'available']
-    ]
+      ["visible", Battery, "available"],
+    ],
+  });
+
+const BrightnessIndicator = () =>
+  EventBox({
+    child: Stack({
+      transition: "slide_up_down",
+      items: [
+        [
+          "icon",
+          Label({
+            style: "min-width: 40px;",
+            label: "󰃟",
+          }),
+        ],
+        [
+          "value",
+          Label({
+            style: "font-size: 15px;",
+            connections: [
+              [
+                250,
+                (self) => {
+                  const current = ags.Utils.exec("brightnessctl g");
+                  const max = ags.Utils.exec("brightnessctl m");
+                  self.label = `${(current / max) * 100}%`;
+                },
+              ],
+            ],
+          }),
+        ],
+      ],
+    }),
+    onHover: (widget) => widget.child.shown = "value",
+    onHoverLost: (widget) => widget.child.shown = "icon",
+    onScrollUp: () => ags.Utils.exec("swayosd-client --brightness raise"),
+    onScrollDown: () => ags.Utils.exec("swayosd-client --brightness lower"),
   });
 
 const volumeIcons = {
@@ -87,71 +151,81 @@ const volumeIcons = {
   volume: ["󰕿", "󰖀", "󰕾", "󰕾"],
 };
 
-const BrightnessIndicator = () =>
-  CircularProgress({
-    className: "progress",
-    inverted: true,
-    rounded: false,
-    startAt: 0.75,
-    child: Label({
-      style: "margin-left: 1px; margin-right: -1px;",
-      label: "󰃟",
-    }),
-    connections: [
-      [
-        250,
-        (self) => {
-          const current = ags.Utils.exec("brightnessctl g");
-          const max = ags.Utils.exec("brightnessctl m");
-          self.value = current / max;
-          self.tooltipText = `${self.value * 100}%`
-        },
-      ],
-    ],
-  });
-
 const VolumeIndicator = () =>
-  CircularProgress({
-    className: "progress",
-    inverted: true,
-    rounded: false,
-    startAt: 0.75,
-    child: Label({
-      style: "margin-left: 1px; margin-right: -1px;",
+  EventBox({
+    child: Stack({
+      transition: "slide_up_down",
+      items: [
+        [
+          "icon",
+          Label({
+            style: "min-width: 40px;",
+            connections: [
+              [Audio, (self) => {
+                self.label = Audio.speaker.isMuted
+                  ? volumeIcons.muted
+                  : volumeIcons.volume[Math.ceil(Audio.speaker.volume * 3)];
+              }, "speaker-changed"],
+            ],
+          }),
+        ],
+        [
+          "value",
+          Label({
+            style: "font-size: 15px;",
+            connections: [
+              [Audio, (self) => {
+                self.label = `${Math.ceil(Audio.speaker.volume * 100)}%`;
+              }, "speaker-changed"],
+            ],
+          }),
+        ],
+      ],
     }),
-    connections: [
-      [Audio, (self) => {
-        self.value = Audio.speaker.volume;
-        self.child.label = Audio.speaker["is-muted"]
-          ? volumeIcons.muted
-          : volumeIcons.volume[Math.ceil(Audio.speaker.volume * 3)];
-        self.tooltipText = `${self.value * 100}%`
-      }, "speaker-changed"],
-    ],
+    onHover: (widget) => widget.child.shown = "value",
+    onHoverLost: (widget) => widget.child.shown = "icon",
+    onScrollUp: () => ags.Utils.exec("swayosd-client --output-volume raise"),
+    onScrollDown: () => ags.Utils.exec("swayosd-client --output-volume lower"),
+    onPrimaryClick: () =>
+      ags.Utils.exec("swayosd-client --output-volume mute-toggle"),
   });
 
 const MicIndicator = () =>
-  CircularProgress({
-    className: "progress",
-    inverted: true,
-    rounded: false,
-    startAt: 0.75,
-    child: Label({
-      style: "margin-left: 1px; margin-right: -1px;",
+  EventBox({
+    child: Stack({
+      transition: "slide_up_down",
+      items: [
+        [
+          "icon",
+          Label({
+            style: "min-width: 40px;",
+            connections: [
+              [Audio, (self) => {
+                self.label = Audio.microphone.isMuted ? "󰍭" : "󰍬";
+              }, "microphone-changed"],
+            ],
+          }),
+        ],
+        [
+          "value",
+          Label({
+            style: "font-size: 15px;",
+            connections: [
+              [Audio, (self) => {
+                self.label = `${Math.ceil(Audio.microphone.volume * 100)}%`;
+              }, "microphone-changed"],
+            ],
+          }),
+        ],
+      ],
     }),
-    connections: [
-      [Audio, (self) => {
-        self.value = Audio.microphone.volume;
-        self.child.label = Audio.microphone["is-muted"] ? "󰍭" : "󰍬";
-        self.tooltipText = `${self.value * 100}%`
-      }, "microphone-changed"],
-    ],
+    onHover: (widget) => widget.child.shown = "value",
+    onHoverLost: (widget) => widget.child.shown = "icon",
+    onScrollUp: () => ags.Utils.exec("swayosd-client --input-volume raise"),
+    onScrollDown: () => ags.Utils.exec("swayosd-client --input-volume lower"),
+    onPrimaryClick: () =>
+      ags.Utils.exec("swayosd-client --input-volume mute-toggle"),
   });
-
-const batteryIcons = {
-  Charging: "󰂄",
-  Discharging: ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
-};
 
 const Utils = () =>
   Box({
