@@ -132,7 +132,7 @@ const BrightnessIndicator = () =>
                 (self) => {
                   const current = ags.Utils.exec("brightnessctl g");
                   const max = ags.Utils.exec("brightnessctl m");
-                  self.label = `${Math.ceil(current / max) * 100}%`;
+                  self.label = `${Math.ceil(current / max * 100)}%`;
                 },
               ],
             ],
@@ -142,8 +142,8 @@ const BrightnessIndicator = () =>
     }),
     onHover: (widget) => widget.child.shown = "value",
     onHoverLost: (widget) => widget.child.shown = "icon",
-    onScrollUp: () => ags.Utils.exec("swayosd-client --brightness raise"),
-    onScrollDown: () => ags.Utils.exec("swayosd-client --brightness lower"),
+    onScrollUp: () => ags.Utils.exec("bash -c 'brightnessctl set 5%+ && swayosd-client --brightness 0'"),
+    onScrollDown: () => ags.Utils.exec("bash -c 'brightnessctl set 5%- && swayosd-client --brightness 0'"),
   });
 
 const volumeIcons = {
