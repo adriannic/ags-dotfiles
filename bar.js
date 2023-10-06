@@ -132,7 +132,7 @@ const BrightnessIndicator = () =>
                 (self) => {
                   const current = ags.Utils.exec("brightnessctl g");
                   const max = ags.Utils.exec("brightnessctl m");
-                  self.label = `${(current / max) * 100}%`;
+                  self.label = `${Math.ceil(current / max) * 100}%`;
                 },
               ],
             ],
