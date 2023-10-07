@@ -79,6 +79,7 @@ const BatteryIndicator = () =>
         [
           "icon",
           Label({
+            className: "text",
             style: "min-width: 40px;",
             label: "",
             connections: [[
@@ -94,6 +95,7 @@ const BatteryIndicator = () =>
         [
           "value",
           Label({
+            className: "text",
             style: "font-size: 15px;",
             connections: [[
               Battery,
@@ -118,6 +120,7 @@ const BrightnessIndicator = () =>
         [
           "icon",
           Label({
+            className: "text",
             style: "min-width: 40px;",
             label: "󰃟",
           }),
@@ -125,6 +128,7 @@ const BrightnessIndicator = () =>
         [
           "value",
           Label({
+            className: "text",
             style: "font-size: 15px;",
             connections: [
               [
@@ -159,6 +163,7 @@ const VolumeIndicator = () =>
         [
           "icon",
           Label({
+            className: "text",
             style: "min-width: 40px;",
             connections: [
               [Audio, (self) => {
@@ -172,6 +177,7 @@ const VolumeIndicator = () =>
         [
           "value",
           Label({
+            className: "text",
             style: "font-size: 15px;",
             connections: [
               [Audio, (self) => {
@@ -198,6 +204,7 @@ const MicIndicator = () =>
         [
           "icon",
           Label({
+            className: "text",
             style: "min-width: 40px;",
             connections: [
               [Audio, (self) => {
@@ -209,6 +216,7 @@ const MicIndicator = () =>
         [
           "value",
           Label({
+            className: "text",
             style: "font-size: 15px;",
             connections: [
               [Audio, (self) => {
