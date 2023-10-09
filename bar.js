@@ -284,7 +284,8 @@ const Clock = ({ monitor }) =>
     halign: "center",
     children: [
       Button({
-        onPrimaryClick: () => ags.App.toggleWindow(`calendar-${monitor}`),
+        onHover: () => ags.App.openWindow(`calendar-${monitor}`),
+        onHoverLost: () => ags.App.closeWindow(`calendar-${monitor}`),
         child: Label({
           className: "clock",
           connections: [
