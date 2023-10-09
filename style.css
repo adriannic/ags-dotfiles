@@ -81,3 +81,28 @@ menu > menuitem:hover {
 .charging {
   color: green;
 }
+
+calendar {
+  color: @color8;
+}
+
+calendar:selected {
+  color: @fg-selected;
+  background: @bg-selected;
+}
+
+calendar.header {
+  color: @fg;
+}
+
+calendar.button {
+  color: @color8;
+}
+
+calendar.highlight {
+  color: @color8; 
+}
+
+calendar:indeterminate {
+  color: @border;
+}

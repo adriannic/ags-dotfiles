@@ -146,8 +146,14 @@ const BrightnessIndicator = () =>
     }),
     onHover: (widget) => widget.child.shown = "value",
     onHoverLost: (widget) => widget.child.shown = "icon",
-    onScrollUp: () => ags.Utils.exec("bash -c 'brightnessctl set 5%+ && swayosd-client --brightness 0'"),
-    onScrollDown: () => ags.Utils.exec("bash -c 'brightnessctl set 5%- && swayosd-client --brightness 0'"),
+    onScrollUp: () =>
+      ags.Utils.exec(
+        "bash -c 'brightnessctl set 5%+ && swayosd-client --brightness 0'",
+      ),
+    onScrollDown: () =>
+      ags.Utils.exec(
+        "bash -c 'brightnessctl set 5%- && swayosd-client --brightness 0'",
+      ),
   });
 
 const volumeIcons = {
@@ -278,6 +284,7 @@ const Clock = ({ monitor }) =>
     halign: "center",
     children: [
       Button({
+        onPrimaryClick: () => ags.App.toggleWindow(`calendar-${monitor}`),
         child: Label({
           className: "clock",
           connections: [
