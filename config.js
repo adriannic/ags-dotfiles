@@ -1,6 +1,6 @@
 import { Bar } from "./bar.js";
 import { Calendar } from "./calendar.js";
-const { Hyprland } = ags.Service;
+import { Dashboard } from "./dashboard.js";
 
 const css = ags.App.configDir + "/style.css";
 
@@ -15,6 +15,10 @@ export default {
   ).concat(
     JSON.parse(ags.Utils.exec('bash -c "hyprctl monitors -j"')).map(
       (mon) => Calendar({ monitor: mon.id }),
+    ).concat(
+      JSON.parse(ags.Utils.exec('bash -c "hyprctl monitors -j"')).map(
+        (mon) => Dashboard({ monitor: mon.id }),
+      ),
     ),
   ),
 };

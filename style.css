@@ -106,3 +106,26 @@ calendar.highlight {
 calendar:indeterminate {
   color: @border;
 }
+
+.WorkspaceWidget {
+  border: 2px inset @border;
+  background: @bg;
+  min-width: 213.333333px;
+  min-height: 120px;
+}
+
+.SelectedWorkspaceWidget {
+  border: 2px inset @border;
+  background: @bg-selected;
+  min-width: 213.333333px;
+  min-height: 120px;
+}
+
+.WorkspaceWidgetIcon {
+  color: @color8;
+}
+
+.DesktopWidget {
+  background: transparent;
+  border: 2px inset @border;
+}

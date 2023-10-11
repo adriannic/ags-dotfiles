@@ -28,7 +28,7 @@ const AppMenuButton = ({ monitor }) =>
     ],
   });
 
-const workspaces = [
+export const workspaces = [
   { "icon": "", "index": 1 },
   { "icon": "", "index": 2 },
   { "icon": "", "index": 3 },
