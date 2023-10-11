@@ -9,6 +9,14 @@ const CalendarWidget = () => Box({
       sensitive: false,
     }),
   ],
+  connections: [
+    [300000, self => {
+      const calendar = self.children[0];
+      calendar.day = ags.Utils.exec("date +%d");
+      calendar.month = ags.Utils.exec("date +%m") - 1;
+      calendar.year = ags.Utils.exec("date +%Y");
+    }]
+  ],
 });
 
 export const Calendar = ({ monitor }) =>
