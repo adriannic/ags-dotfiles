@@ -1,17 +1,13 @@
 import { workspaces } from "./bar.js";
 const {
-  Widget,
   Label,
   Window,
-  CenterBox,
   Box,
   Button,
   Icon,
   Overlay,
-  EventBox,
 } = ags.Widget;
-const { Hyprland, SystemTray } = ags.Service;
-import Gtk from "gi://Gtk";
+const { Hyprland } = ags.Service;
 
 const DesktopWindowWidget = ({ client }) =>
   Box({
