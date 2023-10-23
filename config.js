@@ -1,9 +1,10 @@
+import App from "resource:///com/github/Aylur/ags/app.js";
 import { Bar } from "./bar.js";
 import { Calendar } from "./calendar.js";
 import { Dashboard } from "./dashboard.js";
-const { exec } = ags.Utils;
+import { exec } from "resource:///com/github/Aylur/ags/utils.js";
 
-const css = ags.App.configDir + "/style.css";
+const css = App.configDir + "/style.css";
 
 export default {
   closeWindowDelay: {},

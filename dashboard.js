@@ -1,13 +1,13 @@
 import { workspaces } from "./bar.js";
-const {
-  Label,
-  Window,
+import Hyprland from "resource:///com/github/Aylur/ags/service/hyprland.js";
+import {
   Box,
   Button,
   Icon,
+  Label,
   Overlay,
-} = ags.Widget;
-const { Hyprland } = ags.Service;
+  Window,
+} from "resource:///com/github/Aylur/ags/widget.js";
 
 const DesktopWindowWidget = ({ client }) =>
   Box({
@@ -53,8 +53,8 @@ const DesktopWidget = ({ monitor, workspace }) =>
       connections: [
         [Hyprland, (label) =>
           label.className = Hyprland.monitors.map((mon) =>
-            mon.activeWorkspace
-          )[monitor].id === workspace.index
+              mon.activeWorkspace
+            )[monitor].id === workspace.index
             ? " SelectedWorkspaceWidget"
             : "WorkspaceWidget"],
       ],

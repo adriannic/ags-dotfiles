@@ -1,7 +1,6 @@
-
-const { Window, Box } = ags.Widget;
-const { exec } = ags.Utils;
+import { exec } from "resource:///com/github/Aylur/ags/utils.js";
 import Gtk from "gi://Gtk";
+import { Box, Window } from "resource:///com/github/Aylur/ags/widget.js";
 
 const CalendarWidget = () =>
   Box({
