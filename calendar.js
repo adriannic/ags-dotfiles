@@ -1,6 +1,6 @@
-import { exec } from "resource:///com/github/Aylur/ags/utils.js";
 import Gtk from "gi://Gtk";
 import { Box, Window } from "resource:///com/github/Aylur/ags/widget.js";
+import { exec } from "resource:///com/github/Aylur/ags/utils.js";
 
 const CalendarWidget = () =>
   Box({
@@ -28,6 +28,7 @@ export const Calendar = ({ monitor }) =>
     exclusive: false,
     child: CalendarWidget(),
     popup: true,
+    visible: false,
     layer: "overlay",
     margin: [5],
   });

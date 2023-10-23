@@ -16,9 +16,9 @@ export default {
     (
       mon,
     ) => [
-      Bar({ monitor: mon.id }),
-      Calendar({ monitor: mon.id }),
-      Dashboard({ monitor: mon.id }),
-    ],
+        Bar({ monitor: mon.id }),
+        Calendar({ monitor: mon.id }),
+        Dashboard({ monitor: mon.id }),
+      ],
   ),
 };

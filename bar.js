@@ -1,8 +1,8 @@
+import App from "resource:///com/github/Aylur/ags/app.js";
+import Audio from "resource:///com/github/Aylur/ags/service/audio.js";
+import Battery from "resource:///com/github/Aylur/ags/service/battery.js";
 import Hyprland from "resource:///com/github/Aylur/ags/service/hyprland.js";
 import SystemTray from "resource:///com/github/Aylur/ags/service/systemtray.js";
-import Battery from "resource:///com/github/Aylur/ags/service/battery.js";
-import Audio from "resource:///com/github/Aylur/ags/service/audio.js";
-import { exec, execAsync } from "resource:///com/github/Aylur/ags/utils.js";
 import {
   Box,
   Button,
@@ -13,6 +13,7 @@ import {
   Stack,
   Window,
 } from "resource:///com/github/Aylur/ags/widget.js";
+import { exec, execAsync } from "resource:///com/github/Aylur/ags/utils.js";
 
 const AppMenuButton = ({ monitor }) =>
   Box({
@@ -22,7 +23,7 @@ const AppMenuButton = ({ monitor }) =>
       Button({
         onClicked: () =>
           execAsync(["bash", "-c", "killall wofi || wofi"]).catch(
-            () => {},
+            () => { },
           ),
         child: Icon({
           icon: "start-here-archlinux",
@@ -58,8 +59,8 @@ const Workspaces = ({ monitor }) =>
               connections: [
                 [Hyprland, (label) =>
                   label.className = Hyprland.monitors.map((mon) =>
-                      mon.activeWorkspace
-                    )[monitor].id === workspace.index
+                    mon.activeWorkspace
+                  )[monitor].id === workspace.index
                     ? "active-workspace"
                     : "workspace"],
               ],
@@ -91,8 +92,7 @@ const BatteryIndicator = () =>
               (self) =>
                 self.label = Battery.charging
                   ? batteryIcons.Charging
-                  : `${
-                    batteryIcons.Discharging[Math.floor(Battery.percent / 10)]
+                  : `${batteryIcons.Discharging[Math.floor(Battery.percent / 10)]
                   }`,
             ]],
           }),
@@ -287,8 +287,8 @@ const Clock = ({ monitor }) =>
     halign: "center",
     children: [
       Button({
-        onHover: () => ags.App.openWindow(`calendar-${monitor}`),
-        onHoverLost: () => ags.App.closeWindow(`calendar-${monitor}`),
+        onHover: () => App.openWindow(`calendar-${monitor}`),
+        onHoverLost: () => App.closeWindow(`calendar-${monitor}`),
         child: Label({
           className: "clock",
           connections: [
