@@ -10,15 +10,13 @@ export default {
   cacheNotificationActions: false,
   maxStreamVolume: 1.0,
   style: css,
-  windows: JSON.parse(ags.Utils.exec('bash -c "hyprctl monitors -j"')).map(
-    (mon) => Bar({ monitor: mon.id }),
-  ).concat(
-    JSON.parse(ags.Utils.exec('bash -c "hyprctl monitors -j"')).map(
-      (mon) => Calendar({ monitor: mon.id }),
-    ).concat(
-      JSON.parse(ags.Utils.exec('bash -c "hyprctl monitors -j"')).map(
-        (mon) => Dashboard({ monitor: mon.id }),
-      ),
-    ),
+  windows: JSON.parse(ags.Utils.exec('bash -c "hyprctl monitors -j"')).flatMap(
+    (
+      mon,
+    ) => [
+      Bar({ monitor: mon.id }),
+      Calendar({ monitor: mon.id }),
+      Dashboard({ monitor: mon.id }),
+    ],
   ),
 };

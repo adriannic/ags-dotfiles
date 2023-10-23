@@ -1,23 +1,25 @@
-const { Label, Window, CenterBox, Box, Button, Icon } = ags.Widget;
-const { Hyprland, SystemTray } = ags.Service;
+
+const { Window, Box } = ags.Widget;
+const { exec } = ags.Utils;
 import Gtk from "gi://Gtk";
 
-const CalendarWidget = () => Box({
-  className: "container",
-  children: [
-    new Gtk.Calendar({
-      sensitive: false,
-    }),
-  ],
-  connections: [
-    [300000, self => {
-      const calendar = self.children[0];
-      calendar.day = ags.Utils.exec("date +%d");
-      calendar.month = ags.Utils.exec("date +%m") - 1;
-      calendar.year = ags.Utils.exec("date +%Y");
-    }]
-  ],
-});
+const CalendarWidget = () =>
+  Box({
+    className: "container",
+    children: [
+      new Gtk.Calendar({
+        sensitive: false,
+      }),
+    ],
+    connections: [
+      [300000, (self) => {
+        const calendar = self.children[0];
+        calendar.day = exec("date +%d");
+        calendar.month = exec("date +%m") - 1;
+        calendar.year = exec("date +%Y");
+      }],
+    ],
+  });
 
 export const Calendar = ({ monitor }) =>
   Window({

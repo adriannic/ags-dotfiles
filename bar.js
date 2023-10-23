@@ -9,6 +9,7 @@ const {
   EventBox,
 } = ags.Widget;
 const { Hyprland, SystemTray, Battery, Audio } = ags.Service;
+const { exec, execAsync } = ags.Utils;
 
 const AppMenuButton = ({ monitor }) =>
   Box({
@@ -17,7 +18,7 @@ const AppMenuButton = ({ monitor }) =>
     children: [
       Button({
         onClicked: () =>
-          ags.Utils.execAsync(["bash", "-c", "killall wofi || wofi"]).catch(
+          execAsync(["bash", "-c", "killall wofi || wofi"]).catch(
             () => { },
           ),
         child: Icon({
@@ -134,8 +135,8 @@ const BrightnessIndicator = () =>
               [
                 250,
                 (self) => {
-                  const current = ags.Utils.exec("brightnessctl g");
-                  const max = ags.Utils.exec("brightnessctl m");
+                  const current = exec("brightnessctl g");
+                  const max = exec("brightnessctl m");
                   self.label = `${Math.ceil(current / max * 100)}%`;
                 },
               ],
@@ -147,11 +148,11 @@ const BrightnessIndicator = () =>
     onHover: (widget) => widget.child.shown = "value",
     onHoverLost: (widget) => widget.child.shown = "icon",
     onScrollUp: () =>
-      ags.Utils.exec(
+      exec(
         "bash -c 'brightnessctl set 5%+ && swayosd-client --brightness 0'",
       ),
     onScrollDown: () =>
-      ags.Utils.exec(
+      exec(
         "bash -c 'brightnessctl set 5%- && swayosd-client --brightness 0'",
       ),
   });
@@ -196,10 +197,9 @@ const VolumeIndicator = () =>
     }),
     onHover: (widget) => widget.child.shown = "value",
     onHoverLost: (widget) => widget.child.shown = "icon",
-    onScrollUp: () => ags.Utils.exec("swayosd-client --output-volume raise"),
-    onScrollDown: () => ags.Utils.exec("swayosd-client --output-volume lower"),
-    onPrimaryClick: () =>
-      ags.Utils.exec("swayosd-client --output-volume mute-toggle"),
+    onScrollUp: () => exec("swayosd-client --output-volume raise"),
+    onScrollDown: () => exec("swayosd-client --output-volume lower"),
+    onPrimaryClick: () => exec("swayosd-client --output-volume mute-toggle"),
   });
 
 const MicIndicator = () =>
@@ -235,10 +235,9 @@ const MicIndicator = () =>
     }),
     onHover: (widget) => widget.child.shown = "value",
     onHoverLost: (widget) => widget.child.shown = "icon",
-    onScrollUp: () => ags.Utils.exec("swayosd-client --input-volume raise"),
-    onScrollDown: () => ags.Utils.exec("swayosd-client --input-volume lower"),
-    onPrimaryClick: () =>
-      ags.Utils.exec("swayosd-client --input-volume mute-toggle"),
+    onScrollUp: () => exec("swayosd-client --input-volume raise"),
+    onScrollDown: () => exec("swayosd-client --input-volume lower"),
+    onPrimaryClick: () => exec("swayosd-client --input-volume mute-toggle"),
   });
 
 const Utils = () =>
@@ -292,9 +291,7 @@ const Clock = ({ monitor }) =>
             [
               5000,
               (label) =>
-                ags.Utils.execAsync(["date", "+%H:%M"]).then((time) =>
-                  label.label = time
-                )
+                execAsync(["date", "+%H:%M"]).then((time) => label.label = time)
                   .catch(console.error),
             ],
           ],
