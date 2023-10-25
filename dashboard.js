@@ -75,7 +75,7 @@ const DesktopOverview = ({ monitor }) =>
     hexpand: true,
     halign: "center",
     valign: "start",
-    // spacing: 18,
+    spacing: 5,
     children: workspaces.map((workspace) =>
       DesktopWidget({ monitor, workspace })
     ),
@@ -84,6 +84,7 @@ const DesktopOverview = ({ monitor }) =>
 const InfoPanel = () =>
   Box({
     className: "container",
+    style: "padding: 5px; min-width: 400px",
     vertical: true,
     children: [
       Label("test1"),
@@ -98,20 +99,44 @@ const AppsPanel = () =>
     vertical: true,
     hexpand: true,
     children: [
-      Label("test1"),
-      Label("test2"),
-      Label("test3"),
+      Box({
+        style: "min-height: 37px;",
+        halign: "center",
+        children: [
+          Label({
+            className: "Title",
+            valign: "end",
+            label: "Aplicaciones",
+          }),
+        ],
+      }),
     ],
   });
 
 const NotificationsPanel = () =>
   Box({
     className: "container",
+    style: "padding: 5px; min-width: 400px",
     vertical: true,
     children: [
-      Label("test1"),
-      Label("test2"),
-      Label("test3"),
+      Box({
+        spacing: 115,
+        children: [
+          Label({
+            className: "Title",
+            label: "Notificaciones",
+          }),
+          Button({
+            className: "container",
+            style: "padding: 5px;",
+            child: Label("Cerrar todo"),
+          }),
+        ],
+      }),
+      Box({
+        vexpand: true,
+        children: [],
+      }),
     ],
   });
 

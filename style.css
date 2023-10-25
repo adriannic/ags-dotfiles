@@ -36,7 +36,6 @@ button:hover {
 .container {
   background: @bg;
   border: 2px inset @border;
-  min-height: 40px;
 }
 
 .workspace {
@@ -48,7 +47,7 @@ button:hover {
   min-width: 34px;
   margin: 3px;
   padding-top: 3px;
-  border-bottom: 3px solid @fg;
+  border-bottom: 2px inset @fg;
   transition: border-bottom 0.25s ease-in-out;
 }
 
@@ -125,7 +124,7 @@ calendar:indeterminate {
   color: @color8;
 }
 
-.DesktopWidget {
-  background: transparent;
-  border: 2px inset @border;
+.Title {
+  color: @fg;
+  font-size: 24px;
 }
