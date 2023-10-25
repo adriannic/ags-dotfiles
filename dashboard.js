@@ -70,6 +70,51 @@ const DesktopWidget = ({ monitor, workspace }) =>
     ],
   });
 
+const DesktopOverview = ({ monitor }) =>
+  Box({
+    hexpand: true,
+    halign: "center",
+    valign: "start",
+    // spacing: 18,
+    children: workspaces.map((workspace) =>
+      DesktopWidget({ monitor, workspace })
+    ),
+  });
+
+const InfoPanel = () =>
+  Box({
+    className: "container",
+    vertical: true,
+    children: [
+      Label("test1"),
+      Label("test2"),
+      Label("test3"),
+    ],
+  });
+
+const AppsPanel = () =>
+  Box({
+    className: "container",
+    vertical: true,
+    hexpand: true,
+    children: [
+      Label("test1"),
+      Label("test2"),
+      Label("test3"),
+    ],
+  });
+
+const NotificationsPanel = () =>
+  Box({
+    className: "container",
+    vertical: true,
+    children: [
+      Label("test1"),
+      Label("test2"),
+      Label("test3"),
+    ],
+  });
+
 export const Dashboard = ({ monitor }) =>
   Window({
     name: `dashboard-${monitor}`,
@@ -81,13 +126,21 @@ export const Dashboard = ({ monitor }) =>
     visible: false,
     focusable: true,
     child: Box({
-      className: "container",
-      style: "padding: 18px; margin: 5px;",
-      halign: "center",
-      valign: "start",
-      spacing: 18,
-      children: workspaces.map((workspace) =>
-        DesktopWidget({ monitor, workspace })
-      ),
+      style: "margin: 5px;",
+      spacing: 5,
+      vertical: true,
+      hexpand: true,
+      children: [
+        DesktopOverview({ monitor }),
+        Box({
+          spacing: 5,
+          vexpand: true,
+          children: [
+            InfoPanel(),
+            AppsPanel(),
+            NotificationsPanel(),
+          ],
+        }),
+      ],
     }),
   });
