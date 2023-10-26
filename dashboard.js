@@ -75,7 +75,7 @@ const DesktopOverview = ({ monitor }) =>
     hexpand: true,
     halign: "center",
     valign: "start",
-    spacing: 5,
+    spacing: 4,
     children: workspaces.map((workspace) =>
       DesktopWidget({ monitor, workspace })
     ),
@@ -152,13 +152,13 @@ export const Dashboard = ({ monitor }) =>
     focusable: true,
     child: Box({
       style: "margin: 5px;",
-      spacing: 5,
+      spacing: 4,
       vertical: true,
       hexpand: true,
       children: [
         DesktopOverview({ monitor }),
         Box({
-          spacing: 5,
+          spacing: 4,
           vexpand: true,
           children: [
             InfoPanel(),

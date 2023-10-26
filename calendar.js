@@ -30,5 +30,5 @@ export const Calendar = ({ monitor }) =>
     popup: true,
     visible: false,
     layer: "overlay",
-    margin: [5],
+    margin: [4],
   });

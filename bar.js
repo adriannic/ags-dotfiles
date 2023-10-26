@@ -307,7 +307,7 @@ const Clock = ({ monitor }) =>
 const StartWidgets = ({ monitor }) =>
   Box({
     halign: "start",
-    spacing: 5,
+    spacing: 4,
     children: [
       AppMenuButton({ monitor }),
       Workspaces({ monitor }),
@@ -317,14 +317,14 @@ const StartWidgets = ({ monitor }) =>
 const CenterWidgets = ({ monitor }) =>
   Box({
     halign: "center",
-    spacing: 5,
+    spacing: 4,
     children: [],
   });
 
 const EndWidgets = ({ monitor }) =>
   Box({
     halign: "end",
-    spacing: 5,
+    spacing: 4,
     children: [
       SysTray(),
       Utils(),

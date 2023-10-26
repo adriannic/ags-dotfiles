@@ -20,7 +20,7 @@
 }
 
 .bar {
-  margin: 0px 5px 5px 5px;
+  margin: 0px 4px 4px 4px;
 }
 
 button {
@@ -35,7 +35,7 @@ button:hover {
 
 .container {
   background: @bg;
-  border: 2px inset @border;
+  border: 1px inset @border;
 }
 
 .workspace {
@@ -47,7 +47,7 @@ button:hover {
   min-width: 34px;
   margin: 3px;
   padding-top: 3px;
-  border-bottom: 2px inset @fg;
+  border-bottom: 1px inset @fg;
   transition: border-bottom 0.25s ease-in-out;
 }
 
@@ -56,8 +56,8 @@ button:hover {
 }
 
 menu, tooltip {
-  padding: 5px;
-  border: 2px inset @border;
+  padding: 4px;
+  border: 1px inset @border;
   color: @fg;
   background: @bg;
 }
@@ -107,14 +107,14 @@ calendar:indeterminate {
 }
 
 .WorkspaceWidget {
-  border: 2px inset @border;
+  border: 1px inset @border;
   background: @bg;
   min-width: 213.333333px;
   min-height: 120px;
 }
 
 .SelectedWorkspaceWidget {
-  border: 2px inset @border;
+  border: 1px inset @border;
   background: @bg-selected;
   min-width: 213.333333px;
   min-height: 120px;
