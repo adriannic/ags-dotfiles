@@ -45,9 +45,9 @@ button:hover {
 
 .active-workspace {
   min-width: 34px;
-  margin: 3px;
-  padding-top: 3px;
-  border-bottom: 1px inset @fg;
+  margin: 4px 3px;
+  padding-top: 2px;
+  border-bottom: 2px solid white;
   transition: border-bottom 0.25s ease-in-out;
 }
 
