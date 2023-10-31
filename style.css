@@ -39,14 +39,16 @@ button:hover {
 }
 
 .workspace {
-  min-width: 40px;
+  min-width: 35px;
   min-height: 40px;
+  padding-right: 5px;
 }
 
 .active-workspace {
-  min-width: 34px;
+  min-width: 29px;
   margin: 4px 3px;
   padding-top: 2px;
+  padding-right: 5px;
   border-bottom: 2px solid white;
   transition: border-bottom 0.25s ease-in-out;
 }

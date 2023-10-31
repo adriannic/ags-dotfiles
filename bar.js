@@ -55,6 +55,7 @@ const Workspaces = ({ monitor }) =>
         child: Box({
           children: [
             Label({
+              justification: "center",
               label: workspace.icon,
               connections: [
                 [Hyprland, (label) =>
