@@ -12,13 +12,12 @@ export default {
   cacheNotificationActions: false,
   maxStreamVolume: 1.0,
   style: css,
-  windows: JSON.parse(exec('bash -c "hyprctl monitors -j"')).flatMap(
-    (
-      mon,
-    ) => [
-        Bar({ monitor: mon.id }),
-        Calendar({ monitor: mon.id }),
-        Dashboard({ monitor: mon.id }),
-      ],
-  ),
+  windows: [
+    Bar({ monitor: 0 }),
+    Calendar({ monitor: 0 }),
+    Dashboard({ monitor: 0 }),
+    Bar({ monitor: 1 }),
+    Calendar({ monitor: 1 }),
+    Dashboard({ monitor: 1 }),
+  ],
 };

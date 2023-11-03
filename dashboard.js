@@ -51,21 +51,20 @@ const DesktopWidget = ({ monitor, workspace }) =>
         label: workspace.icon,
       }),
       connections: [
-        [Hyprland, (label) =>
-          label.className = Hyprland.monitors.map((mon) =>
-            mon.activeWorkspace
-          )[monitor].id === workspace.index
+        [Hyprland, (label) => {
+          const monitor_obj = Hyprland.monitors[monitor] ||
+            { activeWorkspace: { id: 0 } };
+          label.className = monitor_obj.activeWorkspace.id === workspace.index
             ? " SelectedWorkspaceWidget"
-            : "WorkspaceWidget"],
+            : "WorkspaceWidget";
+        }],
       ],
     }),
     connections: [
       [Hyprland, (self) => {
         self.overlays = Hyprland.clients.filter((client) =>
           client.workspace.id === workspace.index
-        ).map((client) =>
-          DesktopWindowWidget({ client })
-        );
+        ).map((client) => DesktopWindowWidget({ client }));
       }],
     ],
   });

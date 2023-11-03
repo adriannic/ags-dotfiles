@@ -23,7 +23,7 @@ const AppMenuButton = ({ monitor }) =>
       Button({
         onClicked: () =>
           execAsync(["bash", "-c", "killall wofi || wofi"]).catch(
-            () => { },
+            () => {},
           ),
         child: Icon({
           icon: "start-here-archlinux",
@@ -58,12 +58,13 @@ const Workspaces = ({ monitor }) =>
               justification: "center",
               label: workspace.icon,
               connections: [
-                [Hyprland, (label) =>
-                  label.className = Hyprland.monitors.map((mon) =>
-                    mon.activeWorkspace
-                  )[monitor].id === workspace.index
+                [Hyprland, (label) => {
+                  const monitor_obj = Hyprland.monitors[monitor] ||
+                    { activeWorkspace: { id: 0 } };
+                  label.className = monitor_obj.activeWorkspace.id === workspace.index
                     ? "active-workspace"
-                    : "workspace"],
+                    : "workspace";
+                }],
               ],
             }),
           ],
@@ -93,7 +94,8 @@ const BatteryIndicator = () =>
               (self) =>
                 self.label = Battery.charging
                   ? batteryIcons.Charging
-                  : `${batteryIcons.Discharging[Math.floor(Battery.percent / 10)]
+                  : `${
+                    batteryIcons.Discharging[Math.floor(Battery.percent / 10)]
                   }`,
             ]],
           }),
