@@ -12,12 +12,9 @@ export default {
   cacheNotificationActions: false,
   maxStreamVolume: 1.0,
   style: css,
-  windows: [
-    Bar({ monitor: 0 }),
-    Calendar({ monitor: 0 }),
-    Dashboard({ monitor: 0 }),
-    Bar({ monitor: 1 }),
-    Calendar({ monitor: 1 }),
-    Dashboard({ monitor: 1 }),
-  ],
+  windows: JSON.parse(exec("hyprctl monitors -j")).flatMap(monitor => [
+    Bar({monitor: monitor.id}),
+    Calendar({monitor: monitor.id}),
+    Dashboard({monitor: monitor.id}),
+  ]),
 };
