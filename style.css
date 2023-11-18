@@ -1,6 +1,6 @@
 @import url('../../.cache/wal/colors-waybar.css');
 
-@define-color bg alpha(@background, 0.5);
+@define-color bg alpha(@background, 0.75);
 @define-color fg @foreground;
 @define-color bg-selected @foreground;
 @define-color fg-selected @background;
