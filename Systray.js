@@ -11,9 +11,15 @@ const SysTrayItem = ({ item }) =>
 
 export const Systray = () =>
   Widget.Box({
-    className: "container",
-    binds: [["children", SystemTray, "items", (items) =>
-      items.map((item) =>
-        SysTrayItem({ item })
-      )]],
+    vertical: true,
+    vpack: "end",
+    children: [
+      Widget.Box({
+        className: "container",
+        binds: [["children", SystemTray, "items", (items) =>
+          items.map((item) =>
+            SysTrayItem({ item })
+          )]],
+      }),
+    ],
   });
