@@ -1,5 +1,6 @@
 import Widget from "resource:///com/github/Aylur/ags/widget.js";
 import SystemTray from "resource:///com/github/Aylur/ags/service/systemtray.js";
+import { BatteryWidget } from "./Battery.js";
 
 const SysTrayItem = ({ item }) =>
   Widget.Button({
@@ -19,7 +20,7 @@ export const Systray = () =>
         binds: [["children", SystemTray, "items", (items) =>
           items.map((item) =>
             SysTrayItem({ item })
-          )]],
+          ).concat([BatteryWidget()])]],
       }),
     ],
   });

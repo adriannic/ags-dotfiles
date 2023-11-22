@@ -23,7 +23,7 @@
   margin: 0px 4px 4px 4px;
 }
 
-button {
+button, .batteryIcon {
   min-width: 30px;
   min-height: 30px;
   color: @fg;
