@@ -19,6 +19,7 @@ const CenterWidgets = () => Widget.Box({});
 
 const EndWidgets = () =>
   Widget.Box({
+    spacing: 4,
     hpack: "end",
     vpack: "end",
     children: [
