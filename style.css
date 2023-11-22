@@ -39,6 +39,10 @@ button:hover {
   border: 1px solid @border;
 }
 
+tooltip > * {
+  border: 1px solid transparent;
+}
+
 .selectedWorkspace {
   border: 2px solid transparent;
   border-bottom-color: @bg-selected;

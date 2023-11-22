@@ -5,7 +5,7 @@ import { execAsync, timeout } from "resource:///com/github/Aylur/ags/utils.js";
 
 let selectedWorkspaces = [1, 2];
 
-const updateWorkspaces = (monitor) =>
+const updateWorkspaces = () =>
   execAsync("hyprctl monitors -j").then((output) => {
     selectedWorkspaces = JSON.parse(output).map((mon) =>
       mon.activeWorkspace.id
@@ -13,9 +13,11 @@ const updateWorkspaces = (monitor) =>
   }).catch(console.error);
 
 const changeWorkspace = (workspace) => {
-  execAsync(["bash", "-c", `~/.config/hypr/scripts/workspaces ${workspace}`]).then(
-    () => { },
-  ).catch(console.error);
+  execAsync(["bash", "-c", `~/.config/hypr/scripts/workspaces ${workspace}`])
+    .then(
+      () => { },
+    ).catch(console.error);
+  updateWorkspaces();
 };
 
 const WorkspaceButton = ({ entry, monitor }) =>
@@ -42,6 +44,6 @@ export const Workspaces = ({ monitor }) =>
       entry,
     ) => [WorkspaceButton({ entry, monitor })]),
     connections: [
-      [300, () => updateWorkspaces(monitor)],
+      [Hyprland, updateWorkspaces],
     ],
   });
