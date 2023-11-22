@@ -1,8 +1,8 @@
 @import url('../../.cache/wal/colors-waybar.css');
 
 @define-color bg alpha(@background, 0.75);
-@define-color fg @foreground;
-@define-color bg-selected @foreground;
+@define-color fg #fff;
+@define-color bg-selected alpha(#fff, 0.85);
 @define-color fg-selected @background;
 @define-color border @color1;
 
@@ -34,13 +34,18 @@ button:hover {
   background: @bg-selected;
 }
 
-.container {
+.container, tooltip {
   background-color: @bg;
   border: 1px solid @border;
 }
 
+.selectedWorkspace {
+  border: 2px solid transparent;
+  border-bottom-color: @bg-selected;
+}
+
 calendar {
-  color: @color8;
+  color: @fg;
 }
 
 calendar:selected {
@@ -53,13 +58,13 @@ calendar.header {
 }
 
 calendar.button {
-  color: @color8;
+  color: transparent;
 }
 
 calendar.highlight {
-  color: @color8; 
+  color: @foreground; 
 }
 
 calendar:indeterminate {
-  color: @border;
+  color: @color8;
 }
