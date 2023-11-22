@@ -2,6 +2,7 @@ import Widget from "resource:///com/github/Aylur/ags/widget.js";
 import { Workspaces } from "./Workspaces.js";
 import { Clock } from "./Clock.js";
 import { LogoButton } from "./LogoButton.js";
+import { Systray } from "./Systray.js";
 
 const StartWidgets = ({ monitor }) =>
   Widget.Box({
@@ -21,6 +22,7 @@ const EndWidgets = () =>
     hpack: "end",
     vpack: "end",
     children: [
+      Systray(),
       Clock(),
     ],
   });

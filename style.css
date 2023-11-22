@@ -72,3 +72,19 @@ calendar.highlight {
 calendar:indeterminate {
   color: @color8;
 }
+
+menu {
+  padding: 4px;
+  border: 1px solid @border;
+  color: @fg;
+  background: @bg;
+}
+
+menu > menuitem:disabled {
+  color: @color8;
+}
+
+menu > menuitem:hover {
+  color: @fg-selected;
+  background: @bg-selected;
+}
