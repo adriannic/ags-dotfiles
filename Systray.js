@@ -4,7 +4,7 @@ import { BatteryWidget } from "./Battery.js";
 
 const SysTrayItem = ({ item }) =>
   Widget.Button({
-    child: Widget.Icon({ binds: [["icon", item, "icon"]] }),
+    child: Widget.Icon({ binds: [["icon", item, "icon"]], size: 21 }),
     binds: [["tooltip-markup", item, "tooltip-markup"]],
     onPrimaryClick: (_, event) => item.activate(event),
     onSecondaryClick: (_, event) => item.openMenu(event),

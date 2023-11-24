@@ -26,24 +26,41 @@ const WorkspaceButton = ({ entry, monitor }) =>
     tooltipText: entry.name,
     child: Widget.Label({
       label: `${entry.index}`,
-      connections: [[
-        300,
-        (widget) =>
-          widget.toggleClassName(
-            "selectedWorkspace",
-            selectedWorkspaces[monitor] === entry.index,
-          ),
-      ]],
     }),
   });
 
 export const Workspaces = ({ monitor }) =>
-  Widget.Box({
-    className: "container",
-    children: Settings.workspaceList.flatMap((
-      entry,
-    ) => [WorkspaceButton({ entry, monitor })]),
-    connections: [
-      [Hyprland, updateWorkspaces],
+  Widget.Overlay({
+    pass_through: true,
+    child: Widget.Box({
+      className: "container",
+      children: Settings.workspaceList.flatMap((
+        entry,
+      ) => [WorkspaceButton({ entry, monitor })]),
+      connections: [
+        [Hyprland, updateWorkspaces],
+      ],
+    }),
+    overlays: [
+      Widget.Box({
+        children: [
+          Widget.Box({
+            hexpand: true,
+            vexpand: true,
+            className: "selectedWorkspace",
+          }),
+        ],
+        connections: [[
+          300,
+          (widget) => {
+            widget.css = `
+              margin-left: ${(selectedWorkspaces[monitor] - 1) * 30}px;
+              margin-right: ${(8 - selectedWorkspaces[monitor] + 1) * 30}px;
+              transition: margin ${Settings.ANIMATION_SPEED_IN_MILLIS}ms ease-in-out;`;
+            widget.visible =
+              selectedWorkspaces[monitor] <= Settings.workspaceList.length;
+          },
+        ]],
+      }),
     ],
   });

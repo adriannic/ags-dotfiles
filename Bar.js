@@ -34,7 +34,6 @@ export const Bar = ({ monitor } = {}) =>
     name: `bar-${monitor}`,
     monitor,
     anchor: ["left", "bottom", "right"],
-    exclusive: false,
     margins: [-36, 0],
     child: Widget.CenterBox({
       className: "bar",
@@ -50,6 +49,6 @@ export const Spacer = ({ monitor }) =>
     monitor,
     anchor: ["left", "bottom", "right"],
     layer: "bottom",
-    exclusive: true,
+    exclusivity: "exclusive",
     child: Widget.Label({ label: "", css: "min-height: 36px;" }),
   });

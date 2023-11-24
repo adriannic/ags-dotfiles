@@ -46,6 +46,7 @@ tooltip > * {
 .selectedWorkspace {
   border: 2px solid transparent;
   border-bottom-color: @bg-selected;
+  margin: 4px 6px;
 }
 
 calendar {
