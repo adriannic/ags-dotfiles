@@ -7,7 +7,6 @@ export const LogoButton = () =>
     vpack: "end",
     children: [
       Widget.Button({
-        vexpand: false,
         className: "container",
         child: lookUpIcon("start-here-archlinux")
           ? Widget.Icon({ icon: "start-here-archlinux", size: 21 })

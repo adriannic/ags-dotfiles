@@ -20,7 +20,7 @@ const changeWorkspace = (workspace) => {
   updateWorkspaces();
 };
 
-const WorkspaceButton = ({ entry, monitor }) =>
+const WorkspaceButton = ({ entry }) =>
   Widget.Button({
     onPrimaryClick: () => changeWorkspace(entry.index),
     tooltipText: entry.name,
@@ -36,7 +36,7 @@ export const Workspaces = ({ monitor }) =>
       className: "container",
       children: Settings.workspaceList.flatMap((
         entry,
-      ) => [WorkspaceButton({ entry, monitor })]),
+      ) => [WorkspaceButton({ entry })]),
       connections: [
         [Hyprland, updateWorkspaces],
       ],

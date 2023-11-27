@@ -2,23 +2,31 @@ import Settings from "./settings.js";
 import Widget from "resource:///com/github/Aylur/ags/widget.js";
 import { execAsync, timeout } from "resource:///com/github/Aylur/ags/utils.js";
 
+function showWidget(widget) {
+  widget._hovered = true;
+
+  widget.child.children[0].revealChild = widget._hovered;
+  timeout(
+    Settings.ANIMATION_SPEED_IN_MILLIS,
+    () => widget.child.children[0].child.revealChild = widget._hovered,
+  );
+}
+
+function hideWidget(widget) {
+  widget._hovered = false;
+
+  widget.child.children[0].child.revealChild = widget._hovered;
+  timeout(
+    Settings.ANIMATION_SPEED_IN_MILLIS,
+    () => widget.child.children[0].revealChild = widget._hovered,
+  );
+}
+
 export const Clock = () =>
   Widget.EventBox({
     aboveChild: true,
-    onHover: (widget) => {
-      widget._hovered = true;
-
-      widget.child.children[0].revealChild = widget._hovered;
-      timeout(Settings.ANIMATION_SPEED_IN_MILLIS, () =>
-        widget.child.children[0].child.revealChild = widget._hovered);
-    },
-    onHoverLost: (widget) => {
-      widget._hovered = false;
-
-      widget.child.children[0].child.revealChild = widget._hovered;
-      timeout(Settings.ANIMATION_SPEED_IN_MILLIS, () =>
-        widget.child.children[0].revealChild = widget._hovered);
-    },
+    onHover: showWidget,
+    onHoverLost: hideWidget,
     properties: [["hovered", false]],
     child: Widget.Box({
       className: "container",
