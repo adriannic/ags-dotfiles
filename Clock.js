@@ -53,7 +53,7 @@ export const Clock = () =>
             widget.children[1].label = date
           )],
         [10000, (widget) =>
-          execAsync(["date", '+{"day":%d,"month":%m,"year":%Y}']).then(
+          execAsync(["date", '+{"day":%-d,"month":%-m,"year":%Y}']).then(
             (output) => {
               const date = JSON.parse(output);
               const calendar = widget.children[0].child;
