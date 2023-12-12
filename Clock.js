@@ -52,16 +52,6 @@ export const Clock = () =>
           execAsync(["date", "+%H:%M"]).then((date) =>
             widget.children[1].label = date
           )],
-        [10000, (widget) =>
-          execAsync(["date", '+{"day":%-d,"month":%-m,"year":%Y}']).then(
-            (output) => {
-              const date = JSON.parse(output);
-              const calendar = widget.children[0].child;
-              calendar.day = date.day;
-              calendar.month = date.month - 1;
-              calendar.year = date.year;
-            },
-          ).catch(console.error)],
       ],
     }),
   });
