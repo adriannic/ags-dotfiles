@@ -1,6 +1,11 @@
 import Settings from "./settings.js";
+import Variable from "resource:///com/github/Aylur/ags/variable.js";
 import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import { execAsync, timeout } from "resource:///com/github/Aylur/ags/utils.js";
+import { timeout } from "resource:///com/github/Aylur/ags/utils.js";
+
+const Time = Variable("00:00", {
+  poll: [1000, "date +%H:%M"],
+});
 
 function showWidget(widget) {
   widget._hovered = true;
@@ -27,7 +32,9 @@ export const Clock = () =>
     aboveChild: true,
     onHover: showWidget,
     onHoverLost: hideWidget,
-    properties: [["hovered", false]],
+    attribute: {
+      "hovered": false,
+    },
     child: Widget.Box({
       className: "container",
       vertical: true,
@@ -45,13 +52,10 @@ export const Clock = () =>
             }),
           }),
         }),
-        Widget.Label({ css: "padding: 0px 4px; min-height: 30px;" }),
-      ],
-      connections: [
-        [1000, (widget) =>
-          execAsync(["date", "+%H:%M"]).then((date) =>
-            widget.children[1].label = date
-          )],
+        Widget.Label({
+          css: "padding: 0px 4px; min-height: 30px;",
+          label: Time.bind(),
+        }),
       ],
     }),
   });

@@ -10,7 +10,7 @@ const updateWorkspaces = () =>
 
 const changeWorkspace = (workspace) => {
   execAsync(["bash", "-c", `~/.config/hypr/scripts/workspaces ${workspace}`])
-    .then(() => {}).catch(console.error);
+    .then(() => { }).catch(console.error);
   updateWorkspaces();
 };
 
@@ -29,7 +29,7 @@ export const Workspaces = ({ monitor }) =>
       children: Settings.workspaceList.map((entry) =>
         WorkspaceButton({ entry })
       ),
-      connections: [[Hyprland, updateWorkspaces]],
+      setup: (self) => self.hook(Hyprland, updateWorkspaces),
     }),
     overlays: [
       Widget.Box({
@@ -40,17 +40,18 @@ export const Workspaces = ({ monitor }) =>
             className: "selectedWorkspace",
           }),
         ],
-        connections: [[
-          300,
-          (widget) => {
-            widget.css = `
-              margin-left: ${(selectedWorkspaces[monitor] - 1) * 30}px;
-              margin-right: ${(8 - selectedWorkspaces[monitor] + 1) * 30}px;
-              transition: margin ${Settings.ANIMATION_SPEED_IN_MILLIS}ms ease-in-out;`;
-            widget.visible =
-              selectedWorkspaces[monitor] <= Settings.workspaceList.length;
-          },
-        ]],
+        setup: (self) =>
+          self.poll(
+            300,
+            (widget) => {
+              widget.css = `
+                margin-left: ${(selectedWorkspaces[monitor] - 1) * 30}px;
+                margin-right: ${(8 - selectedWorkspaces[monitor] + 1) * 30}px;
+                transition: margin ${Settings.ANIMATION_SPEED_IN_MILLIS}ms ease-in-out;`;
+              widget.visible =
+                selectedWorkspaces[monitor] <= Settings.workspaceList.length;
+            },
+          ),
       }),
     ],
   });
