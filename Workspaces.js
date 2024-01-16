@@ -1,22 +1,12 @@
 import Hyprland from "resource:///com/github/Aylur/ags/service/hyprland.js";
 import Settings from "./settings.js";
 import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import { execAsync } from "resource:///com/github/Aylur/ags/utils.js";
-
-let selectedWorkspaces = [1, 2];
-
-const updateWorkspaces = () =>
-  selectedWorkspaces = Hyprland.monitors.map((mon) => mon.activeWorkspace.id);
-
-const changeWorkspace = (workspace) => {
-  execAsync(["bash", "-c", `~/.config/hypr/scripts/workspaces ${workspace}`])
-    .then(() => { }).catch(console.error);
-  updateWorkspaces();
-};
+import { exec } from "resource:///com/github/Aylur/ags/utils.js";
 
 const WorkspaceButton = ({ entry }) =>
   Widget.Button({
-    onPrimaryClick: () => changeWorkspace(entry.index),
+    onPrimaryClick: () =>
+      exec(`bash -c '~/.config/hypr/scripts/workspaces ${entry.index}'`),
     tooltipText: entry.name,
     child: Widget.Label(`${entry.index}`),
   });
@@ -33,7 +23,6 @@ export const Workspaces = ({ monitor }) =>
           children: Settings.workspaceList.map((entry) =>
             WorkspaceButton({ entry })
           ),
-          setup: (self) => self.hook(Hyprland, updateWorkspaces),
         }),
         overlays: [
           Widget.Box({
@@ -45,14 +34,18 @@ export const Workspaces = ({ monitor }) =>
               }),
             ],
             setup: (self) =>
-              self.poll(
-                300,
-                (widget) => {
-                  widget.css = `
-                margin-left: ${(selectedWorkspaces[monitor] - 1) * 30}px;
-                margin-right: ${(8 - selectedWorkspaces[monitor] + 1) * 30}px;
-                transition: margin ${Settings.ANIMATION_SPEED_IN_MILLIS}ms ease-in-out;`;
-                  widget.visible = selectedWorkspaces[monitor] <=
+              self.hook(
+                Hyprland,
+                (self) => {
+                  const selectedWorkspace = Hyprland.monitors[monitor]
+                    ?.activeWorkspace.id;
+
+                  self.css = `
+                    margin-left: ${(selectedWorkspace - 1) * 30}px;
+                    margin-right: ${(Settings.workspaceList.length - selectedWorkspace) * 30}px;
+                    transition: margin ${Settings.ANIMATION_SPEED_IN_MILLIS}ms ease-in-out;`;
+
+                  self.visible = selectedWorkspace <=
                     Settings.workspaceList.length;
                 },
               ),

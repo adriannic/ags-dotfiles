@@ -28,6 +28,7 @@ button,
   min-width: 30px;
   min-height: 30px;
   color: @fg;
+  border-radius: 5px;
 }
 
 button:hover {
@@ -39,6 +40,11 @@ button:hover {
 tooltip {
   background-color: @bg;
   border: 1px solid @border;
+  border-radius: 5px;
+}
+
+tooltip {
+  padding: 0px 4px;
 }
 
 tooltip>* {
@@ -51,36 +57,17 @@ tooltip>* {
   margin: 4px 6px;
 }
 
-calendar {
-  color: @fg;
-}
-
-calendar:selected {
-  color: @fg-selected;
-  background: @bg-selected;
-}
-
-calendar.header {
-  color: @fg;
-}
-
-calendar.button {
-  color: transparent;
-}
-
-calendar.highlight {
-  color: @foreground;
-}
-
-calendar:indeterminate {
-  color: @color8;
-}
-
 menu {
   padding: 4px;
   border: 1px solid @border;
   color: @fg;
   background: @bg;
+  border-radius: 5px;
+}
+
+menuitem {
+  border-radius: 5px;
+  padding: 0px 4px;
 }
 
 menu>menuitem:disabled {

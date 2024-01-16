@@ -1,9 +1,7 @@
 import Settings from "./settings.js";
-import Variable from "resource:///com/github/Aylur/ags/variable.js";
 import Widget from "resource:///com/github/Aylur/ags/widget.js";
 import { OptionsMenu, SelectedOption } from "./PowerMenu.js";
-
-const SelectedMenu = Variable("");
+import { SelectedMenu } from "./Bar.js";
 
 export const LogoButton = ({ monitor }) =>
   Widget.Box({
@@ -13,7 +11,7 @@ export const LogoButton = ({ monitor }) =>
     children: [
       Widget.Revealer({
         revealChild: SelectedMenu.bind().transform((selected) =>
-          selected === `${monitor}`
+          selected === `powermenu-${monitor}`
         ),
         transitionDuration: Settings.ANIMATION_SPEED_IN_MILLIS,
         transition: "slide_up",
@@ -23,9 +21,9 @@ export const LogoButton = ({ monitor }) =>
         className: "container",
         onPrimaryClick: () => {
           SelectedOption.value = "";
-          SelectedMenu.value = SelectedMenu.value === `${monitor}`
+          SelectedMenu.value = SelectedMenu.value === `powermenu-${monitor}`
             ? ""
-            : `${monitor}`;
+            : `powermenu-${monitor}`;
         },
         child: Widget.Label({ label: "", css: "padding-right: 6px;" }),
       }),
