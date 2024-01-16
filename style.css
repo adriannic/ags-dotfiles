@@ -1,10 +1,10 @@
 @import url('../../.cache/wal/colors-waybar.css');
 
 @define-color bg alpha(@background, 0.75);
-@define-color fg #fff;
-@define-color bg-selected alpha(#fff, 0.85);
-@define-color fg-selected @background;
+@define-color bg-selected alpha(@fg, 0.85);
 @define-color border @color1;
+@define-color fg @foreground;
+@define-color fg-selected @background;
 
 * {
   all: unset;
@@ -23,7 +23,8 @@
   margin: 0px 4px 4px 4px;
 }
 
-button, .batteryIcon {
+button,
+.batteryIcon {
   min-width: 30px;
   min-height: 30px;
   color: @fg;
@@ -34,12 +35,13 @@ button:hover {
   background: @bg-selected;
 }
 
-.container, tooltip {
+.container,
+tooltip {
   background-color: @bg;
   border: 1px solid @border;
 }
 
-tooltip > * {
+tooltip>* {
   border: 1px solid transparent;
 }
 
@@ -67,7 +69,7 @@ calendar.button {
 }
 
 calendar.highlight {
-  color: @foreground; 
+  color: @foreground;
 }
 
 calendar:indeterminate {
@@ -81,11 +83,11 @@ menu {
   background: @bg;
 }
 
-menu > menuitem:disabled {
+menu>menuitem:disabled {
   color: @color8;
 }
 
-menu > menuitem:hover {
+menu>menuitem:hover {
   color: @fg-selected;
   background: @bg-selected;
 }

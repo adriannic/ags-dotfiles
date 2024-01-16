@@ -22,36 +22,42 @@ const WorkspaceButton = ({ entry }) =>
   });
 
 export const Workspaces = ({ monitor }) =>
-  Widget.Overlay({
-    passThrough: true,
-    child: Widget.Box({
-      className: "container",
-      children: Settings.workspaceList.map((entry) =>
-        WorkspaceButton({ entry })
-      ),
-      setup: (self) => self.hook(Hyprland, updateWorkspaces),
-    }),
-    overlays: [
-      Widget.Box({
-        children: [
+  Widget.Box({
+    vertical: true,
+    vpack: "end",
+    children: [
+      Widget.Overlay({
+        passThrough: true,
+        child: Widget.Box({
+          className: "container",
+          children: Settings.workspaceList.map((entry) =>
+            WorkspaceButton({ entry })
+          ),
+          setup: (self) => self.hook(Hyprland, updateWorkspaces),
+        }),
+        overlays: [
           Widget.Box({
-            hexpand: true,
-            vexpand: true,
-            className: "selectedWorkspace",
-          }),
-        ],
-        setup: (self) =>
-          self.poll(
-            300,
-            (widget) => {
-              widget.css = `
+            children: [
+              Widget.Box({
+                hexpand: true,
+                vexpand: true,
+                className: "selectedWorkspace",
+              }),
+            ],
+            setup: (self) =>
+              self.poll(
+                300,
+                (widget) => {
+                  widget.css = `
                 margin-left: ${(selectedWorkspaces[monitor] - 1) * 30}px;
                 margin-right: ${(8 - selectedWorkspaces[monitor] + 1) * 30}px;
                 transition: margin ${Settings.ANIMATION_SPEED_IN_MILLIS}ms ease-in-out;`;
-              widget.visible =
-                selectedWorkspaces[monitor] <= Settings.workspaceList.length;
-            },
-          ),
+                  widget.visible = selectedWorkspaces[monitor] <=
+                    Settings.workspaceList.length;
+                },
+              ),
+          }),
+        ],
       }),
     ],
   });

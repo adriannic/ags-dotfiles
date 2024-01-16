@@ -1,8 +1,8 @@
 import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import { Workspaces } from "./Workspaces.js";
 import { Clock } from "./Clock.js";
 import { LogoButton } from "./LogoButton.js";
 import { Systray } from "./Systray.js";
+import { Workspaces } from "./Workspaces.js";
 
 const StartWidgets = ({ monitor }) =>
   Widget.Box({
@@ -10,7 +10,7 @@ const StartWidgets = ({ monitor }) =>
     hpack: "start",
     vpack: "end",
     children: [
-      LogoButton(),
+      LogoButton({ monitor }),
       Workspaces({ monitor }),
     ],
   });
@@ -28,7 +28,7 @@ const EndWidgets = () =>
     ],
   });
 
-export const Bar = ({ monitor } = {}) =>
+export const Bar = ({ monitor }) =>
   Widget.Window({
     className: "barWindow",
     name: `bar-${monitor}`,
