@@ -49,6 +49,12 @@ export const OptionsMenu = ({ monitor }) =>
     valign: "end",
     children: [
       OptionButton({
+        label: "",
+        padding: 2,
+        command: "systemctl reboot --boot-loader-entry=auto-windows",
+        monitor,
+      }),
+      OptionButton({
         label: "󰍃",
         padding: 0,
         command: "hyprctl dispatch exit",
