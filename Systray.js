@@ -12,15 +12,9 @@ const SysTrayItem = ({ item }) =>
 
 export const Systray = () =>
   Widget.Box({
-    vertical: true,
-    vpack: "end",
-    children: [
-      Widget.Box({
-        className: "container",
-        children: SystemTray.bind("items").transform((items) =>
-          items.map((item) => SysTrayItem({ item }))
-            .concat([BatteryWidget()])
-        ),
-      }),
-    ],
+    className: "container",
+    children: SystemTray.bind("items").transform((items) =>
+      items.map((item) => SysTrayItem({ item }))
+        .concat([BatteryWidget()])
+    ),
   });
