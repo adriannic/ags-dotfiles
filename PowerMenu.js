@@ -6,42 +6,35 @@ import { exec } from "resource:///com/github/Aylur/ags/utils.js";
 export const SelectedOption = Variable("");
 
 const OptionButton = ({ label, padding = 4, command, monitor }) =>
-  Widget.Box({
-    child: Widget.Stack({
-      transition: "over_right_left",
-      transitionDuration: Settings.ANIMATION_SPEED_IN_MILLIS,
-      shown: SelectedOption.bind().transform((item) =>
-        item === `${label}-${monitor}` ? label : ""
-      ),
-      items: [
-        [
-          "",
-          Widget.Button({
-            onPrimaryClick: () => SelectedOption.value = `${label}-${monitor}`,
-            child: Widget.Label({
-              label: label,
-              css: `padding-right: ${padding}px;`,
-            }),
-          }),
-        ],
-        [
-          label,
-          Widget.Button({
-            onPrimaryClick: () => exec(command),
-            onSecondaryClick: () => SelectedOption.value = "",
-            child: Widget.Label({
-              label: "",
-              css: "padding-right: 4px;",
-            }),
-          }),
-        ],
-      ],
-    }),
+  Widget.Stack({
+    transition: "over_right_left",
+    transitionDuration: Settings.ANIMATION_SPEED_IN_MILLIS,
+    shown: SelectedOption.bind().transform((item) =>
+      item == `${label}-${monitor}` ? label : ""
+    ),
+    children: {
+      "": Widget.Button({
+        onPrimaryClick: () => SelectedOption.value = `${label}-${monitor}`,
+        child: Widget.Label({
+          label: label,
+          css: `padding-right: ${padding}px;`,
+        }),
+      }),
+      [label]: Widget.Button({
+        onPrimaryClick: () => exec(command),
+        onSecondaryClick: () => SelectedOption.value = "",
+        child: Widget.Label({
+          label: "",
+          css: "padding-right: 4px;",
+        }),
+      }),
+    },
   });
 
 export const OptionsMenu = ({ monitor }) =>
   Widget.Box({
     className: "container",
+    css: "min-height: 100px",
     vertical: true,
     valign: "end",
     children: [

@@ -19,9 +19,9 @@ export const Clock = () =>
     child: Widget.Stack({
       transition: "slide_up_down",
       transitionDuration: Settings.ANIMATION_SPEED_IN_MILLIS,
-      items: [
-        ["time", Widget.Label({ label: Time.bind() })],
-        ["date", Widget.Label({ label: Date.bind() })],
-      ],
+      children: {
+        "time": Widget.Label({ label: Time.bind() }),
+        "date": Widget.Label({ label: Date.bind() }),
+      },
     }),
   });

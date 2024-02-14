@@ -10,6 +10,7 @@ export const LogoButton = ({ monitor }) =>
     spacing: 4,
     children: [
       Widget.Revealer({
+        css: "min-height: 50px",
         revealChild: SelectedMenu.bind().transform((selected) =>
           selected === `powermenu-${monitor}`
         ),
