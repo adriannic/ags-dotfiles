@@ -7,39 +7,36 @@ export const SelectedOption = Variable("");
 
 const OptionButton = ({ label, padding = 4, command, monitor }) =>
   Widget.Box({
-    children: [
-      Widget.Stack({
-        transition: "over_right_left",
-        transitionDuration: Settings.ANIMATION_SPEED_IN_MILLIS,
-        shown: SelectedOption.bind().transform((item) =>
-          item === `${label}-${monitor}` ? label : ""
-        ),
-        items: [
-          [
-            "",
-            Widget.Button({
-              onPrimaryClick: () =>
-                SelectedOption.value = `${label}-${monitor}`,
-              child: Widget.Label({
-                label: label,
-                css: `padding-right: ${padding}px;`,
-              }),
+    child: Widget.Stack({
+      transition: "over_right_left",
+      transitionDuration: Settings.ANIMATION_SPEED_IN_MILLIS,
+      shown: SelectedOption.bind().transform((item) =>
+        item === `${label}-${monitor}` ? label : ""
+      ),
+      items: [
+        [
+          "",
+          Widget.Button({
+            onPrimaryClick: () => SelectedOption.value = `${label}-${monitor}`,
+            child: Widget.Label({
+              label: label,
+              css: `padding-right: ${padding}px;`,
             }),
-          ],
-          [
-            label,
-            Widget.Button({
-              onPrimaryClick: () => exec(command),
-              onSecondaryClick: () => SelectedOption.value = "",
-              child: Widget.Label({
-                label: "",
-                css: "padding-right: 4px;",
-              }),
-            }),
-          ],
+          }),
         ],
-      }),
-    ],
+        [
+          label,
+          Widget.Button({
+            onPrimaryClick: () => exec(command),
+            onSecondaryClick: () => SelectedOption.value = "",
+            child: Widget.Label({
+              label: "",
+              css: "padding-right: 4px;",
+            }),
+          }),
+        ],
+      ],
+    }),
   });
 
 export const OptionsMenu = ({ monitor }) =>
