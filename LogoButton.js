@@ -3,6 +3,13 @@ import Widget from "resource:///com/github/Aylur/ags/widget.js";
 import { OptionsMenu, SelectedOption } from "./PowerMenu.js";
 import { SelectedMenu } from "./Bar.js";
 
+const os = Utils.exec("bash -c 'grep -e \'^ID\' /etc/os-release | cut -c 4-'");
+
+const osLogos = {
+  arch: "",
+  nixos: "",
+};
+
 export const LogoButton = ({ monitor }) =>
   Widget.Box({
     vertical: true,
@@ -26,7 +33,7 @@ export const LogoButton = ({ monitor }) =>
             ? ""
             : `powermenu-${monitor}`;
         },
-        child: Widget.Label({ label: "", css: "padding-right: 6px;" }),
+        child: Widget.Label({ label: osLogos[os], css: "padding-right: 6px;" }),
       }),
     ],
   });
