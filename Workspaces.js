@@ -34,9 +34,6 @@ const IndicatorWidget = ({ monitor }) =>
             margin-left: ${marginLeft}px;
             margin-right: ${marginRight}px;
             transition: margin ${Settings.ANIMATION_SPEED_IN_MILLIS}ms ease-in-out;`;
-
-          self.visible = selectedWorkspace <=
-            Settings.workspaceList.length;
         },
       ),
   });
