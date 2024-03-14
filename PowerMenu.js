@@ -1,7 +1,4 @@
 import Settings from "./settings.js";
-import Variable from "resource:///com/github/Aylur/ags/variable.js";
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import { exec } from "resource:///com/github/Aylur/ags/utils.js";
 
 export const SelectedOption = Variable("");
 
@@ -21,7 +18,7 @@ const OptionButton = ({ label, padding = 4, command, monitor }) =>
         }),
       }),
       [label]: Widget.Button({
-        onPrimaryClick: () => exec(command),
+        onPrimaryClick: () => Utils.exec(command),
         onSecondaryClick: () => SelectedOption.value = "",
         child: Widget.Label({
           label: "",

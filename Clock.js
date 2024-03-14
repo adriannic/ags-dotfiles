@@ -1,6 +1,4 @@
 import Settings from "./settings.js";
-import Variable from "resource:///com/github/Aylur/ags/variable.js";
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
 
 export const Time = Variable("00:00:00", {
   poll: [1000, "date +%T"],

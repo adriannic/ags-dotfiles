@@ -1,5 +1,4 @@
 import SystemTray from "resource:///com/github/Aylur/ags/service/systemtray.js";
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
 import { BatteryWidget } from "./Battery.js";
 
 const SysTrayItem = ({ item }) =>

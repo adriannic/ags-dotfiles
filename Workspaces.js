@@ -1,12 +1,10 @@
 import Hyprland from "resource:///com/github/Aylur/ags/service/hyprland.js";
 import Settings from "./settings.js";
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
-import { exec } from "resource:///com/github/Aylur/ags/utils.js";
 
 const WorkspaceButton = ({ entry }) =>
   Widget.Button({
     onPrimaryClick: () =>
-      exec(`bash -c '~/.config/hypr/scripts/workspaces ${entry.index}'`),
+      Utils.exec(`bash -c '~/.config/hypr/scripts/workspaces ${entry.index}'`),
     tooltipText: entry.name,
     child: Widget.Label(`${entry.index}`),
   });

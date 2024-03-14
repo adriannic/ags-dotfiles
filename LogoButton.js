@@ -1,9 +1,8 @@
 import Settings from "./settings.js";
-import Widget from "resource:///com/github/Aylur/ags/widget.js";
 import { OptionsMenu, SelectedOption } from "./PowerMenu.js";
 import { SelectedMenu } from "./Bar.js";
 
-const os = Utils.exec("bash -c 'grep -e \'^ID\' /etc/os-release | cut -c 4-'");
+const os = Utils.exec("bash -c 'grep -e ^ID /etc/os-release | cut -c 4-'");
 
 const osLogos = {
   arch: "",
