@@ -1,11 +1,15 @@
-import { Bar, Spacer } from "./Bar.js";
+// @ts-nocheck
+const entry = App.configDir + '/main.ts'
+const outdir = '/tmp/ags/js'
 
-const css = App.configDir + "/style.css";
-
-App.config({
-  style: css,
-  windows: JSON.parse(Utils.exec("hyprctl monitors -j")).flatMap((monitor) => [
-    Bar({ monitor: monitor.id }),
-    Spacer({ monitor: monitor.id }),
-  ]),
-});
+try {
+    await Utils.execAsync([
+        'bun', 'build', entry,
+        '--outdir', outdir,
+        '--external', 'resource://*',
+        '--external', 'gi://*',
+    ])
+    await import(`file://${outdir}/main.js`)
+} catch (error) {
+    console.error(error)
+}
