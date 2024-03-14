@@ -1,7 +1,7 @@
 import Hyprland from "resource:///com/github/Aylur/ags/service/hyprland.js";
-import Settings from "./settings.js";
+import Settings, { WorkspaceEntry } from "./settings.js";
 
-const WorkspaceButton = ({ entry }) =>
+const WorkspaceButton = (entry: WorkspaceEntry) =>
   Widget.Button({
     onPrimaryClick: () =>
       Utils.exec(`bash -c '~/.config/hypr/scripts/workspaces ${entry.index}'`),
@@ -9,7 +9,7 @@ const WorkspaceButton = ({ entry }) =>
     child: Widget.Label(`${entry.index}`),
   });
 
-const IndicatorWidget = ({ monitor }) =>
+const IndicatorWidget = (monitor: number) =>
   Widget.Box({
     children: [
       Widget.Box({
@@ -36,7 +36,7 @@ const IndicatorWidget = ({ monitor }) =>
       ),
   });
 
-export const Workspaces = ({ monitor }) =>
+export const Workspaces = (monitor: number) =>
   Widget.Box({
     vertical: true,
     vpack: "end",
@@ -46,10 +46,10 @@ export const Workspaces = ({ monitor }) =>
         child: Widget.Box({
           className: "container",
           children: Settings.workspaceList.map((entry) =>
-            WorkspaceButton({ entry })
+            WorkspaceButton(entry)
           ),
         }),
-        overlays: [IndicatorWidget({ monitor })],
+        overlays: [IndicatorWidget(monitor)],
       }),
     ],
   });

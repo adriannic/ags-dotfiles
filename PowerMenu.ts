@@ -2,7 +2,14 @@ import Settings from "./settings.js";
 
 export const SelectedOption = Variable("");
 
-const OptionButton = ({ label, padding = 4, command, monitor }) =>
+type OptionButton = {
+  label: string;
+  padding: number;
+  command: string;
+  monitor: number;
+};
+
+const OptionButton = ({ label, padding = 4, command, monitor }: OptionButton) =>
   Widget.Stack({
     transition: "over_right_left",
     transitionDuration: Settings.ANIMATION_SPEED_IN_MILLIS,
@@ -28,12 +35,12 @@ const OptionButton = ({ label, padding = 4, command, monitor }) =>
     },
   });
 
-export const OptionsMenu = ({ monitor }) =>
+export const OptionsMenu = (monitor: number) =>
   Widget.Box({
     className: "container",
     css: "min-height: 100px",
     vertical: true,
-    valign: "end",
+    vpack: "end",
     children: [
       OptionButton({
         label: "",

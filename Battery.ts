@@ -4,6 +4,6 @@ export const BatteryWidget = () =>
   Widget.Icon({
     className: "batteryIcon",
     visible: Battery.bind("available"),
-    icon: Battery.bind("icon-name"),
+    icon: Battery.bind("icon_name"),
     tooltipText: Battery.bind("percent").transform((percent) => `${percent}%`),
   });

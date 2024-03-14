@@ -1,11 +1,14 @@
 import { Bar, Spacer } from "./Bar.js";
+import { Monitor } from "types/service/hyprland.js";
 
 const css = App.configDir + "/style.css";
 
 App.config({
   style: css,
-  windows: JSON.parse(Utils.exec("hyprctl monitors -j")).flatMap((monitor) => [
-    Bar({ monitor: monitor.id }),
-    Spacer({ monitor: monitor.id }),
+  windows: JSON.parse(Utils.exec("hyprctl monitors -j")).flatMap((
+    monitor: Monitor,
+  ) => [
+    Bar(monitor.id),
+    Spacer(monitor.id),
   ]),
 });

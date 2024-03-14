@@ -1,3 +1,8 @@
+export type WorkspaceEntry = {
+  name: string;
+  index: number;
+};
+
 export default {
   ANIMATION_SPEED_IN_MILLIS: 200,
   workspaceList: [

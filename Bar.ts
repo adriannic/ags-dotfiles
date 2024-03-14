@@ -5,14 +5,14 @@ import { Workspaces } from "./Workspaces.js";
 
 export const SelectedMenu = Variable("");
 
-const StartWidgets = ({ monitor }) =>
+const StartWidgets = (monitor: number) =>
   Widget.Box({
     spacing: 4,
     hpack: "start",
     vpack: "end",
     children: [
-      LogoButton({ monitor }),
-      Workspaces({ monitor }),
+      LogoButton(monitor),
+      Workspaces(monitor),
     ],
   });
 
@@ -29,7 +29,7 @@ const EndWidgets = () =>
     ],
   });
 
-export const Bar = ({ monitor }) =>
+export const Bar = (monitor: number) =>
   Widget.Window({
     className: "barWindow",
     name: `bar-${monitor}`,
@@ -38,13 +38,13 @@ export const Bar = ({ monitor }) =>
     margins: [-36, 0],
     child: Widget.CenterBox({
       className: "bar",
-      startWidget: StartWidgets({ monitor }),
+      startWidget: StartWidgets(monitor),
       centerWidget: CenterWidgets(),
       endWidget: EndWidgets(),
     }),
   });
 
-export const Spacer = ({ monitor }) =>
+export const Spacer = (monitor: number) =>
   Widget.Window({
     name: `spacer-${monitor}`,
     monitor,
