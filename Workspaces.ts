@@ -4,7 +4,7 @@ import Settings, { WorkspaceEntry } from "./settings.js";
 const WorkspaceButton = (entry: WorkspaceEntry) =>
   Widget.Button({
     onPrimaryClick: () =>
-      Utils.exec(`bash -c '~/.config/hypr/scripts/workspaces ${entry.index}'`),
+      Utils.exec(`hypr-workspaces ${entry.index}`),
     tooltipText: entry.name,
     child: Widget.Label(`${entry.index}`),
   });
