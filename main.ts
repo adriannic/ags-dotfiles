@@ -1,3 +1,4 @@
+import { Background } from "Background.js";
 import { Bar, Spacer } from "./Bar.js";
 import { Monitor } from "types/service/hyprland.js";
 
@@ -10,5 +11,6 @@ App.config({
   ) => [
     Bar(monitor.id),
     Spacer(monitor.id),
+    Background(monitor.id),
   ]),
 });
