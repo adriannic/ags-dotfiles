@@ -16,6 +16,18 @@ export const Background = (monitor: number) => Widget.Window({
               Hyprland.messageAsync("dispatch exec ~/.config/wal/random-bg.sh");
             },
           }),
+          Widget.MenuItem({
+            child: Widget.Label("Open terminal"),
+            onActivate: () => {
+              Hyprland.messageAsync("dispatch exec kitty");
+            },
+          }),
+          Widget.MenuItem({
+            child: Widget.Label("Open app launcher"),
+            onActivate: () => {
+              Hyprland.messageAsync("dispatch exec wofi");
+            },
+          }),
         ],
       });
 
