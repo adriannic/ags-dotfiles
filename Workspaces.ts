@@ -24,6 +24,7 @@ const IndicatorWidget = (monitor: number) =>
         (self) => {
           const selectedWorkspace = Hyprland.monitors[monitor]
             ?.activeWorkspace.id;
+          self.visible = selectedWorkspace < 10;
 
           const marginLeft = (selectedWorkspace - 1) * 30;
           const marginRight =
