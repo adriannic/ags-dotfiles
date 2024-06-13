@@ -11,6 +11,6 @@ App.config({
   ) => [
     Bar(monitor.id),
     Spacer(monitor.id),
-    Background(monitor.id),
+    // Background(monitor.id),
   ]),
 });
