@@ -50,7 +50,7 @@ export const Spacer = (monitor: number) =>
     name: `spacer-${monitor}`,
     monitor,
     anchor: ["left", "bottom", "right"],
-    layer: "bottom",
+    layer: "background",
     exclusivity: "exclusive",
     child: Widget.Label({ label: "", css: "min-height: 36px;" }),
   });
