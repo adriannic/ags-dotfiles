@@ -36,6 +36,7 @@ export const Bar = (monitor: number) =>
     monitor,
     anchor: ["left", "bottom", "right"],
     margins: [-36, 0],
+    layer: "bottom",
     child: Widget.CenterBox({
       className: "bar",
       startWidget: StartWidgets(monitor),
