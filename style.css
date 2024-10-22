@@ -2,7 +2,7 @@
 
 @define-color bg alpha(@background, 0.75);
 @define-color bg-selected alpha(@fg, 0.85);
-@define-color border @color1;
+@define-color border @color2;
 @define-color fg @foreground;
 @define-color fg-selected @background;
 
