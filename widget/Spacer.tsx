@@ -1,6 +1,5 @@
 import { App, Astal, Gdk } from "astal/gtk3"
 
-
 export default function Spacer(gdkmonitor: Gdk.Monitor, id: number) {
   return <window
     name={`spacer-${id}`}
