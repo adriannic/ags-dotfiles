@@ -23,7 +23,7 @@ function BatteryWidget() {
 
   return <icon
     className="batteryIcon"
-    visible={bind(battery, "online")}
+    visible={battery.device_type === Battery.Type.BATTERY && battery.power_supply === true}
     icon={bind(battery, "iconName")}
     tooltipText={bind(battery, "percentage").as((percent) => `${percent}%`)} />;
 }
@@ -31,6 +31,7 @@ export function Systray() {
   const tray = SystemTray.get_default();
   return <box className="container">
     {bind(tray, "items").as((items) => {
+      items = items.filter(item => item.gicon);
       const trayItems = items.map((item) => SysTrayItem(item));
       const trayWidgets = [BatteryWidget()];
       return [...trayItems, ...trayWidgets];
