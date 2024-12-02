@@ -2,6 +2,7 @@ import Battery from "gi://AstalBattery";
 import SystemTray from "gi://AstalTray";
 import { bind } from "astal";
 import { App, Gdk } from "astal/gtk3";
+import { Icon } from "astal/gtk3/widget";
 
 function SysTrayItem(item: SystemTray.TrayItem) {
   if (item.iconThemePath) {
@@ -21,11 +22,26 @@ function SysTrayItem(item: SystemTray.TrayItem) {
 function BatteryWidget() {
   const battery = Battery.get_default();
 
+  const update_icon = (self: Icon) => {
+    // If there's no battery return
+    if (battery.device_type !== Battery.Type.BATTERY || battery.power_supply !== true)
+      return;
+
+    const charging = battery.charging;
+    const percent = String(Math.round(battery.percentage * 100)).padStart(3, '0');
+    self.icon = `battery-${percent}${charging ? "-charging" : ""}`;
+  };
+
   return <icon
     className="batteryIcon"
-    visible={battery.device_type === Battery.Type.BATTERY && battery.power_supply === true}
-    icon={bind(battery, "iconName")}
-    tooltipText={bind(battery, "percentage").as((percent) => `${percent}%`)} />;
+    visible
+    icon={"battery-missing"}
+    tooltipText={bind(battery, "percentage").as((percent) => `${Math.round(percent * 100)}%`)}
+    setup={self => {
+      update_icon(self);
+      self.hook(bind(battery, "percentage"), update_icon);
+      self.hook(bind(battery, "charging"), update_icon);
+    }} />;
 }
 export function Systray() {
   const tray = SystemTray.get_default();
