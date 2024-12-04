@@ -22,6 +22,8 @@ function SysTrayItem(item: SystemTray.TrayItem) {
 function BatteryWidget() {
   const battery = Battery.get_default();
 
+  const to_breeze_dark = (icon: string) => `/usr/share/icons/breeze-dark/status/16/${icon}.svg`;
+
   const update_icon = (self: Icon) => {
     // If there's no battery return
     if (battery.device_type !== Battery.Type.BATTERY || battery.power_supply !== true)
@@ -29,13 +31,13 @@ function BatteryWidget() {
 
     const charging = battery.charging;
     const percent = String(Math.round(battery.percentage * 100)).padStart(3, '0');
-    self.icon = `battery-${percent}${charging ? "-charging" : ""}`;
+    self.icon = to_breeze_dark(`battery-${percent}${charging ? "-charging" : ""}`);
   };
 
   return <icon
     className="batteryIcon"
     visible
-    icon={"battery-missing"}
+    icon={to_breeze_dark("battery-missing")}
     tooltipText={bind(battery, "percentage").as((percent) => `${Math.round(percent * 100)}%`)}
     setup={self => {
       update_icon(self);
