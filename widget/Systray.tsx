@@ -30,8 +30,8 @@ function BatteryWidget() {
       return;
 
     const charging = battery.charging;
-    const percent = String(Math.round(battery.percentage * 100)).padStart(3, '0');
-    self.icon = to_breeze_dark(`battery-${percent}${charging ? "-charging" : ""}`);
+    const percent = String(Math.round(battery.percentage * 10)).padStart(2, '0');
+    self.icon = to_breeze_dark(`battery-${percent}0${charging ? "-charging" : ""}`);
   };
 
   return <icon
