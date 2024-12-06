@@ -1,17 +1,17 @@
-import Gtk from "gi://Gtk?version=3.0";
 import Hyprland from "gi://AstalHyprland";
+import { Gtk, Gdk } from "astal/gtk3";
 import { Box } from "astal/gtk3/widget";
 import Settings from "./Settings";
 
 const hypr = Hyprland.get_default();
 
-function IndicatorWidget({ monitor }: { monitor: string; }) {
+function IndicatorWidget({ monitor: id }: { monitor: string; }) {
   const updateWorkspace: (self: Box, event: string) => void = (self, event) => {
     if (event !== "workspacev2")
       return;
 
-    const monitors = hypr.get_monitors();
-    const selectedWorkspace = monitors[parseInt(monitor)].activeWorkspace.id;
+    const monitor = (hypr.get_monitors().find((mon) => mon.id === parseInt(id)) as Hyprland.Monitor);
+    const selectedWorkspace = monitor.activeWorkspace.id;
     self.visible = selectedWorkspace < 10;
 
     const marginLeft = (selectedWorkspace - 1) * 30 + 4;
