@@ -1,21 +1,48 @@
 import SystemTray from "gi://AstalTray";
-import { bind } from "astal";
-import { App, Gdk } from "astal/gtk3";
+import { bind, Gio, Variable } from "astal";
+import { App, Gdk, Gtk } from "astal/gtk3";
 import { BatteryWidget } from "./BatteryWidget";
+
+const createMenu = (menuModel: Gio.MenuModel, actionGroup: Gio.ActionGroup | null): Gtk.Menu => {
+  const menu = Gtk.Menu.new_from_model(menuModel);
+  menu.insert_action_group('dbusmenu', actionGroup);
+
+  return menu;
+};
 
 function SysTrayItem(item: SystemTray.TrayItem) {
   if (item.iconThemePath) {
     App.add_icons(item.iconThemePath);
   }
 
-  const menu = item.create_menu();
+  let menu: Gtk.Menu;
+
+  const entryBinding = Variable.derive(
+    [bind(item, 'menu-model'), bind(item, 'action-group')],
+    (menu_model, action_group) => {
+      if (!menu_model) {
+        return console.error(`Menu Model not found for ${item.id}`);
+      }
+      if (!action_group) {
+        return console.error(`Action Group not found for ${item.id}`);
+      }
+
+      menu = createMenu(menu_model, action_group);
+    },
+  );
 
   return <button
     tooltipMarkup={bind(item, "tooltipMarkup")}
     onDestroy={() => menu?.destroy()}
-    onClickRelease={self => menu?.popup_at_widget(self, Gdk.Gravity.SOUTH, Gdk.Gravity.NORTH, null)}
+    onClickRelease={(self, event) => {
+      if (event.button === Gdk.BUTTON_PRIMARY) {
+        item.activate(0, 0);
+        return;
+      }
+      menu?.popup_at_widget(self, Gdk.Gravity.SOUTH, Gdk.Gravity.NORTH, null);
+    }}
   >
-    <icon gIcon={bind(item, "gicon")} />
+    <icon gicon={bind(item, "gicon")} />
   </button>;
 }
 export function Systray() {
