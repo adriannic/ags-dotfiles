@@ -1,10 +1,10 @@
-@import url('../../.cache/wal/colors-waybar.css');
+@use "colors";
 
-@define-color bg alpha(@background, 0.75);
-@define-color bg-selected alpha(@fg, 0.85);
-@define-color border @color2;
-@define-color fg @foreground;
-@define-color fg-selected @background;
+$bg: rgba(colors.$background, 0.75);
+$bg-selected: rgba(colors.$foreground, 0.85);
+$border: colors.$color2;
+$fg: colors.$foreground;
+$fg-selected: colors.$background;
 
 * {
   all: unset;
@@ -27,19 +27,19 @@ button,
 .batteryIcon {
   min-width: 30px;
   min-height: 30px;
-  color: @fg;
+  color: $fg;
   border-radius: 5px;
 }
 
 button:hover {
-  color: @fg-selected;
-  background: @bg-selected;
+  color: $fg-selected;
+  background: $bg-selected;
 }
 
 .container,
 tooltip {
-  background-color: @bg;
-  border: 1px solid @border;
+  background-color: $bg;
+  border: 1px solid $border;
   border-radius: 5px;
 }
 
@@ -47,21 +47,21 @@ tooltip {
   padding: 0px 4px;
 }
 
-tooltip>* {
+tooltip > * {
   border: 1px solid transparent;
 }
 
 .selectedWorkspace {
   border: 2px solid transparent;
-  border-bottom-color: @bg-selected;
+  border-bottom-color: $bg-selected;
   margin: 4px 6px;
 }
 
 menu {
   padding: 4px;
-  border: 1px solid @border;
-  color: @fg;
-  background: @bg;
+  border: 1px solid $border;
+  color: $fg;
+  background: $bg;
   border-radius: 5px;
 }
 
@@ -70,11 +70,11 @@ menuitem {
   padding: 0px 4px;
 }
 
-menu>menuitem:disabled {
-  color: @color8;
+menu > menuitem:disabled {
+  color: colors.$color8;
 }
 
-menu>menuitem:hover {
-  color: @fg-selected;
-  background: @bg-selected;
+menu > menuitem:hover {
+  color: $fg-selected;
+  background: $bg-selected;
 }

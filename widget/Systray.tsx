@@ -18,8 +18,8 @@ function SysTrayItem(item: SystemTray.TrayItem) {
   let menu: Gtk.Menu;
 
   const entryBinding = Variable.derive(
-    [bind(item, 'menu-model'), bind(item, 'action-group')],
-    (menu_model, action_group) => {
+    [bind(item, 'menu-model' as any), bind(item, 'action-group' as any)],
+    (menu_model: Gio.MenuModel, action_group: Gio.ActionGroup) => {
       if (!menu_model) {
         return console.error(`Menu Model not found for ${item.id}`);
       }
