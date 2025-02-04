@@ -22,7 +22,7 @@ class NotificationMap implements Subscribable {
         notification: notifd.get_notification(id)!,
 
         setup: () => timeout(TIMEOUT_DELAY, () => {
-          this.delete(id)
+          // this.delete(id)
         })
       }))
     })
