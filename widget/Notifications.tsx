@@ -54,6 +54,7 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
     gdkmonitor={gdkmonitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
     margin={4}
+    layer={Astal.Layer.OVERLAY}
     anchor={TOP | RIGHT}>
     <box vertical>
       {bind(notifications)}
