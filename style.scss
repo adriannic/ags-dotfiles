@@ -80,13 +80,13 @@ menu > menuitem:hover {
 }
 
 eventbox.Notification {
-  > box {
-    min-width: 400px;
+  > revealer > box {
+    min-width: 500px;
     margin-bottom: 4px;
     padding: 4px;
   }
 
-  &.critical > box {
+  &.critical > revealer > box {
     border-color: #f00;
   }
 

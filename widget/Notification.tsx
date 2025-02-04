@@ -1,7 +1,8 @@
-import { GLib } from "astal"
+import { bind, GLib, timeout, Variable } from "astal"
 import { Gtk, Astal } from "astal/gtk3"
 import { type EventBox } from "astal/gtk3/widget"
 import Notifd from "gi://AstalNotifd"
+import Settings from "./Settings"
 
 const isIcon = (icon: string) =>
   !!Astal.Icon.lookup_icon(icon)
@@ -24,81 +25,95 @@ const urgency = (n: Notifd.Notification) => {
   }
 }
 
-type Props = {
-  setup(self: EventBox): void
-  notification: Notifd.Notification
-}
+export default function Notification(notification: Notifd.Notification) {
+  const revealer = Variable(false);
 
-export default function Notification(props: Props) {
-  const { notification: n, setup } = props
-  const { START, CENTER, END } = Gtk.Align
+  const open = () => {
+    revealer.set(true);
+  };
+
+  const close = () => {
+    revealer.set(false);
+    timeout(Settings.ANIMATION_SPEED_IN_MILLIS, () => notification.dismiss());
+  };
 
   return <eventbox
-    className={`Notification ${urgency(n)}`}
-    setup={setup}
-    onHoverLost={() => n.dismiss()}
-    onClick={() => n.dismiss()}>
-    <box vertical className="container">
-      <box className="header">
-        <label
-          className="app-name"
-          halign={START}
-          truncate
-          label={n.appName || "Unknown"}
-        />
-        <label
-          className="time"
-          hexpand
-          halign={END}
-          label={time(n.time)}
-        />
-      </box>
-      <box className="content">
-        {n.image && fileExists(n.image) && <box
-          valign={START}
-          className="image"
-          css={`background-image: url('${n.image}')`}
-        />}
-        {n.image && isIcon(n.image) && <box
-          expand={false}
-          valign={START}
-          className="icon-image">
-          <icon icon={n.image} expand halign={CENTER} valign={CENTER} />
-        </box>}
-        {(n.appIcon || n.desktopEntry) && <box
-          valign={START}
-          className="image"
-          css={`background-image: url('${n.appIcon}')`}
-        />}
-        <box vertical>
+    className={`Notification ${urgency(notification)}`}
+    setup={() => {
+      timeout(500, open);
+      if (notification.urgency !== Notifd.Urgency.CRITICAL) {
+        timeout(Settings.TIMEOUT, close)
+      }
+    }}
+    onHoverLost={close}
+    onClick={close}>
+    <revealer
+      transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}
+      transitionDuration={Settings.ANIMATION_SPEED_IN_MILLIS}
+      hexpand
+      revealChild={bind(revealer)}>
+      <box vertical className="container">
+        <box className="header">
           <label
-            className="summary"
-            halign={START}
-            xalign={0}
-            label={n.summary}
+            className="app-name"
+            halign={Gtk.Align.START}
             truncate
+            label={notification.appName || "Unknown"}
           />
-          {n.body && <label
-            className="body"
-            wrap
-            useMarkup
-            halign={START}
-            xalign={0}
-            label={n.body}
+          <label
+            className="time"
             hexpand
-          />}
+            halign={Gtk.Align.END}
+            label={time(notification.time)}
+          />
         </box>
+        <box className="content">
+          {notification.image && fileExists(notification.image) && <box
+            valign={Gtk.Align.START}
+            className="image"
+            css={`background-image: url('${notification.image}')`}
+          />}
+          {notification.image && isIcon(notification.image) && <box
+            expand={false}
+            valign={Gtk.Align.START}
+            className="icon-image">
+            <icon icon={notification.image} expand halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER} />
+          </box>}
+          {(notification.appIcon || notification.desktopEntry) && <box
+            valign={Gtk.Align.START}
+            className="image"
+            css={`background-image: url('${notification.appIcon}')`}
+          />}
+          <box vertical>
+            <label
+              className="summary"
+              halign={Gtk.Align.START}
+              xalign={0}
+              label={notification.summary}
+              truncate
+            />
+            {notification.body && <label
+              className="body"
+              wrap
+              useMarkup
+              halign={Gtk.Align.START}
+              xalign={0}
+              label={notification.body}
+              hexpand
+            />}
+          </box>
+        </box>
+        {notification.get_actions().length > 0 && <box>
+          {notification.get_actions().map(({ label, id }) => (
+            <button
+              className="actionButton"
+              hexpand
+              onClicked={() => notification.invoke(id)}>
+              <label label={label} halign={Gtk.Align.CENTER} hexpand />
+            </button>
+          ))}
+        </box>}
       </box>
-      {n.get_actions().length > 0 && <box>
-        {n.get_actions().map(({ label, id }) => (
-          <button
-            className="actionButton"
-            hexpand
-            onClicked={() => n.invoke(id)}>
-            <label label={label} halign={CENTER} hexpand />
-          </button>
-        ))}
-      </box>}
-    </box>
+    </revealer>
   </eventbox>
 }

@@ -1,5 +1,6 @@
 export default {
   ANIMATION_SPEED_IN_MILLIS: 200,
+  TIMEOUT: 10000,
   workspaceList: [
     { name: "Principal", index: 1 },
     { name: "Secundario", index: 2 },

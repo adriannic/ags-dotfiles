@@ -2,9 +2,7 @@ import { Astal, Gtk, Gdk } from "astal/gtk3"
 import Notifd from "gi://AstalNotifd"
 import Notification from "./Notification"
 import { type Subscribable } from "astal/binding"
-import { Variable, bind, timeout } from "astal"
-
-const TIMEOUT_DELAY = 10000
+import { Variable, bind } from "astal"
 
 class NotificationMap implements Subscribable {
   private map: Map<number, Gtk.Widget> = new Map()
@@ -17,15 +15,9 @@ class NotificationMap implements Subscribable {
   constructor() {
     const notifd = Notifd.get_default()
 
-    notifd.connect("notified", (_, id) => {
-      this.set(id, Notification({
-        notification: notifd.get_notification(id)!,
-
-        setup: () => timeout(TIMEOUT_DELAY, () => {
-          // this.delete(id)
-        })
-      }))
-    })
+    notifd.connect("notified", (_, id) =>
+      this.set(id, Notification(notifd.get_notification(id)!))
+    );
 
     notifd.connect("resolved", (_, id) => {
       this.delete(id)
