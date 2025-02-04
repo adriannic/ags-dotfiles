@@ -78,3 +78,73 @@ menu > menuitem:hover {
   color: $fg-selected;
   background: $bg-selected;
 }
+
+eventbox.Notification {
+  > box {
+    min-width: 400px;
+    margin-bottom: 4px;
+    padding: 4px;
+  }
+
+  &.critical > box {
+    border-color: #f00;
+  }
+
+  .header {
+    padding: 4px;
+    color: $fg;
+
+    .app-name {
+      margin-right: 4px;
+      font-weight: bold;
+
+      &:first-child {
+        margin-left: 4px;
+      }
+    }
+
+    .time {
+      margin: 0 4px;
+    }
+  }
+
+  .content {
+    margin: 4px;
+
+    .summary {
+      font-size: 18px;
+      color: lighten($fg, 10%);
+    }
+
+    .body {
+      font-size: 16px;
+      color: $fg;
+    }
+
+    .image {
+      margin: 8px;
+      margin-right: 16px;
+      border-radius: 25px;
+      min-width: 100px;
+      min-height: 100px;
+      background-size: cover;
+      background-position: center;
+    }
+  }
+}
+
+.actionButton {
+  background-color: $bg;
+  border-top: 1px solid $border;
+  border-right: 1px solid $border;
+  border-radius: 0px 0px 0px 0px;
+
+  &:first-child {
+    border-radius: 0px 0px 0px 4px;
+  }
+
+  &:last-child {
+    border-right: 0px;
+    border-radius: 0px 0px 4px 0px;
+  }
+}
