@@ -1,7 +1,8 @@
-import { bind, GLib, timeout, Variable } from "astal"
+import { AstalIO, bind, GLib, timeout, Variable } from "astal"
 import { Gtk, Astal } from "astal/gtk3"
 import Notifd from "gi://AstalNotifd"
 import Settings from "./Settings"
+import { NotificationState, visible } from "./Notifications"
 
 const isIcon = (icon: string) =>
   !!Astal.Icon.lookup_icon(icon)
@@ -27,16 +28,22 @@ export default function Notification(notification: Notifd.Notification) {
   const revealer_outer = Variable(false);
   const revealer_inner = Variable(false);
 
+  const is_visible = visible.get(notification.id) as Variable<NotificationState>;
+
   const open = () => {
     revealer_outer.set(true);
     timeout(Settings.ANIMATION_SPEED_IN_MILLIS, () => revealer_inner.set(true));
   };
 
   const close = () => {
+    is_visible.set(NotificationState.INVISIBLE);
     revealer_inner.set(false);
     timeout(Settings.ANIMATION_SPEED_IN_MILLIS, () => revealer_outer.set(false));
     timeout(Settings.ANIMATION_SPEED_IN_MILLIS * 2, () => notification.dismiss());
   };
+
+  const timer = timeout(Settings.TIMEOUT, close);
+  let timer_cancelled = false;
 
   return <box>
     <box hexpand />
@@ -46,14 +53,30 @@ export default function Notification(notification: Notifd.Notification) {
       revealChild={bind(revealer_outer)}>
       <eventbox
         className={`Notification ${urgency(notification)}`}
-        setup={() => {
+        setup={(self) => {
           timeout(0, open);
-          if (notification.urgency !== Notifd.Urgency.CRITICAL) {
-            timeout(Settings.TIMEOUT, close)
+          if (notification.urgency === Notifd.Urgency.CRITICAL) {
+            timer.cancel();
+            timer_cancelled = true;
           }
+
+          self.hook(is_visible, () => {
+            if (is_visible.get() !== NotificationState.VISIBLE) {
+              if (!timer_cancelled) {
+                timer.cancel();
+                timer_cancelled = true;
+              }
+              console.log("Stopping timer!");
+              if (is_visible.get() === NotificationState.INVISIBLE) {
+                console.log("Closing notification!");
+                close();
+              }
+            }
+          });
         }}
-        onHoverLost={close}
-        onClick={close}>
+        onHoverLost={() => is_visible.set(NotificationState.INVISIBLE)}
+        onClick={() => is_visible.set(NotificationState.INVISIBLE)}
+        onHover={() => is_visible.set(NotificationState.FROZEN)}>
         <box vertical className="container">
           <box className="header">
             <label

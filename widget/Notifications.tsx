@@ -4,6 +4,14 @@ import Notification from "./Notification"
 import { type Subscribable } from "astal/binding"
 import { Variable, bind } from "astal"
 
+export enum NotificationState {
+  INVISIBLE,
+  VISIBLE,
+  FROZEN
+}
+
+export const visible: Map<number, Variable<NotificationState>> = new Map();
+
 class NotificationMap implements Subscribable {
   private map: Map<number, Gtk.Widget> = new Map()
   private var: Variable<Array<Gtk.Widget>> = Variable([])
@@ -18,9 +26,13 @@ class NotificationMap implements Subscribable {
     // Clean up all old notifications
     notifd.notifications.forEach((notification) => notification.dismiss());
 
-    notifd.connect("notified", (_, id) =>
+    notifd.connect("notified", (_, id) => {
+      if (!visible.has(id)) {
+        visible.set(id, Variable(NotificationState.VISIBLE))
+      }
+      visible.get(id)?.set(NotificationState.VISIBLE);
       this.set(id, Notification(notifd.get_notification(id)!))
-    );
+    });
 
     notifd.connect("resolved", (_, id) => {
       this.delete(id)
