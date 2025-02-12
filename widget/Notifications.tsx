@@ -15,6 +15,9 @@ class NotificationMap implements Subscribable {
   constructor() {
     const notifd = Notifd.get_default()
 
+    // Clean up all old notifications
+    notifd.notifications.forEach((notification) => notification.dismiss());
+
     notifd.connect("notified", (_, id) =>
       this.set(id, Notification(notifd.get_notification(id)!))
     );
