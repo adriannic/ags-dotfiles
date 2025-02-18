@@ -1,4 +1,4 @@
-import { AstalIO, bind, GLib, timeout, Variable } from "astal"
+import { bind, GLib, timeout, Variable } from "astal"
 import { Gtk, Astal } from "astal/gtk3"
 import Notifd from "gi://AstalNotifd"
 import Settings from "./Settings"
