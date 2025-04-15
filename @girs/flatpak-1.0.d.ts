@@ -561,7 +561,7 @@ declare module 'gi://Flatpak?version=1.0' {
              */
             NO_TRIGGERS,
         }
-        module BundleRef {
+        namespace BundleRef {
             // Constructor properties interface
 
             interface ConstructorProps extends Ref.ConstructorProps {
@@ -627,7 +627,7 @@ declare module 'gi://Flatpak?version=1.0' {
             get_runtime_repo_url(): string;
         }
 
-        module Installation {
+        namespace Installation {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -898,6 +898,7 @@ declare module 'gi://Flatpak?version=1.0' {
              * @param name name of the app/runtime to fetch
              * @param arch which architecture to fetch (default: current architecture)
              * @param branch which branch to fetch (default: 'master')
+             * @param progress progress callback
              * @param cancellable a #GCancellable
              * @returns The ref for the newly installed app or %NULL on failure
              */
@@ -907,6 +908,7 @@ declare module 'gi://Flatpak?version=1.0' {
                 name: string,
                 arch?: string | null,
                 branch?: string | null,
+                progress?: ProgressCallback | null,
                 cancellable?: Gio.Cancellable | null,
             ): InstalledRef;
             /**
@@ -917,10 +919,15 @@ declare module 'gi://Flatpak?version=1.0' {
              * Install an application or runtime from an flatpak bundle file.
              * See flatpak-build-bundle(1) for how to create bundles.
              * @param file a #GFile that is an flatpak bundle
+             * @param progress progress callback
              * @param cancellable a #GCancellable
              * @returns The ref for the newly installed app or %NULL on failure
              */
-            install_bundle(file: Gio.File, cancellable?: Gio.Cancellable | null): InstalledRef;
+            install_bundle(
+                file: Gio.File,
+                progress?: ProgressCallback | null,
+                cancellable?: Gio.Cancellable | null,
+            ): InstalledRef;
             /**
              * This is an old deprecated function, you should use
              * #FlatpakTransaction and flatpak_transaction_add_install()
@@ -942,6 +949,7 @@ declare module 'gi://Flatpak?version=1.0' {
              * @param arch which architecture to fetch (default: current architecture)
              * @param branch which branch to fetch (default: 'master')
              * @param subpaths A list of subpaths to fetch, or %NULL for everything
+             * @param progress progress callback
              * @param cancellable a #GCancellable
              * @returns The ref for the newly installed app or %NULL on failure
              */
@@ -953,6 +961,7 @@ declare module 'gi://Flatpak?version=1.0' {
                 arch?: string | null,
                 branch?: string | null,
                 subpaths?: string[] | null,
+                progress?: ProgressCallback | null,
                 cancellable?: Gio.Cancellable | null,
             ): InstalledRef;
             /**
@@ -1299,6 +1308,7 @@ declare module 'gi://Flatpak?version=1.0' {
              * @param name name of the app or runtime to uninstall
              * @param arch architecture of the app or runtime to uninstall; if  %NULL, flatpak_get_default_arch() is assumed
              * @param branch name of the branch of the app or runtime to uninstall;  if %NULL, `master` is assumed
+             * @param progress the callback
              * @param cancellable a #GCancellable
              * @returns %TRUE on success
              */
@@ -1307,6 +1317,7 @@ declare module 'gi://Flatpak?version=1.0' {
                 name: string,
                 arch?: string | null,
                 branch?: string | null,
+                progress?: ProgressCallback | null,
                 cancellable?: Gio.Cancellable | null,
             ): boolean;
             /**
@@ -1320,6 +1331,7 @@ declare module 'gi://Flatpak?version=1.0' {
              * @param name name of the app or runtime to uninstall
              * @param arch architecture of the app or runtime to uninstall; if  %NULL, flatpak_get_default_arch() is assumed
              * @param branch name of the branch of the app or runtime to uninstall;  if %NULL, `master` is assumed
+             * @param progress the callback
              * @param cancellable a #GCancellable
              * @returns %TRUE on success
              */
@@ -1329,6 +1341,7 @@ declare module 'gi://Flatpak?version=1.0' {
                 name: string,
                 arch?: string | null,
                 branch?: string | null,
+                progress?: ProgressCallback | null,
                 cancellable?: Gio.Cancellable | null,
             ): boolean;
             /**
@@ -1348,6 +1361,7 @@ declare module 'gi://Flatpak?version=1.0' {
              * @param name name of the app or runtime to update
              * @param arch architecture of the app or runtime to update (default: current architecture)
              * @param branch name of the branch of the app or runtime to update (default: master)
+             * @param progress the callback
              * @param cancellable a #GCancellable
              * @returns The ref for the newly updated app or %NULL on failure
              */
@@ -1357,12 +1371,14 @@ declare module 'gi://Flatpak?version=1.0' {
                 name: string,
                 arch?: string | null,
                 branch?: string | null,
+                progress?: ProgressCallback | null,
                 cancellable?: Gio.Cancellable | null,
             ): InstalledRef;
             /**
              * Updates the local copy of appstream for `remote_name` for the specified `arch`.
              * @param remote_name the name of the remote
              * @param arch Architecture to update, or %NULL for the local machine arch
+             * @param progress progress callback
              * @param out_changed Set to %TRUE if the contents of the appstream changed, %FALSE if nothing changed
              * @param cancellable a #GCancellable
              * @returns %TRUE on success, or %FALSE on error
@@ -1370,6 +1386,7 @@ declare module 'gi://Flatpak?version=1.0' {
             update_appstream_full_sync(
                 remote_name: string,
                 arch?: string | null,
+                progress?: ProgressCallback | null,
                 out_changed?: boolean | null,
                 cancellable?: Gio.Cancellable | null,
             ): boolean;
@@ -1406,6 +1423,7 @@ declare module 'gi://Flatpak?version=1.0' {
              * @param arch architecture of the app or runtime to update (default: current architecture)
              * @param branch name of the branch of the app or runtime to update (default: master)
              * @param subpaths A list of subpaths to fetch, or %NULL for everything
+             * @param progress the callback
              * @param cancellable a #GCancellable
              * @returns The ref for the newly updated app or %NULL on failure
              */
@@ -1416,6 +1434,7 @@ declare module 'gi://Flatpak?version=1.0' {
                 arch?: string | null,
                 branch?: string | null,
                 subpaths?: string[] | null,
+                progress?: ProgressCallback | null,
                 cancellable?: Gio.Cancellable | null,
             ): InstalledRef;
             /**
@@ -1429,7 +1448,7 @@ declare module 'gi://Flatpak?version=1.0' {
             update_remote_sync(name: string, cancellable?: Gio.Cancellable | null): boolean;
         }
 
-        module InstalledRef {
+        namespace InstalledRef {
             // Constructor properties interface
 
             interface ConstructorProps extends Ref.ConstructorProps {
@@ -1606,7 +1625,7 @@ declare module 'gi://Flatpak?version=1.0' {
             load_metadata(cancellable?: Gio.Cancellable | null): GLib.Bytes;
         }
 
-        module Instance {
+        namespace Instance {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -1703,7 +1722,7 @@ declare module 'gi://Flatpak?version=1.0' {
             is_running(): boolean;
         }
 
-        module Ref {
+        namespace Ref {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1791,7 +1810,7 @@ declare module 'gi://Flatpak?version=1.0' {
             get_name(): string;
         }
 
-        module RelatedRef {
+        namespace RelatedRef {
             // Constructor properties interface
 
             interface ConstructorProps extends Ref.ConstructorProps {
@@ -1834,7 +1853,7 @@ declare module 'gi://Flatpak?version=1.0' {
             get_subpaths(): string[];
         }
 
-        module Remote {
+        namespace Remote {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -2124,7 +2143,7 @@ declare module 'gi://Flatpak?version=1.0' {
             set_url(url: string): void;
         }
 
-        module RemoteRef {
+        namespace RemoteRef {
             // Constructor properties interface
 
             interface ConstructorProps extends Ref.ConstructorProps {
@@ -2201,7 +2220,7 @@ declare module 'gi://Flatpak?version=1.0' {
             get_remote_name(): string;
         }
 
-        module Transaction {
+        namespace Transaction {
             // Signal callback interfaces
 
             interface AddNewRemote {
@@ -2881,7 +2900,7 @@ declare module 'gi://Flatpak?version=1.0' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -2924,7 +2943,7 @@ declare module 'gi://Flatpak?version=1.0' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -3064,7 +3083,21 @@ declare module 'gi://Flatpak?version=1.0' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -3192,7 +3225,12 @@ declare module 'gi://Flatpak?version=1.0' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -3342,14 +3380,34 @@ declare module 'gi://Flatpak?version=1.0' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module TransactionOperation {
+        namespace TransactionOperation {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -3500,7 +3558,7 @@ declare module 'gi://Flatpak?version=1.0' {
             get_subpaths(): string[];
         }
 
-        module TransactionProgress {
+        namespace TransactionProgress {
             // Signal callback interfaces
 
             interface Changed {

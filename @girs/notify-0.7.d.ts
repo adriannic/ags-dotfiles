@@ -108,6 +108,11 @@ declare module 'gi://Notify?version=0.7' {
          */
         const VERSION_MINOR: number;
         /**
+         * Gets the application icon registered.
+         * @returns The registered application icon, set via [func@set_app_icon].
+         */
+        function get_app_icon(): string;
+        /**
          * Gets the application name registered.
          * @returns The registered application name, passed to [func@init].
          */
@@ -145,6 +150,11 @@ declare module 'gi://Notify?version=0.7' {
          */
         function is_initted(): boolean;
         /**
+         * Sets the application icon.
+         * @param app_icon The optional icon theme icon name or filename.
+         */
+        function set_app_icon(app_icon?: string | null): void;
+        /**
          * Sets the application name.
          * @param app_name The name of the application
          */
@@ -159,7 +169,7 @@ declare module 'gi://Notify?version=0.7' {
         interface ActionCallback {
             (notification: Notification, action: string): void;
         }
-        module Notification {
+        namespace Notification {
             // Signal callback interfaces
 
             interface Closed {
@@ -169,6 +179,8 @@ declare module 'gi://Notify?version=0.7' {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
+                app_icon: string;
+                appIcon: string;
                 app_name: string;
                 appName: string;
                 body: string;
@@ -196,6 +208,16 @@ declare module 'gi://Notify?version=0.7' {
 
             // Properties
 
+            /**
+             * The icon of the application for the notification.
+             */
+            get app_icon(): string;
+            set app_icon(val: string);
+            /**
+             * The icon of the application for the notification.
+             */
+            get appIcon(): string;
+            set appIcon(val: string);
             /**
              * The name of the application for the notification.
              */
@@ -310,6 +332,14 @@ declare module 'gi://Notify?version=0.7' {
              */
             get_closed_reason(): number;
             /**
+             * Sets the application icon for the notification.
+             *
+             * If this function is not called or if `app_icon` is %NULL, the application icon
+             * will be set from the value set via [func`set_app_icon]`.
+             * @param app_icon The optional icon theme icon name or filename.
+             */
+            set_app_icon(app_icon?: string | null): void;
+            /**
              * Sets the application name for the notification.
              *
              * If this function is not called or if `app_name` is %NULL, the application name
@@ -418,14 +448,6 @@ declare module 'gi://Notify?version=0.7' {
         }
 
         type NotificationClass = typeof Notification;
-        abstract class NotificationPrivate {
-            static $gtype: GObject.GType<NotificationPrivate>;
-
-            // Constructors
-
-            _init(...args: any[]): void;
-        }
-
         /**
          * Name of the imported GIR library
          * `see` https://gitlab.gnome.org/GNOME/gjs/-/blob/master/gi/ns.cpp#L188

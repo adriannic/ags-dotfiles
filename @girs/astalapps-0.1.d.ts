@@ -24,7 +24,7 @@ declare module 'gi://AstalApps?version=0.1' {
         const MINOR_VERSION: number;
         const MICRO_VERSION: number;
         const VERSION: string;
-        module Application {
+        namespace Application {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -144,7 +144,7 @@ declare module 'gi://AstalApps?version=0.1' {
             get_categories(): string[];
         }
 
-        module Apps {
+        namespace Apps {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {

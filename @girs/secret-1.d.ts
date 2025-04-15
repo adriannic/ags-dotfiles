@@ -93,23 +93,21 @@ declare module 'gi://Secret?version=1' {
              */
             INVALID_FILE_FORMAT,
             /**
-             * the xdg:schema attribute of the table does
-             * not match the schema name
+             * the xdg:schema attribute of the table does not match the schema name
              */
             MISMATCHED_SCHEMA,
             /**
-             * attribute contained in table not found
-             * in corresponding schema
+             * attribute contained in table not found in corresponding schema
              */
             NO_MATCHING_ATTRIBUTE,
             /**
-             * attribute could not be parsed according to its type
-             * reported in the table's schema
+             * attribute could not be parsed according to its type reported in the table's
+             * schema
              */
             WRONG_TYPE,
             /**
-             * attribute list passed to secret_attributes_validate
-             * has no elements to validate
+             * attribute list passed to secret_attributes_validate has no elements to
+             * validate
              */
             EMPTY_TABLE,
         }
@@ -972,7 +970,7 @@ declare module 'gi://Secret?version=1' {
              */
             LOAD_COLLECTIONS,
         }
-        module Collection {
+        namespace Collection {
             // Constructor properties interface
 
             interface ConstructorProps
@@ -1767,7 +1765,7 @@ declare module 'gi://Secret?version=1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -1810,7 +1808,7 @@ declare module 'gi://Secret?version=1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -1950,7 +1948,21 @@ declare module 'gi://Secret?version=1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -2078,7 +2090,12 @@ declare module 'gi://Secret?version=1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -2228,14 +2245,34 @@ declare module 'gi://Secret?version=1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module Item {
+        namespace Item {
             // Constructor properties interface
 
             interface ConstructorProps
@@ -3077,7 +3114,7 @@ declare module 'gi://Secret?version=1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -3120,7 +3157,7 @@ declare module 'gi://Secret?version=1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -3332,7 +3369,21 @@ declare module 'gi://Secret?version=1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -3460,7 +3511,12 @@ declare module 'gi://Secret?version=1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -3610,14 +3666,34 @@ declare module 'gi://Secret?version=1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module Prompt {
+        namespace Prompt {
             // Constructor properties interface
 
             interface ConstructorProps
@@ -4039,7 +4115,7 @@ declare module 'gi://Secret?version=1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -4082,7 +4158,7 @@ declare module 'gi://Secret?version=1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -4222,7 +4298,21 @@ declare module 'gi://Secret?version=1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -4350,7 +4440,12 @@ declare module 'gi://Secret?version=1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -4500,14 +4595,34 @@ declare module 'gi://Secret?version=1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module Service {
+        namespace Service {
             // Constructor properties interface
 
             interface ConstructorProps
@@ -4521,8 +4636,11 @@ declare module 'gi://Secret?version=1' {
         /**
          * A proxy object representing the Secret Service.
          *
-         * A #SecretService object represents the Secret Service implementation which
-         * runs as a D-Bus service.
+         * A #SecretService object either represents an implementation of the
+         * [`org.freedesktop.Secret`](https://specifications.freedesktop.org/secret-service/latest/)
+         * D-Bus service or a file that is encrypted using a master secret that was
+         * provided by the
+         * [secret portal](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Secret.html).
          *
          * Normally a single #SecretService object can be shared between multiple
          * callers. The [func`Service`.get] method is used to access this #SecretService
@@ -4696,6 +4814,13 @@ declare module 'gi://Secret?version=1' {
              * This will always be either [class`Item]` or derived from it.
              */
             vfunc_get_item_gtype(): GObject.GType;
+            /**
+             * called to perform asynchronous prompting when necessary
+             * @param prompt
+             * @param return_type
+             * @param cancellable
+             * @param callback
+             */
             vfunc_prompt_async(
                 prompt: Prompt,
                 return_type: GLib.VariantType,
@@ -6056,7 +6181,7 @@ declare module 'gi://Secret?version=1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -6099,7 +6224,7 @@ declare module 'gi://Secret?version=1' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -6122,26 +6247,66 @@ declare module 'gi://Secret?version=1' {
              * @param cancellable optional #GCancellable object, %NULL to ignore.
              */
             vfunc_init(cancellable?: Gio.Cancellable | null): boolean;
+            /**
+             * implementation of [func`password_clear]`, required
+             * @param schema
+             * @param attributes
+             * @param cancellable
+             * @param callback
+             */
             vfunc_clear(
                 schema: Schema,
                 attributes: { [key: string]: any } | GLib.HashTable<any, any>,
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of [func`password_clear_finish]`, required
+             * @param result
+             */
             vfunc_clear_finish(result: Gio.AsyncResult): boolean;
+            /**
+             * implementation of reinitialization step in constructor, optional
+             * @param flags
+             * @param cancellable
+             * @param callback
+             */
             vfunc_ensure_for_flags(
                 flags: BackendFlags,
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of reinitialization step in constructor, optional
+             * @param result
+             */
             vfunc_ensure_for_flags_finish(result: Gio.AsyncResult): boolean;
+            /**
+             * implementation of [func`password_lookup]`, required
+             * @param schema
+             * @param attributes
+             * @param cancellable
+             * @param callback
+             */
             vfunc_lookup(
                 schema: Schema,
                 attributes: { [key: string]: any } | GLib.HashTable<any, any>,
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of [func`password_lookup_finish]`, required
+             * @param result
+             */
             vfunc_lookup_finish(result: Gio.AsyncResult): Value;
+            /**
+             * implementation of [func`password_search]`, required
+             * @param schema
+             * @param attributes
+             * @param flags
+             * @param cancellable
+             * @param callback
+             */
             vfunc_search(
                 schema: Schema,
                 attributes: { [key: string]: any } | GLib.HashTable<any, any>,
@@ -6149,6 +6314,16 @@ declare module 'gi://Secret?version=1' {
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of [func`password_store]`, required
+             * @param schema
+             * @param attributes
+             * @param collection
+             * @param label
+             * @param value
+             * @param cancellable
+             * @param callback
+             */
             vfunc_store(
                 schema: Schema,
                 attributes: { [key: string]: any } | GLib.HashTable<any, any>,
@@ -6158,6 +6333,10 @@ declare module 'gi://Secret?version=1' {
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of [func`password_store_finish]`, required
+             * @param result
+             */
             vfunc_store_finish(result: Gio.AsyncResult): boolean;
             /**
              * Creates a binding between `source_property` on `source` and `target_property`
@@ -6276,7 +6455,21 @@ declare module 'gi://Secret?version=1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -6404,7 +6597,12 @@ declare module 'gi://Secret?version=1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -6554,11 +6752,31 @@ declare module 'gi://Secret?version=1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
         type BackendInterface = typeof Backend;
@@ -6761,7 +6979,7 @@ declare module 'gi://Secret?version=1' {
              * value.
              *
              * The content type must be `text/plain`.
-             * @returns the content type
+             * @returns the value
              */
             get_text(): string | null;
             /**
@@ -6787,7 +7005,7 @@ declare module 'gi://Secret?version=1' {
             unref_to_password(length: number): [string, number];
         }
 
-        module Backend {
+        namespace Backend {
             // Constructor properties interface
 
             interface ConstructorProps extends Gio.AsyncInitable.ConstructorProps<Backend> {
@@ -6834,26 +7052,66 @@ declare module 'gi://Secret?version=1' {
 
             // Virtual methods
 
+            /**
+             * implementation of [func`password_clear]`, required
+             * @param schema
+             * @param attributes
+             * @param cancellable
+             * @param callback
+             */
             vfunc_clear(
                 schema: Schema,
                 attributes: { [key: string]: any } | GLib.HashTable<any, any>,
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of [func`password_clear_finish]`, required
+             * @param result
+             */
             vfunc_clear_finish(result: Gio.AsyncResult): boolean;
+            /**
+             * implementation of reinitialization step in constructor, optional
+             * @param flags
+             * @param cancellable
+             * @param callback
+             */
             vfunc_ensure_for_flags(
                 flags: BackendFlags,
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of reinitialization step in constructor, optional
+             * @param result
+             */
             vfunc_ensure_for_flags_finish(result: Gio.AsyncResult): boolean;
+            /**
+             * implementation of [func`password_lookup]`, required
+             * @param schema
+             * @param attributes
+             * @param cancellable
+             * @param callback
+             */
             vfunc_lookup(
                 schema: Schema,
                 attributes: { [key: string]: any } | GLib.HashTable<any, any>,
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of [func`password_lookup_finish]`, required
+             * @param result
+             */
             vfunc_lookup_finish(result: Gio.AsyncResult): Value;
+            /**
+             * implementation of [func`password_search]`, required
+             * @param schema
+             * @param attributes
+             * @param flags
+             * @param cancellable
+             * @param callback
+             */
             vfunc_search(
                 schema: Schema,
                 attributes: { [key: string]: any } | GLib.HashTable<any, any>,
@@ -6861,6 +7119,16 @@ declare module 'gi://Secret?version=1' {
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of [func`password_store]`, required
+             * @param schema
+             * @param attributes
+             * @param collection
+             * @param label
+             * @param value
+             * @param cancellable
+             * @param callback
+             */
             vfunc_store(
                 schema: Schema,
                 attributes: { [key: string]: any } | GLib.HashTable<any, any>,
@@ -6870,6 +7138,10 @@ declare module 'gi://Secret?version=1' {
                 cancellable?: Gio.Cancellable | null,
                 callback?: Gio.AsyncReadyCallback<this> | null,
             ): void;
+            /**
+             * implementation of [func`password_store_finish]`, required
+             * @param result
+             */
             vfunc_store_finish(result: Gio.AsyncResult): boolean;
         }
 
@@ -6877,7 +7149,7 @@ declare module 'gi://Secret?version=1' {
             new (): Backend; // This allows `obj instanceof Backend`
         };
 
-        module Retrievable {
+        namespace Retrievable {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {

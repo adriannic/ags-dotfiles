@@ -1,4 +1,5 @@
 /// <reference path="./cairo-1.0.d.ts" />
+/// <reference path="./cairo.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
 /// <reference path="./gio-2.0.d.ts" />
@@ -15,7 +16,7 @@
 
 declare module 'gi://Poppler?version=0.18' {
     // Module dependencies
-    import type cairo from 'gi://cairo?version=1.0';
+    import type cairo from 'cairo';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
     import type Gio from 'gi://Gio?version=2.0';
@@ -1035,6 +1036,22 @@ declare module 'gi://Poppler?version=0.18' {
             NOT_VERIFIED,
         }
 
+        export namespace Stretch {
+            export const $gtype: GObject.GType<Stretch>;
+        }
+
+        enum Stretch {
+            ULTRA_CONDENSED,
+            EXTRA_CONDENSED,
+            CONDENSED,
+            SEMI_CONDENSED,
+            NORMAL,
+            SEMI_EXPANDED,
+            EXPANDED,
+            EXTRA_EXPANDED,
+            ULTRA_EXPANDED,
+        }
+
         export namespace StructureBlockAlign {
             export const $gtype: GObject.GType<StructureBlockAlign>;
         }
@@ -1258,6 +1275,32 @@ declare module 'gi://Poppler?version=0.18' {
             LR_TB,
             RL_TB,
             TB_RL,
+        }
+
+        export namespace Style {
+            export const $gtype: GObject.GType<Style>;
+        }
+
+        enum Style {
+            NORMAL,
+            OBLIQUE,
+            ITALIC,
+        }
+
+        export namespace Weight {
+            export const $gtype: GObject.GType<Weight>;
+        }
+
+        enum Weight {
+            THIN,
+            ULTRALIGHT,
+            LIGHT,
+            NORMAL,
+            MEDIUM,
+            SEMIBOLD,
+            BOLD,
+            ULTRABOLD,
+            HEAVY,
         }
         const ANNOT_TEXT_ICON_CIRCLE: string;
         const ANNOT_TEXT_ICON_COMMENT: string;
@@ -1508,6 +1551,45 @@ declare module 'gi://Poppler?version=0.18' {
              */
             ALL,
         }
+
+        export namespace RenderAnnotsFlags {
+            export const $gtype: GObject.GType<RenderAnnotsFlags>;
+        }
+
+        enum RenderAnnotsFlags {
+            NONE,
+            TEXT,
+            LINK,
+            FREETEXT,
+            LINE,
+            SQUARE,
+            CIRCLE,
+            POLYGON,
+            POLYLINE,
+            HIGHLIGHT,
+            UNDERLINE,
+            SQUIGGLY,
+            STRIKEOUT,
+            STAMP,
+            CARET,
+            INK,
+            POPUP,
+            FILEATTACHMENT,
+            SOUND,
+            MOVIE,
+            WIDGET,
+            SCREEN,
+            PRINTERMARK,
+            TRAPNET,
+            WATERMARK,
+            '3D',
+            RICHMEDIA,
+            PRINT_DOCUMENT,
+            PRINT_MARKUP,
+            PRINT_STAMP,
+            PRINT_ALL,
+            ALL,
+        }
         /**
          * Signature validation flags
          */
@@ -1595,7 +1677,7 @@ declare module 'gi://Poppler?version=0.18' {
              */
             DIRECTION_RTL,
         }
-        module Annot {
+        namespace Annot {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -1617,6 +1699,13 @@ declare module 'gi://Poppler?version=0.18' {
              * @returns #PopplerAnnotType of @poppler_annot.
              */
             get_annot_type(): AnnotType;
+            /**
+             * Returns the border width of the annotation. Some PDF editors set a border
+             * width even if the border is not actually drawn.
+             * @param width a valid pointer to a double
+             * @returns true and sets @border_width to the actual border width if a border is defined, otherwise returns false and sets @border_width to 0.
+             */
+            get_border_width(width: number): boolean;
             /**
              * Retrieves the color of `poppler_annot`.
              * @returns a new allocated #PopplerColor with the color values of               @poppler_annot, or %NULL. It must be freed with g_free() when done.
@@ -1656,6 +1745,14 @@ declare module 'gi://Poppler?version=0.18' {
              */
             get_rectangle(): Rectangle;
             /**
+             * Sets the border width of the annotation. Since there is currently no
+             * mechanism in the GLib binding to control the appearance of the border width,
+             * this should generally only be used to disable the border, although the
+             * API might be completed in the future.
+             * @param width the new border width
+             */
+            set_border_width(width: number): void;
+            /**
              * Sets the color of `poppler_annot`.
              * @param poppler_color a #PopplerColor, or %NULL
              */
@@ -1680,7 +1777,7 @@ declare module 'gi://Poppler?version=0.18' {
             set_rectangle(poppler_rect: Rectangle): void;
         }
 
-        module AnnotCircle {
+        namespace AnnotCircle {
             // Constructor properties interface
 
             interface ConstructorProps extends AnnotMarkup.ConstructorProps {}
@@ -1711,7 +1808,7 @@ declare module 'gi://Poppler?version=0.18' {
             set_interior_color(poppler_color?: Color | null): void;
         }
 
-        module AnnotFileAttachment {
+        namespace AnnotFileAttachment {
             // Constructor properties interface
 
             interface ConstructorProps extends AnnotMarkup.ConstructorProps {}
@@ -1741,7 +1838,7 @@ declare module 'gi://Poppler?version=0.18' {
             get_name(): string;
         }
 
-        module AnnotFreeText {
+        namespace AnnotFreeText {
             // Constructor properties interface
 
             interface ConstructorProps extends AnnotMarkup.ConstructorProps {}
@@ -1756,6 +1853,8 @@ declare module 'gi://Poppler?version=0.18' {
 
             _init(...args: any[]): void;
 
+            static ['new'](doc: Document, rect: Rectangle): AnnotFreeText;
+
             // Methods
 
             /**
@@ -1765,13 +1864,33 @@ declare module 'gi://Poppler?version=0.18' {
              */
             get_callout_line(): AnnotCalloutLine;
             /**
+             * Gets the font color.
+             * @returns a copy of the font's #PopplerColor.
+             */
+            get_font_color(): Color;
+            /**
+             * Gets the font description (i.e. font family name, style, weight, stretch and size).
+             * @returns a copy of the annotation font description, or NULL if there is no font description set.
+             */
+            get_font_desc(): FontDescription | null;
+            /**
              * Retrieves the justification of the text of `poppler_annot`.
              * @returns #PopplerAnnotFreeTextQuadding of @poppler_annot.
              */
             get_quadding(): AnnotFreeTextQuadding;
+            /**
+             * Sets the font color.
+             * @param color a #PopplerColor
+             */
+            set_font_color(color: Color): void;
+            /**
+             * Sets the font description (i.e. font family name, style, weight, stretch and size).
+             * @param font_desc a #PopplerFontDescription
+             */
+            set_font_desc(font_desc: FontDescription): void;
         }
 
-        module AnnotLine {
+        namespace AnnotLine {
             // Constructor properties interface
 
             interface ConstructorProps extends AnnotMarkup.ConstructorProps {}
@@ -1798,7 +1917,7 @@ declare module 'gi://Poppler?version=0.18' {
             set_vertices(start: Point, end: Point): void;
         }
 
-        module AnnotMarkup {
+        namespace AnnotMarkup {
             // Constructor properties interface
 
             interface ConstructorProps extends Annot.ConstructorProps {}
@@ -1893,7 +2012,7 @@ declare module 'gi://Poppler?version=0.18' {
             set_popup_rectangle(poppler_rect: Rectangle): void;
         }
 
-        module AnnotMovie {
+        namespace AnnotMovie {
             // Constructor properties interface
 
             interface ConstructorProps extends Annot.ConstructorProps {}
@@ -1922,7 +2041,7 @@ declare module 'gi://Poppler?version=0.18' {
             get_title(): string;
         }
 
-        module AnnotScreen {
+        namespace AnnotScreen {
             // Constructor properties interface
 
             interface ConstructorProps extends Annot.ConstructorProps {}
@@ -1946,7 +2065,7 @@ declare module 'gi://Poppler?version=0.18' {
             get_action(): Action;
         }
 
-        module AnnotSquare {
+        namespace AnnotSquare {
             // Constructor properties interface
 
             interface ConstructorProps extends AnnotMarkup.ConstructorProps {}
@@ -1977,13 +2096,13 @@ declare module 'gi://Poppler?version=0.18' {
             set_interior_color(poppler_color?: Color | null): void;
         }
 
-        module AnnotStamp {
+        namespace AnnotStamp {
             // Constructor properties interface
 
-            interface ConstructorProps extends Annot.ConstructorProps {}
+            interface ConstructorProps extends AnnotMarkup.ConstructorProps {}
         }
 
-        class AnnotStamp extends Annot {
+        class AnnotStamp extends AnnotMarkup {
             static $gtype: GObject.GType<AnnotStamp>;
 
             // Constructors
@@ -2010,7 +2129,7 @@ declare module 'gi://Poppler?version=0.18' {
             set_icon(icon: AnnotStampIcon | null): void;
         }
 
-        module AnnotText {
+        namespace AnnotText {
             // Constructor properties interface
 
             interface ConstructorProps extends AnnotMarkup.ConstructorProps {}
@@ -2086,7 +2205,7 @@ declare module 'gi://Poppler?version=0.18' {
             set_is_open(is_open: boolean): void;
         }
 
-        module AnnotTextMarkup {
+        namespace AnnotTextMarkup {
             // Constructor properties interface
 
             interface ConstructorProps extends AnnotMarkup.ConstructorProps {}
@@ -2125,7 +2244,7 @@ declare module 'gi://Poppler?version=0.18' {
             set_quadrilaterals(quadrilaterals: Quadrilateral[]): void;
         }
 
-        module Attachment {
+        namespace Attachment {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -2187,7 +2306,7 @@ declare module 'gi://Poppler?version=0.18' {
             save_to_fd(fd: number): boolean;
         }
 
-        module Document {
+        namespace Document {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -2810,7 +2929,7 @@ declare module 'gi://Poppler?version=0.18' {
             sign_finish(result: Gio.AsyncResult): boolean;
         }
 
-        module FontInfo {
+        namespace FontInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -2863,7 +2982,7 @@ declare module 'gi://Poppler?version=0.18' {
             scan(n_pages: number): [boolean, FontsIter];
         }
 
-        module FormField {
+        namespace FormField {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -3105,7 +3224,7 @@ declare module 'gi://Poppler?version=0.18' {
             text_set_text(text: string): void;
         }
 
-        module Layer {
+        namespace Layer {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -3155,7 +3274,7 @@ declare module 'gi://Poppler?version=0.18' {
             show(): void;
         }
 
-        module Media {
+        namespace Media {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -3238,7 +3357,7 @@ declare module 'gi://Poppler?version=0.18' {
             save_to_fd(fd: number): boolean;
         }
 
-        module Movie {
+        namespace Movie {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -3318,7 +3437,7 @@ declare module 'gi://Poppler?version=0.18' {
             show_controls(): boolean;
         }
 
-        module PSFile {
+        namespace PSFile {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -3358,7 +3477,7 @@ declare module 'gi://Poppler?version=0.18' {
             set_paper_size(width: number, height: number): void;
         }
 
-        module Page {
+        namespace Page {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -3532,7 +3651,7 @@ declare module 'gi://Poppler?version=0.18' {
              * Retrieves the contents of the specified `selection` as text.
              * @param style a #PopplerSelectionStyle
              * @param selection the #PopplerRectangle including the text
-             * @returns a pointer to the contents of the @selection               as a string
+             * @returns a pointer to the contents of the @selection as a string
              */
             get_selected_text(style: SelectionStyle | null, selection: Rectangle): string;
             /**
@@ -3643,7 +3762,8 @@ declare module 'gi://Poppler?version=0.18' {
             /**
              * Render the page to the given cairo context for printing with
              * #POPPLER_PRINT_ALL flags selected.  If you want a different set of flags,
-             * use poppler_page_render_for_printing_with_options().
+             * use poppler_page_render_full() with printing #TRUE and the corresponding
+             * flags.
              *
              * The difference between poppler_page_render() and this function is that some
              * things get rendered differently between screens and printers:
@@ -3684,6 +3804,19 @@ declare module 'gi://Poppler?version=0.18' {
              */
             render_for_printing_with_options(cairo: cairo.Context, options: PrintFlags | null): void;
             /**
+             * Render the page to the given cairo context, manually selecting which
+             * annotations should be displayed.
+             *
+             * The `printing` parameter determines whether a page is rendered for printing
+             * or for displaying it on a screen. See the documentation for
+             * poppler_page_render_for_printing() for the differences between rendering to
+             * the screen and rendering to a printer.
+             * @param cairo cairo context to render to
+             * @param printing cairo context to render to
+             * @param flags flags which allow to select which annotations to render
+             */
+            render_full(cairo: cairo.Context, printing: boolean, flags: RenderAnnotsFlags | null): void;
+            /**
              * Render the selection specified by `selection` for `page` to
              * the given cairo context.  The selection will be rendered, using
              * `glyph_color` for the glyphs and `background_color` for the selection
@@ -3714,7 +3847,7 @@ declare module 'gi://Poppler?version=0.18' {
             render_to_ps(ps_file: PSFile): void;
         }
 
-        module StructureElement {
+        namespace StructureElement {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -4553,6 +4686,45 @@ declare module 'gi://Poppler?version=0.18' {
             copy(): Dest;
             /**
              * Frees `dest`
+             */
+            free(): void;
+        }
+
+        /**
+         * A #PopplerFontDescription structure represents the description
+         * of a font. When used together with Pango, all the fields are
+         * value-compatible with pango equivalent, although Pango font
+         * descriptions may contain more information.
+         *
+         * This type supports g_autoptr
+         */
+        class FontDescription {
+            static $gtype: GObject.GType<FontDescription>;
+
+            // Fields
+
+            font_name: string;
+            size_pt: number;
+            stretch: Stretch;
+            weight: Weight;
+            style: Style;
+
+            // Constructors
+
+            constructor(font_name: string);
+            _init(...args: any[]): void;
+
+            static ['new'](font_name: string): FontDescription;
+
+            // Methods
+
+            /**
+             * Creates a copy of `font_desc`
+             * @returns a new allocated copy of @font_desc
+             */
+            copy(): FontDescription;
+            /**
+             * Frees the given #PopplerFontDescription
              */
             free(): void;
         }

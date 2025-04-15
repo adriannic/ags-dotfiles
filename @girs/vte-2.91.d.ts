@@ -1,4 +1,5 @@
 /// <reference path="./cairo-1.0.d.ts" />
+/// <reference path="./cairo.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
 /// <reference path="./pango-1.0.d.ts" />
@@ -23,7 +24,7 @@
 
 declare module 'gi://Vte?version=2.91' {
     // Module dependencies
-    import type cairo from 'gi://cairo?version=1.0';
+    import type cairo from 'cairo';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
     import type Pango from 'gi://Pango?version=1.0';
@@ -185,6 +186,41 @@ declare module 'gi://Vte?version=2.91' {
             HTML,
         }
         /**
+         * An enum describing how to interpret progress state, for the
+         * %VTE_TERMPROP_PROGRESS_HINT termprop.
+         */
+
+        /**
+         * An enum describing how to interpret progress state, for the
+         * %VTE_TERMPROP_PROGRESS_HINT termprop.
+         */
+        export namespace ProgressHint {
+            export const $gtype: GObject.GType<ProgressHint>;
+        }
+
+        enum ProgressHint {
+            /**
+             * no progress current
+             */
+            INACTIVE,
+            /**
+             * progress is normal
+             */
+            ACTIVE,
+            /**
+             * progress is aborted by an error
+             */
+            ERROR,
+            /**
+             * progress is indeterminate
+             */
+            INDETERMINATE,
+            /**
+             * progress is paused
+             */
+            PAUSED,
+        }
+        /**
          * An enum containing the IDs of the always-installed termprops.
          */
 
@@ -232,6 +268,22 @@ declare module 'gi://Vte?version=2.91' {
              * the ID of the %VTE_TERMPROP_SHELL_POSTEXEC termprop
              */
             SHELL_POSTEXEC,
+            /**
+             * the ID of the %VTE_TERMPROP_PROGRESS_HINT termprop. Since: 0.80
+             */
+            PROGRESS_HINT,
+            /**
+             * the ID of the %VTE_TERMPROP_PROGRESS_VALUE termprop. Since: 0.80
+             */
+            PROGRESS_VALUE,
+            /**
+             * the ID of the %VTE_TERMPROP_ICON_COLOR termprop. Since: 0.80
+             */
+            ICON_COLOR,
+            /**
+             * the ID of the %VTE_TERMPROP_ICON_IMAGE termprop. Since: 0.80
+             */
+            ICON_IMAGE,
         }
         /**
          * An enumeration type describing types of properties.
@@ -289,6 +341,10 @@ declare module 'gi://Vte?version=2.91' {
              * a URI
              */
             URI,
+            /**
+             * an image. Since: 0.80
+             */
+            IMAGE,
         }
         class PtyError extends GLib.Error {
             static $gtype: GObject.GType<PtyError>;
@@ -474,11 +530,48 @@ declare module 'gi://Vte?version=2.91' {
          * Note that this termprop is not settable via the termprop OSC.
          */
         const TERMPROP_CURRENT_FILE_URI: string;
+        const TERMPROP_ICON_COLOR: string;
+        /**
+         * A %VTE_PROPERTY_IMAGE termprop to specify an image for use
+         * as a favicon.
+         *
+         * Applications should prefer to use this termprop, if set, over
+         * the %VTE_TERMPROP_ICON_COLOR color.
+         *
+         * Note that in this vte version, this termprop is always unset.
+         */
+        const TERMPROP_ICON_IMAGE: string;
         /**
          * The string prefix that any termprop's name must start with to be installed
          * by vte_install_termprop().
          */
         const TERMPROP_NAME_PREFIX: string;
+        /**
+         * A %VTE_PROPERTY_INT termprop that stores a hint how to interpret
+         * the %VTE_TERMPROP_PROGRESS_VALUE termprop value. If set, this
+         * termprop's value will be from the #VteProgressHint enumeration.
+         * An unset termprop should be treated as if it had value
+         * %VTE_PROGRESS_HINT_ACTIVE if the %VTE_TERMPROP_PROGRESS_VALUE
+         * termprop has a value
+         *
+         * Note that this termprop never will have the value
+         * %VTE_PROGRESS_HINT_INACTIVE.
+         *
+         * The value of this termprop should be ignored unless the
+         * %VTE_TERMPROP_PROGRESS_VALUE termprop has a value.
+         *
+         * Note that this termprop cannot be set by the termprop OSC, but instead
+         * only by OSC 9 ; 4 (ConEmu progress).
+         */
+        const TERMPROP_PROGRESS_HINT: string;
+        /**
+         * A %VTE_PROPERTY_UINT termprop that stores the progress of the running
+         * command as a value between 0 and 100.
+         *
+         * Note that this termprop cannot be set by the termprop OSC, but instead
+         * only by OSC 9 ; 4 (ConEmu progress).
+         */
+        const TERMPROP_PROGRESS_VALUE: string;
         /**
          * An ephemeral %VTE_PROPERTY_UINT termprop that signals that the shell
          * has executed the commands entered at the prompt and these commands
@@ -745,7 +838,7 @@ declare module 'gi://Vte?version=2.91' {
             URN,
             ANY,
         }
-        module Pty {
+        namespace Pty {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, Gio.Initable.ConstructorProps {
@@ -963,7 +1056,7 @@ declare module 'gi://Vte?version=2.91' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -1006,7 +1099,7 @@ declare module 'gi://Vte?version=2.91' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -1146,7 +1239,21 @@ declare module 'gi://Vte?version=2.91' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -1274,7 +1381,12 @@ declare module 'gi://Vte?version=2.91' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -1424,14 +1536,34 @@ declare module 'gi://Vte?version=2.91' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module Terminal {
+        namespace Terminal {
             // Signal callback interfaces
 
             interface Bell {
@@ -2371,14 +2503,14 @@ declare module 'gi://Vte?version=2.91' {
              * @param prop a termprop name
              * @returns the property's value as a #VteUuid, or %NULL
              */
-            dup_termprop_uuid(prop: string): Uuid;
+            dup_termprop_uuid(prop: string): Uuid | null;
             /**
              * Like vte_terminal_dup_termprop_uuid() except that it takes the termprop
              * by ID. See that function for more information.
              * @param prop a termprop ID
              * @returns the property's value as a #VteUuid, or %NULL
              */
-            dup_termprop_uuid_by_id(prop: number): Uuid;
+            dup_termprop_uuid_by_id(prop: number): Uuid | null;
             /**
              * This function does nothing.
              * @param event a #GdkEvent
@@ -2561,7 +2693,7 @@ declare module 'gi://Vte?version=2.91' {
              * Returns the #VtePty of `terminal`.
              * @returns a #VtePty, or %NULL
              */
-            get_pty(): Pty;
+            get_pty(): Pty | null;
             /**
              * Checks whether or not the terminal will rewrap its contents upon resize.
              * @returns %TRUE if rewrapping is enabled, %FALSE if not
@@ -2593,14 +2725,14 @@ declare module 'gi://Vte?version=2.91' {
              * @param prop a termprop name
              * @returns the property's value, or %NULL
              */
-            get_termprop_data(prop: string): Uint8Array;
+            get_termprop_data(prop: string): Uint8Array | null;
             /**
              * Like vte_terminal_get_termprop_data() except that it takes the termprop
              * by ID. See that function for more information.
              * @param prop a termprop ID
              * @returns the property's value, or %NULL
              */
-            get_termprop_data_by_id(prop: number): Uint8Array;
+            get_termprop_data_by_id(prop: number): Uint8Array | null;
             /**
              * For a %VTE_PROPERTY_DOUBLE termprop, sets `value` to `prop'`s value,
              *   which is finite; or to 0.0 if `prop` is unset, or `prop` is not a
@@ -2703,6 +2835,8 @@ declare module 'gi://Vte?version=2.91' {
              * * A %VTE_PROPERTY_DATA termprop stores a boxed #GBytes value.
              * * A %VTE_PROPERTY_UUID termprop stores a boxed #VteUuid value.
              * * A %VTE_PROPERTY_URI termprop stores a boxed #GUri value.
+             * * A %VTE_PROPERTY_IMAGE termprop stores a boxed #cairo_surface_t value on gtk3,
+             *     and a boxed #GdkTexture on gtk4
              * @param prop a termprop name
              * @returns %TRUE iff the property has a value, with @gvalue containig   the property's value.
              */
@@ -2951,28 +3085,62 @@ declare module 'gi://Vte?version=2.91' {
              * @param prop a termprop name
              * @returns the property's value as a #GBytes, or %NULL
              */
-            ref_termprop_data_bytes(prop: string): GLib.Bytes;
+            ref_termprop_data_bytes(prop: string): GLib.Bytes | null;
             /**
              * Like vte_terminal_ref_termprop_data_bytes() except that it takes the termprop
              * by ID. See that function for more information.
              * @param prop a termprop ID
              * @returns the property's value as a #GBytes, or %NULL
              */
-            ref_termprop_data_bytes_by_id(prop: number): GLib.Bytes;
+            ref_termprop_data_bytes_by_id(prop: number): GLib.Bytes | null;
+            /**
+             * Returns the value of a %VTE_PROPERTY_IMAGE termprop as a #GdkPixbuf, or %NULL if
+             *   `prop` is unset, or `prop` is not a registered property.
+             * @param prop a termprop name
+             * @returns the property's value as a #GdkPixbuf, or %NULL
+             */
+            ref_termprop_image_pixbuf(prop: string): GdkPixbuf.Pixbuf | null;
+            /**
+             * Like vte_terminal_ref_termprop_image_pixbuf() except that it takes the
+             * termprop by ID. See that function for more information.
+             * @param prop a termprop ID
+             * @returns the property's value as a #GdkPixbuf, or %NULL
+             */
+            ref_termprop_image_pixbuf_by_id(prop: number): GdkPixbuf.Pixbuf | null;
+            /**
+             * Returns the value of a %VTE_PROPERTY_IMAGE termprop as a #cairo_surface_t,
+             *   or %NULL if `prop` is unset, or `prop` is not a registered property.
+             *
+             * The surface will be a %CAIRO_SURFACE_TYPE_IMAGE with format
+             * %CAIRO_FORMAT_ARGB32 or %CAIRO_FORMAT_RGB24.
+             *
+             * Note that the returned surface is owned by `terminal` and its contents
+             * must not be modified.
+             * @param prop a termprop name
+             * @returns the property's value as a #cairo_surface_t, or %NULL
+             */
+            ref_termprop_image_surface(prop: string): cairo.Surface | null;
+            /**
+             * Like vte_terminal_ref_termprop_image_surface() except that it takes the
+             * termprop by ID. See that function for more information.
+             * @param prop a termprop ID
+             * @returns the property's value as a #cairo_surface_t, or %NULL
+             */
+            ref_termprop_image_surface_by_id(prop: number): cairo.Surface | null;
             /**
              * Returns the value of a %VTE_PROPERTY_URI termprop as a #GUri, or %NULL if
              *   `prop` is unset, or `prop` is not a registered property.
              * @param prop a termprop name
              * @returns the property's value as a #GUri, or %NULL
              */
-            ref_termprop_uri(prop: string): GLib.Uri;
+            ref_termprop_uri(prop: string): GLib.Uri | null;
             /**
              * Like vte_terminal_ref_termprop_uri() except that it takes the termprop
              * by ID. See that function for more information.
              * @param prop a termprop ID
              * @returns the property's value as a #GUri, or %NULL
              */
-            ref_termprop_uri_by_id(prop: number): GLib.Uri;
+            ref_termprop_uri_by_id(prop: number): GLib.Uri | null;
             /**
              * Returns the value of `prop` as a #GVariant, or %NULL if
              *   `prop` unset, or `prop` is not a registered property.
@@ -2992,17 +3160,19 @@ declare module 'gi://Vte?version=2.91' {
              *   containing a string representation of the UUID in simple form.
              * * A %VTE_PROPERTY_URI termprop returns a %G_VARIANT_TYPE_STRING variant
              *   containing a string representation of the URI
+             * * A %VTE_PROPERTY_IMAGE termprop returns %NULL since an image has no
+             *   variant representation.
              * @param prop a termprop name
              * @returns a floating #GVariant, or %NULL
              */
-            ref_termprop_variant(prop: string): GLib.Variant;
+            ref_termprop_variant(prop: string): GLib.Variant | null;
             /**
              * Like vte_terminal_ref_termprop_variant() except that it takes the termprop
              * by ID. See that function for more information.
              * @param prop a termprop ID
              * @returns a floating #GVariant, or %NULL
              */
-            ref_termprop_variant_by_id(prop: number): GLib.Variant;
+            ref_termprop_variant_by_id(prop: number): GLib.Variant | null;
             /**
              * Resets as much of the terminal's internal state as possible, discarding any
              * unprocessed input data, resetting character attributes, cursor state,
@@ -4014,7 +4184,21 @@ declare module 'gi://Vte?version=2.91' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -4142,7 +4326,12 @@ declare module 'gi://Vte?version=2.91' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -4292,11 +4481,31 @@ declare module 'gi://Vte?version=2.91' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
         class CharAttributes {

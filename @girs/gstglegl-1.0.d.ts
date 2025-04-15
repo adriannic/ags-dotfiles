@@ -37,6 +37,16 @@ declare module 'gi://GstGLEGL?version=1.0' {
         const GL_MEMORY_EGL_ALLOCATOR_NAME: string;
         function egl_get_error_string(err: number): string;
         /**
+         * Checks if the given `context` can emulate `format` using a limited subset of
+         * RGB texture formats. Such `format` is then suitable for importing using
+         * gst_egl_image_from_dmabuf() even when GL supports the video format as
+         * external-only or not at all.
+         * @param context a #GstGLContext (must be an EGL context)
+         * @param format a #GstVideoFormat
+         * @returns #TRUE if @format can be emulated
+         */
+        function egl_image_can_emulate(context: GstGL.GLContext, format: GstVideo.VideoFormat | null): boolean;
+        /**
          * Creates an EGL image that imports the dmabuf FD. The dmabuf data
          * is passed as RGBA data. Shaders later take this "RGBA" data and
          * convert it from its true format (described by in_info) to actual
@@ -141,7 +151,7 @@ declare module 'gi://GstGLEGL?version=1.0' {
         interface EGLImageDestroyNotify {
             (image: EGLImage, data?: any | null): void;
         }
-        module GLDisplayEGL {
+        namespace GLDisplayEGL {
             // Constructor properties interface
 
             interface ConstructorProps extends GstGL.GLDisplay.ConstructorProps {}
@@ -173,6 +183,11 @@ declare module 'gi://GstGLEGL?version=1.0' {
              *
              * This function will return the same value for multiple calls with the same
              * `display`.
+             *
+             * The returned #GstGLDisplayEGL will *not* be marked as foreign and will free
+             * some display global EGL resources on finalization. If an external API/user
+             * will be also handling the lifetime of the `EGLDisplay`, you should mark the
+             * returned #GstGLDisplayEGL as foreign by calling gst_gl_display_egl_set_foreign().
              * @param display an existing #GstGLDisplay
              */
             static from_gl_display(display: GstGL.GLDisplay): GLDisplayEGL | null;
@@ -184,9 +199,30 @@ declare module 'gi://GstGLEGL?version=1.0' {
              * @param display pointer to a display (or 0)
              */
             static get_from_native(type: GstGL.GLDisplayType, display: never): any | null;
+
+            // Methods
+
+            /**
+             * Configure whether or not this EGL display is foreign and is managed by an
+             * external application/library.
+             *
+             * A display marked as foreign will not have display global resources freed when
+             * this display is finalized. As such, any external API using the same
+             * `EGLDisplay` must keep the `EGLDisplay` alive while GStreamer is using any
+             * EGL or GL resources associated with that `EGLDisplay`.  The reverse is also
+             * true and a foreign #GstGLDisplayEGL must not be used after the associated
+             * `EGLDisplay` has been destroyed externally with `eglTerminate()`.
+             *
+             * A non-foreign #GstGLDisplayEGL will destroy the associated `EGLDisplay` on
+             * finalization. This can also be useful when a user would like GStreamer to
+             * assume ownership of the `EGLDisplay` after calling e.g.
+             * gst_gl_display_egl_new_with_egl_display().
+             * @param foreign whether @display_egl should be marked as containing a foreign           `EGLDisplay`
+             */
+            set_foreign(foreign: boolean): void;
         }
 
-        module GLDisplayEGLDevice {
+        namespace GLDisplayEGLDevice {
             // Constructor properties interface
 
             interface ConstructorProps extends GstGL.GLDisplay.ConstructorProps {}
@@ -217,7 +253,7 @@ declare module 'gi://GstGLEGL?version=1.0' {
             static new_with_egl_device(device?: any | null): GLDisplayEGLDevice;
         }
 
-        module GLMemoryEGLAllocator {
+        namespace GLMemoryEGLAllocator {
             // Constructor properties interface
 
             interface ConstructorProps extends GstGL.GLMemoryAllocator.ConstructorProps {}
@@ -267,6 +303,15 @@ declare module 'gi://GstGLEGL?version=1.0' {
 
             // Static methods
 
+            /**
+             * Checks if the given `context` can emulate `format` using a limited subset of
+             * RGB texture formats. Such `format` is then suitable for importing using
+             * gst_egl_image_from_dmabuf() even when GL supports the video format as
+             * external-only or not at all.
+             * @param context a #GstGLContext (must be an EGL context)
+             * @param format a #GstVideoFormat
+             */
+            static can_emulate(context: GstGL.GLContext, format: GstVideo.VideoFormat): boolean;
             /**
              * Creates an EGL image that imports the dmabuf FD. The dmabuf data
              * is passed as RGBA data. Shaders later take this "RGBA" data and

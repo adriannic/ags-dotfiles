@@ -428,7 +428,7 @@ declare module 'gi://GstBase?version=1.0' {
              */
             LOCKED,
         }
-        module Adapter {
+        namespace Adapter {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -554,12 +554,19 @@ declare module 'gi://GstBase?version=1.0' {
              * Gets the maximum amount of bytes available, that is it returns the maximum
              * value that can be supplied to gst_adapter_map() without that function
              * returning %NULL.
+             *
+             * Calling gst_adapter_map() with the amount of bytes returned by this function
+             * may require expensive operations (like copying the data into a temporary
+             * buffer) in some cases.
              * @returns number of bytes available in @adapter
              */
             available(): number;
             /**
-             * Gets the maximum number of bytes that are immediately available without
-             * requiring any expensive operations (like copying the data into a
+             * Gets the maximum number of bytes that can be retrieved in a single map
+             * operation without merging buffers.
+             *
+             * Calling gst_adapter_map() with the amount of bytes returned by this function
+             * will never require any expensive operations (like copying the data into a
              * temporary buffer).
              * @returns number of bytes that are available in @adapter without expensive operations
              */
@@ -718,7 +725,7 @@ declare module 'gi://GstBase?version=1.0' {
              *
              * The dts is reset to GST_CLOCK_TIME_NONE and the distance is set to 0 when
              * the adapter is first created or when it is cleared. This also means that before
-             * the first byte with a dts is removed from the adapter, the dts
+             * the first byte with a dts is added to the adapter, the dts
              * and distance returned are GST_CLOCK_TIME_NONE and 0 respectively.
              * @returns The previously seen dts.
              */
@@ -730,7 +737,7 @@ declare module 'gi://GstBase?version=1.0' {
              *
              * The dts is reset to GST_CLOCK_TIME_NONE and the distance is set to 0 when
              * the adapter is first created or when it is cleared. This also means that before
-             * the first byte with a dts is removed from the adapter, the dts
+             * the first byte with a dts is added to the adapter, the dts
              * and distance returned are GST_CLOCK_TIME_NONE and 0 respectively.
              * @param offset the offset in the adapter at which to get timestamp
              * @returns The previously seen dts at given offset.
@@ -743,7 +750,7 @@ declare module 'gi://GstBase?version=1.0' {
              *
              * The offset is reset to GST_BUFFER_OFFSET_NONE and the distance is set to 0
              * when the adapter is first created or when it is cleared. This also means that
-             * before the first byte with an offset is removed from the adapter, the offset
+             * before the first byte with an offset is added to the adapter, the offset
              * and distance returned are GST_BUFFER_OFFSET_NONE and 0 respectively.
              * @returns The previous seen offset.
              */
@@ -755,7 +762,7 @@ declare module 'gi://GstBase?version=1.0' {
              *
              * The pts is reset to GST_CLOCK_TIME_NONE and the distance is set to 0 when
              * the adapter is first created or when it is cleared. This also means that before
-             * the first byte with a pts is removed from the adapter, the pts
+             * the first byte with a pts is added to the adapter, the pts
              * and distance returned are GST_CLOCK_TIME_NONE and 0 respectively.
              * @returns The previously seen pts.
              */
@@ -767,7 +774,7 @@ declare module 'gi://GstBase?version=1.0' {
              *
              * The pts is reset to GST_CLOCK_TIME_NONE and the distance is set to 0 when
              * the adapter is first created or when it is cleared. This also means that before
-             * the first byte with a pts is removed from the adapter, the pts
+             * the first byte with a pts is added to the adapter, the pts
              * and distance returned are GST_CLOCK_TIME_NONE and 0 respectively.
              * @param offset the offset in the adapter at which to get timestamp
              * @returns The previously seen pts at given offset.
@@ -877,7 +884,7 @@ declare module 'gi://GstBase?version=1.0' {
             unmap(): void;
         }
 
-        module Aggregator {
+        namespace Aggregator {
             // Signal callback interfaces
 
             interface SamplesSelected {
@@ -1279,6 +1286,16 @@ declare module 'gi://GstBase?version=1.0' {
              */
             peek_next_sample(pad: AggregatorPad): Gst.Sample | null;
             /**
+             * This method will push the provided event downstream. If needed, mandatory
+             * events such as stream-start, caps, and segment events will be sent before
+             * pushing the event.
+             *
+             * This API does not allow pushing stream-start, caps, segment and EOS events.
+             * Specific API like gst_aggregator_set_src_caps() should be used for these.
+             * @param event the #GstEvent to push.
+             */
+            push_src_event(event: Gst.Event): boolean;
+            /**
              * Subclasses should call this when they have prepared the
              * buffers they will aggregate for each of their sink pads, but
              * before using any of the properties of the pads that govern
@@ -1352,7 +1369,7 @@ declare module 'gi://GstBase?version=1.0' {
             update_segment(segment: Gst.Segment): void;
         }
 
-        module AggregatorPad {
+        namespace AggregatorPad {
             // Signal callback interfaces
 
             interface BufferConsumed {
@@ -1450,7 +1467,7 @@ declare module 'gi://GstBase?version=1.0' {
             pop_buffer(): Gst.Buffer | null;
         }
 
-        module BaseParse {
+        namespace BaseParse {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Element.ConstructorProps {
@@ -1918,7 +1935,7 @@ declare module 'gi://GstBase?version=1.0' {
             set_ts_at_offset(offset: number): void;
         }
 
-        module BaseSink {
+        namespace BaseSink {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Element.ConstructorProps {
@@ -2594,7 +2611,7 @@ declare module 'gi://GstBase?version=1.0' {
             wait_preroll(): Gst.FlowReturn;
         }
 
-        module BaseSrc {
+        namespace BaseSrc {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Element.ConstructorProps {
@@ -3109,7 +3126,7 @@ declare module 'gi://GstBase?version=1.0' {
             wait_playing(): Gst.FlowReturn;
         }
 
-        module BaseTransform {
+        namespace BaseTransform {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Element.ConstructorProps {
@@ -3528,7 +3545,7 @@ declare module 'gi://GstBase?version=1.0' {
             update_src_caps(updated_caps: Gst.Caps): boolean;
         }
 
-        module CollectPads {
+        namespace CollectPads {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {}
@@ -3858,7 +3875,7 @@ declare module 'gi://GstBase?version=1.0' {
             take_buffer(data: CollectData, size: number): Gst.Buffer | null;
         }
 
-        module DataQueue {
+        namespace DataQueue {
             // Signal callback interfaces
 
             interface Empty {
@@ -3926,7 +3943,7 @@ declare module 'gi://GstBase?version=1.0' {
             vfunc_full(): void;
         }
 
-        module PushSrc {
+        namespace PushSrc {
             // Constructor properties interface
 
             interface ConstructorProps extends BaseSrc.ConstructorProps {}

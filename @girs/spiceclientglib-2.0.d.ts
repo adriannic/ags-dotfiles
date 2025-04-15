@@ -642,7 +642,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              */
             SUBJECT,
         }
-        module Audio {
+        namespace Audio {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -716,7 +716,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             ): boolean;
         }
 
-        module Channel {
+        namespace Channel {
             // Signal callback interfaces
 
             interface ChannelEvent {
@@ -911,7 +911,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             test_common_capability(cap: number): boolean;
         }
 
-        module CursorChannel {
+        namespace CursorChannel {
             // Signal callback interfaces
 
             interface CursorHide {
@@ -1013,7 +1013,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             vfunc_cursor_set(width: number, height: number, hot_x: number, hot_y: number, rgba?: any | null): void;
         }
 
-        module DisplayChannel {
+        namespace DisplayChannel {
             // Signal callback interfaces
 
             interface DisplayInvalidate {
@@ -1218,7 +1218,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             gl_draw_done(): void;
         }
 
-        module FileTransferTask {
+        namespace FileTransferTask {
             // Signal callback interfaces
 
             interface Finished {
@@ -1279,7 +1279,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             get_transferred_bytes(): number;
         }
 
-        module InputsChannel {
+        namespace InputsChannel {
             // Signal callback interfaces
 
             interface InputsModifiers {
@@ -1369,7 +1369,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             set_key_locks(locks: number): void;
         }
 
-        module MainChannel {
+        namespace MainChannel {
             // Signal callback interfaces
 
             interface MainAgentUpdate {
@@ -1784,7 +1784,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             update_display_mm(id: number, width_mm: number, height_mm: number, update: boolean): void;
         }
 
-        module PlaybackChannel {
+        namespace PlaybackChannel {
             // Signal callback interfaces
 
             interface PlaybackData {
@@ -1887,7 +1887,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             set_delay(delay_ms: number): void;
         }
 
-        module PortChannel {
+        namespace PortChannel {
             // Signal callback interfaces
 
             interface PortData {
@@ -1995,7 +1995,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             write_finish(result: Gio.AsyncResult): number;
         }
 
-        module QmpPort {
+        namespace QmpPort {
             // Signal callback interfaces
 
             interface Event {
@@ -2111,7 +2111,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             vm_action_finish(result: Gio.AsyncResult): boolean;
         }
 
-        module RecordChannel {
+        namespace RecordChannel {
             // Signal callback interfaces
 
             interface RecordStart {
@@ -2195,7 +2195,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             send_data(data: any | null, bytes: number, time: number): void;
         }
 
-        module Session {
+        namespace Session {
             // Signal callback interfaces
 
             interface ChannelDestroy {
@@ -2667,7 +2667,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             open_fd(fd: number): boolean;
         }
 
-        module SmartcardChannel {
+        namespace SmartcardChannel {
             // Constructor properties interface
 
             interface ConstructorProps extends Channel.ConstructorProps {}
@@ -2686,7 +2686,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             _init(...args: any[]): void;
         }
 
-        module SmartcardManager {
+        namespace SmartcardManager {
             // Signal callback interfaces
 
             interface CardInserted {
@@ -2798,7 +2798,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             remove_card(): boolean;
         }
 
-        module URI {
+        namespace URI {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -2850,7 +2850,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             to_string(): string;
         }
 
-        module UsbDeviceManager {
+        namespace UsbDeviceManager {
             // Signal callback interfaces
 
             interface AutoConnectFailed {
@@ -3214,7 +3214,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -3257,7 +3257,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              * If the object is not initialized, or initialization returns with an
              * error, then all operations on the object except g_object_ref() and
              * g_object_unref() are considered to be invalid, and have undefined
-             * behaviour. See the [introduction][ginitable] for more details.
+             * behaviour. See the [description][iface`Gio`.Initable#description] for more details.
              *
              * Callers should not assume that a class which implements #GInitable can be
              * initialized multiple times, unless the class explicitly documents itself as
@@ -3397,7 +3397,21 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -3525,7 +3539,12 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -3675,14 +3694,34 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module UsbredirChannel {
+        namespace UsbredirChannel {
             // Constructor properties interface
 
             interface ConstructorProps extends Channel.ConstructorProps {}
@@ -3701,7 +3740,7 @@ declare module 'gi://SpiceClientGLib?version=2.0' {
             _init(...args: any[]): void;
         }
 
-        module WebdavChannel {
+        namespace WebdavChannel {
             // Constructor properties interface
 
             interface ConstructorProps extends PortChannel.ConstructorProps {}

@@ -391,7 +391,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             HANGUP,
             ERROR,
         }
-        module Connection {
+        namespace Connection {
             // Signal callback interfaces
 
             interface ConnectionClosed {
@@ -743,7 +743,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             start_domain(conf: LibvirtGConfig.Domain, flags: number): Domain;
         }
 
-        module Domain {
+        namespace Domain {
             // Signal callback interfaces
 
             interface Pmsuspended {
@@ -1191,7 +1191,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             wakeup_finish(result: Gio.AsyncResult): boolean;
         }
 
-        module DomainDevice {
+        namespace DomainDevice {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1220,7 +1220,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             get_domain(): Domain;
         }
 
-        module DomainDisk {
+        namespace DomainDisk {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1253,7 +1253,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             resize(size: number, flags: number): boolean;
         }
 
-        module DomainInterface {
+        namespace DomainInterface {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1279,7 +1279,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             get_stats(): DomainInterfaceStats;
         }
 
-        module DomainSnapshot {
+        namespace DomainSnapshot {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1340,7 +1340,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             set_config(conf: LibvirtGConfig.DomainSnapshot): boolean;
         }
 
-        module Interface {
+        namespace Interface {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1368,7 +1368,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             get_name(): string;
         }
 
-        module Manager {
+        namespace Manager {
             // Signal callback interfaces
 
             interface ConnectionAdded {
@@ -1420,7 +1420,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             remove_connection(conn: Connection): void;
         }
 
-        module Network {
+        namespace Network {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1463,7 +1463,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             get_uuid(): string;
         }
 
-        module NetworkDHCPLease {
+        namespace NetworkDHCPLease {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1497,7 +1497,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             get_prefix(): number;
         }
 
-        module NetworkFilter {
+        namespace NetworkFilter {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1525,7 +1525,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             get_uuid(): string;
         }
 
-        module NodeDevice {
+        namespace NodeDevice {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1552,7 +1552,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             get_name(): string;
         }
 
-        module Secret {
+        namespace Secret {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1580,7 +1580,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             get_uuid(): string;
         }
 
-        module StoragePool {
+        namespace StoragePool {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1684,7 +1684,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             undefine_finish(result: Gio.AsyncResult): boolean;
         }
 
-        module StorageVol {
+        namespace StorageVol {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1730,7 +1730,7 @@ declare module 'gi://LibvirtGObject?version=1.0' {
             upload(stream: Stream, offset: number, length: number, flags: number): boolean;
         }
 
-        module Stream {
+        namespace Stream {
             // Constructor properties interface
 
             interface ConstructorProps extends Gio.IOStream.ConstructorProps {

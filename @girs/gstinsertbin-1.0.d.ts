@@ -27,7 +27,7 @@ declare module 'gi://GstInsertBin?version=1.0' {
         interface InsertBinCallback {
             (insertbin: InsertBin, element: Gst.Element, success: boolean): void;
         }
-        module InsertBin {
+        namespace InsertBin {
             // Signal callback interfaces
 
             interface Append {
@@ -308,8 +308,6 @@ declare module 'gi://GstInsertBin?version=1.0' {
              * @param value new #GValue for the property
              */
             set_property(name: string, value: GObject.Value | any): void;
-            // Conflicted with GObject.Object.set_property
-            set_property(...args: never[]): any;
             /**
              * Emits the #GstChildProxy::child-added signal.
              * @param child the newly added child
@@ -735,11 +733,31 @@ declare module 'gi://GstInsertBin?version=1.0' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
         type InsertBinClass = typeof InsertBin;

@@ -376,7 +376,7 @@ declare module 'gi://Dbusmenu?version=0.4' {
         interface menuitem_buildvariant_slot_t {
             (mi: Menuitem, properties?: string | null): GLib.Variant;
         }
-        module Client {
+        namespace Client {
             // Signal callback interfaces
 
             interface EventResult {
@@ -571,7 +571,7 @@ declare module 'gi://Dbusmenu?version=0.4' {
             get_text_direction(): TextDirection;
         }
 
-        module Menuitem {
+        namespace Menuitem {
             // Signal callback interfaces
 
             interface AboutToShow {
@@ -1024,7 +1024,7 @@ declare module 'gi://Dbusmenu?version=0.4' {
             unparent(): boolean;
         }
 
-        module MenuitemProxy {
+        namespace MenuitemProxy {
             // Constructor properties interface
 
             interface ConstructorProps extends Menuitem.ConstructorProps {
@@ -1065,7 +1065,7 @@ declare module 'gi://Dbusmenu?version=0.4' {
             get_wrapped(): Menuitem;
         }
 
-        module Server {
+        namespace Server {
             // Signal callback interfaces
 
             interface ItemActivationRequested {

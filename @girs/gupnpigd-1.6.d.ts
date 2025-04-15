@@ -38,7 +38,7 @@ declare module 'gi://GUPnPIgd?version=1.6' {
              */
             SIMPLE_IGD_ERROR_EXTERNAL_ADDRESS,
         }
-        module SimpleIgd {
+        namespace SimpleIgd {
             // Signal callback interfaces
 
             interface ContextAvailable {
@@ -234,7 +234,7 @@ declare module 'gi://GUPnPIgd?version=1.6' {
             remove_port_local(protocol: string, local_ip: string, local_port: number): void;
         }
 
-        module SimpleIgdThread {
+        namespace SimpleIgdThread {
             // Constructor properties interface
 
             interface ConstructorProps extends SimpleIgd.ConstructorProps {}

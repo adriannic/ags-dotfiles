@@ -45,7 +45,7 @@ declare module 'gi://GUdev?version=1.0' {
              */
             CHAR,
         }
-        module Client {
+        namespace Client {
             // Signal callback interfaces
 
             interface Uevent {
@@ -158,7 +158,7 @@ declare module 'gi://GUdev?version=1.0' {
             query_by_sysfs_path(sysfs_path: string): Device | null;
         }
 
-        module Device {
+        namespace Device {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -530,7 +530,7 @@ declare module 'gi://GUdev?version=1.0' {
             has_sysfs_attr_uncached(key: string): boolean;
         }
 
-        module Enumerator {
+        namespace Enumerator {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {

@@ -142,7 +142,7 @@ declare module 'gi://Xkl?version=1.0' {
              */
             DEVICE_DISCOVERY,
         }
-        module ConfigItem {
+        namespace ConfigItem {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -190,7 +190,7 @@ declare module 'gi://Xkl?version=1.0' {
             set_short_description(short_description?: string | null): void;
         }
 
-        module ConfigRec {
+        namespace ConfigRec {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -306,7 +306,7 @@ declare module 'gi://Xkl?version=1.0' {
             set_variants(new_variants: string[]): void;
         }
 
-        module ConfigRegistry {
+        namespace ConfigRegistry {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -444,7 +444,7 @@ declare module 'gi://Xkl?version=1.0' {
             search_by_pattern(pattern: string, func: TwoConfigItemsProcessFunc): void;
         }
 
-        module Engine {
+        namespace Engine {
             // Signal callback interfaces
 
             interface XConfigChanged {

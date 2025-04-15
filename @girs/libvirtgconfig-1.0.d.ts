@@ -521,7 +521,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
         enum StorageVolTargetFeatures {
             REFCOUNT,
         }
-        module Capabilities {
+        namespace Capabilities {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -557,7 +557,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_host(): CapabilitiesHost;
         }
 
-        module CapabilitiesCpu {
+        namespace CapabilitiesCpu {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -609,7 +609,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_topology(topology: CapabilitiesCpuTopology): void;
         }
 
-        module CapabilitiesCpuFeature {
+        namespace CapabilitiesCpuFeature {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -630,7 +630,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_name(name: string): void;
         }
 
-        module CapabilitiesCpuModel {
+        namespace CapabilitiesCpuModel {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -658,7 +658,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_name(name: string): void;
         }
 
-        module CapabilitiesCpuTopology {
+        namespace CapabilitiesCpuTopology {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -690,7 +690,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_threads(threads: number): void;
         }
 
-        module CapabilitiesGuest {
+        namespace CapabilitiesGuest {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -720,7 +720,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_os_type(): DomainOsType;
         }
 
-        module CapabilitiesGuestArch {
+        namespace CapabilitiesGuestArch {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -746,7 +746,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_name(): string;
         }
 
-        module CapabilitiesGuestDomain {
+        namespace CapabilitiesGuestDomain {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -767,7 +767,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_virt_type(): DomainVirtType;
         }
 
-        module CapabilitiesGuestFeature {
+        namespace CapabilitiesGuestFeature {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -787,7 +787,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_name(): string;
         }
 
-        module CapabilitiesHost {
+        namespace CapabilitiesHost {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -817,7 +817,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_uuid(): string;
         }
 
-        module CapabilitiesHostSecModel {
+        namespace CapabilitiesHostSecModel {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -838,7 +838,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_model(): string;
         }
 
-        module Domain {
+        namespace Domain {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {
@@ -965,7 +965,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_virt_type(type: DomainVirtType | null): void;
         }
 
-        module DomainAddress {
+        namespace DomainAddress {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -981,7 +981,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        module DomainAddressPci {
+        namespace DomainAddressPci {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainAddress.ConstructorProps {}
@@ -1017,7 +1017,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_slot(slot: number): void;
         }
 
-        module DomainAddressUsb {
+        namespace DomainAddressUsb {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainAddress.ConstructorProps {}
@@ -1045,7 +1045,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_port(port: string): void;
         }
 
-        module DomainAudio {
+        namespace DomainAudio {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1073,7 +1073,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_server_name(server_name: string): void;
         }
 
-        module DomainCapabilities {
+        namespace DomainCapabilities {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -1104,7 +1104,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_os(): DomainCapabilitiesOs;
         }
 
-        module DomainCapabilitiesOs {
+        namespace DomainCapabilitiesOs {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -1137,7 +1137,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_firmwares(): DomainOsFirmware[];
         }
 
-        module DomainChannel {
+        namespace DomainChannel {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainChardev.ConstructorProps {}
@@ -1167,7 +1167,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_target_type(type: DomainChannelTargetType | null): void;
         }
 
-        module DomainChardev {
+        namespace DomainChardev {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1192,7 +1192,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_source(source: DomainChardevSource): void;
         }
 
-        module DomainChardevSource {
+        namespace DomainChardevSource {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -1208,7 +1208,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        module DomainChardevSourcePty {
+        namespace DomainChardevSourcePty {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainChardevSource.ConstructorProps {}
@@ -1236,7 +1236,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_path(path: string): void;
         }
 
-        module DomainChardevSourceSpicePort {
+        namespace DomainChardevSourceSpicePort {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainChardevSource.ConstructorProps {}
@@ -1264,7 +1264,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_channel(channel: string): void;
         }
 
-        module DomainChardevSourceSpiceVmc {
+        namespace DomainChardevSourceSpiceVmc {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainChardevSource.ConstructorProps {}
@@ -1287,7 +1287,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainChardevSourceUnix {
+        namespace DomainChardevSourceUnix {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainChardevSource.ConstructorProps {}
@@ -1310,7 +1310,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainClock {
+        namespace DomainClock {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -1343,7 +1343,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_variable_offset(seconds: number): void;
         }
 
-        module DomainConsole {
+        namespace DomainConsole {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainChardev.ConstructorProps {}
@@ -1370,7 +1370,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_target_type(type: DomainConsoleTargetType | null): void;
         }
 
-        module DomainController {
+        namespace DomainController {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1394,7 +1394,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_ports(ports: number): void;
         }
 
-        module DomainControllerUsb {
+        namespace DomainControllerUsb {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainController.ConstructorProps {}
@@ -1438,7 +1438,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_model(model: DomainControllerUsbModel | null): void;
         }
 
-        module DomainCpu {
+        namespace DomainCpu {
             // Constructor properties interface
 
             interface ConstructorProps extends CapabilitiesCpu.ConstructorProps {}
@@ -1469,7 +1469,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_model(model: DomainCpuModel): void;
         }
 
-        module DomainCpuFeature {
+        namespace DomainCpuFeature {
             // Constructor properties interface
 
             interface ConstructorProps extends CapabilitiesCpuFeature.ConstructorProps {}
@@ -1497,7 +1497,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_policy(policy: DomainCpuFeaturePolicy | null): void;
         }
 
-        module DomainCpuModel {
+        namespace DomainCpuModel {
             // Constructor properties interface
 
             interface ConstructorProps extends CapabilitiesCpuModel.ConstructorProps {}
@@ -1520,7 +1520,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainDevice {
+        namespace DomainDevice {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -1540,7 +1540,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             get_alias(): string;
         }
 
-        module DomainDisk {
+        namespace DomainDisk {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1599,7 +1599,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_type(type: DomainDiskType | null): void;
         }
 
-        module DomainDiskDriver {
+        namespace DomainDiskDriver {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -1639,7 +1639,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_name(name: string): void;
         }
 
-        module DomainFilesys {
+        namespace DomainFilesys {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1673,7 +1673,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_type(type: DomainFilesysType | null): void;
         }
 
-        module DomainGraphics {
+        namespace DomainGraphics {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1689,7 +1689,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        module DomainGraphicsDBus {
+        namespace DomainGraphicsDBus {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainGraphics.ConstructorProps {}
@@ -1718,7 +1718,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_gl(gl: boolean): void;
         }
 
-        module DomainGraphicsDesktop {
+        namespace DomainGraphicsDesktop {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainGraphics.ConstructorProps {}
@@ -1748,7 +1748,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_fullscreen(fullscreen: boolean): void;
         }
 
-        module DomainGraphicsRdp {
+        namespace DomainGraphicsRdp {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainGraphics.ConstructorProps {}
@@ -1781,7 +1781,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_replace_user(replace_user: boolean): void;
         }
 
-        module DomainGraphicsSdl {
+        namespace DomainGraphicsSdl {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainGraphics.ConstructorProps {}
@@ -1810,7 +1810,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_xauthority(path: string): void;
         }
 
-        module DomainGraphicsSpice {
+        namespace DomainGraphicsSpice {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainGraphics.ConstructorProps {}
@@ -1844,7 +1844,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_tls_port(port: number): void;
         }
 
-        module DomainGraphicsVnc {
+        namespace DomainGraphicsVnc {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainGraphics.ConstructorProps {}
@@ -1876,7 +1876,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_socket(socket: string): void;
         }
 
-        module DomainHostdev {
+        namespace DomainHostdev {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1914,7 +1914,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_shareable(shareable: boolean): void;
         }
 
-        module DomainHostdevPci {
+        namespace DomainHostdevPci {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainHostdev.ConstructorProps {}
@@ -1952,7 +1952,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_rom_file(file: string): void;
         }
 
-        module DomainInput {
+        namespace DomainInput {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -1982,7 +1982,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_device_type(type: DomainInputDeviceType | null): void;
         }
 
-        module DomainInterface {
+        namespace DomainInterface {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -2015,7 +2015,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_model(model: string): void;
         }
 
-        module DomainInterfaceBridge {
+        namespace DomainInterfaceBridge {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainInterface.ConstructorProps {}
@@ -2042,7 +2042,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_source(brname: string): void;
         }
 
-        module DomainInterfaceFilterref {
+        namespace DomainInterfaceFilterref {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2078,7 +2078,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_name(filter: string): void;
         }
 
-        module DomainInterfaceFilterrefParameter {
+        namespace DomainInterfaceFilterrefParameter {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2108,7 +2108,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_value(value: string): void;
         }
 
-        module DomainInterfaceNetwork {
+        namespace DomainInterfaceNetwork {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainInterface.ConstructorProps {}
@@ -2135,7 +2135,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_source(source: string): void;
         }
 
-        module DomainInterfaceUser {
+        namespace DomainInterfaceUser {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainInterface.ConstructorProps {}
@@ -2158,7 +2158,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainMemballoon {
+        namespace DomainMemballoon {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -2185,7 +2185,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_model(model: DomainMemballoonModel | null): void;
         }
 
-        module DomainOs {
+        namespace DomainOs {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2235,7 +2235,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_smbios_mode(mode: DomainOsSmBiosMode | null): void;
         }
 
-        module DomainParallel {
+        namespace DomainParallel {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainChardev.ConstructorProps {}
@@ -2258,7 +2258,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainPowerManagement {
+        namespace DomainPowerManagement {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2286,7 +2286,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_mem_suspend_enabled(enabled: boolean): void;
         }
 
-        module DomainRedirdev {
+        namespace DomainRedirdev {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainChardev.ConstructorProps {}
@@ -2314,7 +2314,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_bus(bus: DomainRedirdevBus | null): void;
         }
 
-        module DomainSeclabel {
+        namespace DomainSeclabel {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2344,7 +2344,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_type(type: DomainSeclabelType | null): void;
         }
 
-        module DomainSerial {
+        namespace DomainSerial {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainChardev.ConstructorProps {}
@@ -2367,7 +2367,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainSmartcard {
+        namespace DomainSmartcard {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -2387,7 +2387,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static set_address(redirdev: DomainRedirdev, address?: DomainAddress | null): void;
         }
 
-        module DomainSmartcardHost {
+        namespace DomainSmartcardHost {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainSmartcard.ConstructorProps {}
@@ -2410,7 +2410,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainSmartcardHostCertificates {
+        namespace DomainSmartcardHostCertificates {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainSmartcard.ConstructorProps {}
@@ -2438,7 +2438,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_database(path?: string | null): void;
         }
 
-        module DomainSmartcardPassthrough {
+        namespace DomainSmartcardPassthrough {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainSmartcard.ConstructorProps {}
@@ -2465,7 +2465,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_source(source: DomainChardevSource): void;
         }
 
-        module DomainSnapshot {
+        namespace DomainSnapshot {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2490,7 +2490,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             // Methods
 
             add_disk(disk: DomainSnapshotDisk): void;
-            get_creation_time(): number;
+            get_creation_time(): never;
             get_description(): string;
             /**
              * Gets the list of disks attached to `snapshot`.  The returned list should
@@ -2516,7 +2516,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_name(name: string): void;
         }
 
-        module DomainSnapshotDisk {
+        namespace DomainSnapshotDisk {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2550,7 +2550,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_source_file(filename: string): void;
         }
 
-        module DomainSound {
+        namespace DomainSound {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -2577,7 +2577,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_model(model: DomainSoundModel | null): void;
         }
 
-        module DomainTimer {
+        namespace DomainTimer {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2600,7 +2600,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_tick_policy(policy: DomainTimerTickPolicy | null): void;
         }
 
-        module DomainTimerHpet {
+        namespace DomainTimerHpet {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainTimer.ConstructorProps {}
@@ -2623,7 +2623,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainTimerPit {
+        namespace DomainTimerPit {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainTimer.ConstructorProps {}
@@ -2646,7 +2646,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainTimerRtc {
+        namespace DomainTimerRtc {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainTimer.ConstructorProps {}
@@ -2669,7 +2669,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module DomainVideo {
+        namespace DomainVideo {
             // Constructor properties interface
 
             interface ConstructorProps extends DomainDevice.ConstructorProps {}
@@ -2702,7 +2702,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_vram(kbytes: number): void;
         }
 
-        module Interface {
+        namespace Interface {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2725,7 +2725,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module Network {
+        namespace Network {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2748,7 +2748,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module NetworkFilter {
+        namespace NetworkFilter {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2771,7 +2771,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module NodeDevice {
+        namespace NodeDevice {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2794,7 +2794,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module Object {
+        namespace Object {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -2832,7 +2832,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             validate(): void;
         }
 
-        module Secret {
+        namespace Secret {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2855,7 +2855,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             static new_from_xml(...args: never[]): any;
         }
 
-        module StoragePermissions {
+        namespace StoragePermissions {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2905,7 +2905,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_owner(owner: number): void;
         }
 
-        module StoragePool {
+        namespace StoragePool {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -2979,7 +2979,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_uuid(uuid?: string | null): void;
         }
 
-        module StoragePoolSource {
+        namespace StoragePoolSource {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -3058,7 +3058,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_vendor(vendor: string): void;
         }
 
-        module StoragePoolTarget {
+        namespace StoragePoolTarget {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -3097,7 +3097,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_permissions(perms: StoragePermissions): void;
         }
 
-        module StorageVol {
+        namespace StorageVol {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -3128,7 +3128,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_target(target?: StorageVolTarget | null): void;
         }
 
-        module StorageVolBackingStore {
+        namespace StorageVolBackingStore {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}
@@ -3156,7 +3156,7 @@ declare module 'gi://LibvirtGConfig?version=1.0' {
             set_path(path?: string | null): void;
         }
 
-        module StorageVolTarget {
+        namespace StorageVolTarget {
             // Constructor properties interface
 
             interface ConstructorProps extends Object.ConstructorProps {}

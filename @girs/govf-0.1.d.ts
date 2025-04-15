@@ -34,7 +34,7 @@ declare module 'gi://Govf?version=0.1' {
             XML,
             LAST,
         }
-        module Disk {
+        namespace Disk {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -95,7 +95,7 @@ declare module 'gi://Govf?version=0.1' {
             set_format(format: string): void;
         }
 
-        module Package {
+        namespace Package {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}

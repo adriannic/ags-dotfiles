@@ -224,34 +224,34 @@ declare module 'gi://GstVulkan?version=1.0' {
         const VULKAN_MEMORY_ALLOCATOR_NAME: string;
         const VULKAN_QUEUE_CONTEXT_TYPE_STR: string;
         const VULKAN_SWAPPER_VIDEO_FORMATS: string;
-        function context_get_vulkan_device(context: Gst.Context, device: VulkanDevice): boolean;
-        function context_get_vulkan_display(context: Gst.Context, display: VulkanDisplay): boolean;
-        function context_get_vulkan_instance(context: Gst.Context, instance: VulkanInstance): boolean;
-        function context_get_vulkan_queue(context: Gst.Context, queue: VulkanQueue): boolean;
+        function context_get_vulkan_device(context: Gst.Context): [boolean, VulkanDevice | null];
+        function context_get_vulkan_display(context: Gst.Context): [boolean, VulkanDisplay | null];
+        function context_get_vulkan_instance(context: Gst.Context): [boolean, VulkanInstance | null];
+        function context_get_vulkan_queue(context: Gst.Context): [boolean, VulkanQueue | null];
         /**
          * Sets `device` on `context`
          * @param context a #GstContext
          * @param device a #GstVulkanDevice
          */
-        function context_set_vulkan_device(context: Gst.Context, device: VulkanDevice): void;
+        function context_set_vulkan_device(context: Gst.Context, device?: VulkanDevice | null): void;
         /**
          * Sets `display` on `context`
          * @param context a #GstContext
          * @param display a #GstVulkanDisplay
          */
-        function context_set_vulkan_display(context: Gst.Context, display: VulkanDisplay): void;
+        function context_set_vulkan_display(context: Gst.Context, display?: VulkanDisplay | null): void;
         /**
          * Sets `instance` on `context`
          * @param context a #GstContext
          * @param instance a #GstVulkanInstance
          */
-        function context_set_vulkan_instance(context: Gst.Context, instance: VulkanInstance): void;
+        function context_set_vulkan_instance(context: Gst.Context, instance?: VulkanInstance | null): void;
         /**
          * Sets `queue` on `context`
          * @param context a #GstContext
          * @param queue a #GstVulkanQueue
          */
-        function context_set_vulkan_queue(context: Gst.Context, queue: VulkanQueue): void;
+        function context_set_vulkan_queue(context: Gst.Context, queue?: VulkanQueue | null): void;
         function is_vulkan_buffer_memory(mem: Gst.Memory): boolean;
         function is_vulkan_image_memory(mem: Gst.Memory): boolean;
         function is_vulkan_memory(mem: Gst.Memory): boolean;
@@ -322,6 +322,25 @@ declare module 'gi://GstVulkan?version=1.0' {
             display_ptr: VulkanDisplay | null,
             instance_ptr: VulkanInstance,
         ): [boolean, VulkanDisplay | null, VulkanInstance];
+        /**
+         * Perform the steps necessary for retrieving a #GstVulkanDevice from
+         * the surrounding elements or create a new device according to the device_id.
+         *
+         * If the contents of `device_ptr` is not %NULL, then no
+         * #GstContext query is necessary and no #GstVulkanDevice
+         * retrieval is performed.
+         * @param element a #GstElement
+         * @param instance the #GstVulkanInstance
+         * @param device_ptr the resulting #GstVulkanDevice
+         * @param device_id The device number to use, 0 is default.
+         * @returns whether a #GstVulkanDevice exists in @device_ptr
+         */
+        function vulkan_ensure_element_device(
+            element: Gst.Element,
+            instance: VulkanInstance,
+            device_ptr: VulkanDevice | null,
+            device_id: number,
+        ): [boolean, VulkanDevice | null];
         function vulkan_error_quark(): GLib.Quark;
         function vulkan_format_get_aspect(format: Vulkan.Format): number;
         function vulkan_format_get_info(format: Vulkan.Format): VulkanFormatInfo | null;
@@ -546,7 +565,7 @@ declare module 'gi://GstVulkan?version=1.0' {
              */
             COMPLEX,
         }
-        module VulkanBufferMemoryAllocator {
+        namespace VulkanBufferMemoryAllocator {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Allocator.ConstructorProps {}
@@ -565,7 +584,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        module VulkanBufferPool {
+        namespace VulkanBufferPool {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.BufferPool.ConstructorProps {}
@@ -608,7 +627,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             ): void;
         }
 
-        module VulkanCommandPool {
+        namespace VulkanCommandPool {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {}
@@ -647,120 +666,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             unlock(): void;
         }
 
-        module VulkanDecoder {
-            // Constructor properties interface
-
-            interface ConstructorProps extends Gst.Object.ConstructorProps {}
-        }
-
-        class VulkanDecoder extends Gst.Object {
-            static $gtype: GObject.GType<VulkanDecoder>;
-
-            // Fields
-
-            queue: VulkanQueue;
-            codec: number;
-            dedicated_dpb: boolean;
-            layered_dpb: boolean;
-
-            // Constructors
-
-            constructor(properties?: Partial<VulkanDecoder.ConstructorProps>, ...args: any[]);
-
-            _init(...args: any[]): void;
-
-            // Methods
-
-            /**
-             * Appends slices's `data` bitstream into `pic` internal input buffer.
-             * @param pic a #GstVulkanDecoderPicture
-             * @param data slice's bitstream data
-             * @param size the size of @data
-             * @param add_startcode whether add start code
-             * @returns whether the slice @data were added.
-             */
-            append_slice(pic: VulkanDecoderPicture, data: number, size: number, add_startcode: boolean): boolean;
-            /**
-             * Gets the Vulkan decoding capabilities of the current video session.
-             * @returns whether the capabilities were fetched correctly.
-             */
-            caps(): [boolean, VulkanVideoCapabilities];
-            /**
-             * Instantiates an internal Vulkan image pool for driver decoders whose output
-             * buffers cannot be used as DPB buffers.
-             * @param caps the #GstCaps of the DP
-             * @returns whether the pool was created.
-             */
-            create_dpb_pool(caps: Gst.Caps): boolean;
-            /**
-             * Decodes `pic`.
-             * @param pic a #GstVulkanDecoderPicture
-             * @returns whether @pic was decoded correctly. It might fill @error.
-             */
-            decode(pic: VulkanDecoderPicture): boolean;
-            /**
-             * Initializes the decoder at driver level and set its DPB slots to the inactive
-             * state.
-             * @returns whether flush was successful
-             */
-            flush(): boolean;
-            is_started(): boolean;
-            /**
-             * Creates a #GstVulkanImageView for `buf` for decoding, with the internal Ycbcr
-             * sampler, if available.
-             * @param buf a #GstBuffer
-             * @param is_out if @buf is for output or for DPB
-             * @returns the #GstVulkanImageView.
-             */
-            picture_create_view(buf: Gst.Buffer, is_out: boolean): VulkanImageView | null;
-            /**
-             * Initializes `pic` with `out` as output buffer.
-             * @param pic a #GstVulkanDecoderPicture
-             * @param out the #GstBuffer to use as output
-             * @returns whether @pic was initialized.
-             */
-            picture_init(pic: VulkanDecoderPicture, out: Gst.Buffer): boolean;
-            profile_caps(): Gst.Caps;
-            /**
-             * It creates a Vulkan video session for the given `profile`. If an error occurs,
-             * `error` is filled.
-             * @param profile a #GstVulkanVideoProfile
-             * @returns whether the video decoder has started correctly.
-             */
-            start(profile: VulkanVideoProfile): boolean;
-            /**
-             * Destroys the video session created at gst_vulkan_decoder_start() and clean up
-             * the internal objects.
-             * @returns whether the decoder stopped correctly.
-             */
-            stop(): boolean;
-            /**
-             * Update the internal codec parameters for the current video session.
-             * @param params a GstVulkanDecoderParameters union
-             * @returns whether the @params were updated internally. It might fill @error.
-             */
-            update_video_session_parameters(params: VulkanDecoderParameters): boolean;
-            /**
-             * Update the internal Ycbcr sampler for the output images.
-             * @param range whether color components are encoded using the full range of     numerical values or whether values are reserved for headroom and foot     room.
-             * @param xloc x location of downsampled chroma component samples relative to the luma     samples.
-             * @param yloc y location of downsampled chroma component samples relative to the luma     samples.
-             * @returns whether the sampler was updated.
-             */
-            update_ycbcr_sampler(
-                range: Vulkan.SamplerYcbcrRange,
-                xloc: Vulkan.ChromaLocation,
-                yloc: Vulkan.ChromaLocation,
-            ): boolean;
-            /**
-             * Waits indefinitely for decoding fences to signal, and queries the operation
-             * result if available.
-             * @returns whether the wait succeeded in waiting for all the fences to be     freed.
-             */
-            wait(): boolean;
-        }
-
-        module VulkanDescriptorCache {
+        namespace VulkanDescriptorCache {
             // Constructor properties interface
 
             interface ConstructorProps extends VulkanHandlePool.ConstructorProps {}
@@ -788,7 +694,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             acquire(...args: never[]): any;
         }
 
-        module VulkanDescriptorPool {
+        namespace VulkanDescriptorPool {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {}
@@ -820,7 +726,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             get_max_sets(): number;
         }
 
-        module VulkanDevice {
+        namespace VulkanDevice {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {
@@ -895,7 +801,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             enable_layer(name: string): boolean;
             /**
              * Iterate over each queue family available on #GstVulkanDevice
-             * @param func a #GstVulkanDeviceForEachQueueFunc to run for each #GstVulkanQueue
+             * @param func a #GstVulkanDeviceForEachQueueFunc    to run for each #GstVulkanQueue
              */
             foreach_queue(func: VulkanDeviceForEachQueueFunc): void;
             get_instance(): VulkanInstance | null;
@@ -917,12 +823,12 @@ declare module 'gi://GstVulkan?version=1.0' {
             /**
              * Select a compatible queue from the `device` supporting the `expected_flags`.
              * @param expected_flags a VkQueueFlagBits
-             * @returns a #GstVulkanQueue for @queue matching the                           @expected_flags
+             * @returns a #GstVulkanQueue for @queue matching                                      the @expected_flags
              */
-            select_queue(expected_flags: Vulkan.QueueFlagBits): VulkanQueue;
+            select_queue(expected_flags: Vulkan.QueueFlagBits): VulkanQueue | null;
         }
 
-        module VulkanDisplay {
+        namespace VulkanDisplay {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {}
@@ -995,17 +901,16 @@ declare module 'gi://GstVulkan?version=1.0' {
              * Execute `compare_func` over the list of windows stored by `display`.  The
              * first argument to `compare_func` is the #GstVulkanWindow being checked and the
              * second argument is `data`.
-             * @param data some data to pass to @compare_func
              * @param compare_func a comparison function to run
              * @returns The first #GstVulkanWindow that                                      @compare_func matches, or %NULL
              */
-            find_window(data: any | null, compare_func: GLib.CompareFunc): VulkanWindow | null;
+            find_window(compare_func: GLib.CompareFunc): VulkanWindow | null;
             get_handle(): any | null;
             get_handle_type(): VulkanDisplayType;
             remove_window(window: VulkanWindow): boolean;
         }
 
-        module VulkanFenceCache {
+        namespace VulkanFenceCache {
             // Constructor properties interface
 
             interface ConstructorProps extends VulkanHandlePool.ConstructorProps {}
@@ -1023,7 +928,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             static ['new'](device: VulkanDevice): VulkanFenceCache;
         }
 
-        module VulkanFullScreenQuad {
+        namespace VulkanFullScreenQuad {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {}
@@ -1070,6 +975,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             enable_clear(enable_clear: boolean): void;
             fill_command_buffer(cmd: VulkanCommandBuffer, fence: VulkanFence): boolean;
             get_last_fence(): VulkanFence;
+            get_queue(): VulkanQueue | null;
             prepare_draw(fence: VulkanFence): boolean;
             /**
              * You need to enable blend with gst_vulkan_full_screen_quad_enable_blend().
@@ -1102,15 +1008,15 @@ declare module 'gi://GstVulkan?version=1.0' {
              */
             set_index_buffer(indices: Gst.Memory, n_indices: number): boolean;
             set_info(in_info: GstVideo.VideoInfo, out_info: GstVideo.VideoInfo): boolean;
-            set_input_buffer(buffer: Gst.Buffer): boolean;
-            set_output_buffer(buffer: Gst.Buffer): boolean;
+            set_input_buffer(buffer?: Gst.Buffer | null): boolean;
+            set_output_buffer(buffer?: Gst.Buffer | null): boolean;
             set_shaders(vert: VulkanHandle, frag: VulkanHandle): boolean;
             set_uniform_buffer(uniforms: Gst.Memory): boolean;
             set_vertex_buffer(vertices: Gst.Memory): boolean;
             submit(cmd: VulkanCommandBuffer, fence: VulkanFence): boolean;
         }
 
-        module VulkanHandlePool {
+        namespace VulkanHandlePool {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {}
@@ -1159,7 +1065,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             release(handle?: any | null): void;
         }
 
-        module VulkanImageBufferPool {
+        namespace VulkanImageBufferPool {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.BufferPool.ConstructorProps {}
@@ -1187,7 +1093,19 @@ declare module 'gi://GstVulkan?version=1.0' {
             // Static methods
 
             /**
-             * Sets the `usage` and `mem_properties` of the images to setup.
+             * Gets the configuration of the Vulkan image buffer pool.
+             * @param config the #GstStructure with the pool's configuration.
+             */
+            static config_get_allocation_params(
+                config: Gst.Structure,
+            ): [Vulkan.ImageUsageFlags | null, Vulkan.MemoryPropertyFlags | null, Vulkan.ImageLayout | null, number];
+            /**
+             * Sets the `usage` and `mem_properties,` `initial_layout` and `initial_access` of
+             * the images to setup.
+             *
+             * If `initial_access` is VK_IMAGE_LAYOUT_UNDEFINED or
+             * VK_IMAGE_LAYOUT_PREINITIALIZED, the image crated by this pool has not been
+             * initialized to a particular layout
              * @param config the #GstStructure with the pool's configuration.
              * @param usage The Vulkan image usage flags.
              * @param mem_properties Vulkan memory property flags.
@@ -1208,9 +1126,16 @@ declare module 'gi://GstVulkan?version=1.0' {
              * @param caps Upstream decode caps.
              */
             static config_set_decode_caps(config: Gst.Structure, caps: Gst.Caps): void;
+            /**
+             * Encode `caps` are used when the buffers are going to be used either as encoded
+             * src or DPB images.
+             * @param config the #GstStructure with the pool's configuration.
+             * @param caps Upstream encode caps.
+             */
+            static config_set_encode_caps(config: Gst.Structure, caps: Gst.Caps): void;
         }
 
-        module VulkanImageMemoryAllocator {
+        namespace VulkanImageMemoryAllocator {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Allocator.ConstructorProps {}
@@ -1229,11 +1154,11 @@ declare module 'gi://GstVulkan?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        module VulkanInstance {
+        namespace VulkanInstance {
             // Signal callback interfaces
 
             interface CreateDevice {
-                (): VulkanDevice;
+                (device_index: number): VulkanDevice;
             }
 
             // Constructor properties interface
@@ -1277,9 +1202,12 @@ declare module 'gi://GstVulkan?version=1.0' {
             connect(id: string, callback: (...args: any[]) => any): number;
             connect_after(id: string, callback: (...args: any[]) => any): number;
             emit(id: string, ...args: any[]): void;
-            connect(signal: 'create-device', callback: (_source: this) => VulkanDevice): number;
-            connect_after(signal: 'create-device', callback: (_source: this) => VulkanDevice): number;
-            emit(signal: 'create-device'): void;
+            connect(signal: 'create-device', callback: (_source: this, device_index: number) => VulkanDevice): number;
+            connect_after(
+                signal: 'create-device',
+                callback: (_source: this, device_index: number) => VulkanDevice,
+            ): number;
+            emit(signal: 'create-device', device_index: number): void;
 
             // Static methods
 
@@ -1307,6 +1235,7 @@ declare module 'gi://GstVulkan?version=1.0' {
 
             // Methods
 
+            check_api_version(major: number, minor: number, patch: number): boolean;
             /**
              * Check if the configured vulkan instance supports the specified version.
              * Will not work prior to opening the instance with gst_vulkan_instance_open().
@@ -1318,6 +1247,7 @@ declare module 'gi://GstVulkan?version=1.0' {
              */
             check_version(major: number, minor: number, patch: number): boolean;
             create_device(): VulkanDevice;
+            create_device_with_index(device_index: number): VulkanDevice;
             /**
              * Disable an Vulkan extension by `name`.  Disabling an extension will only have
              * an effect before the call to gst_vulkan_instance_open().
@@ -1349,6 +1279,16 @@ declare module 'gi://GstVulkan?version=1.0' {
              */
             fill_info(): boolean;
             /**
+             * Returns the vulkan API version configured when constructing the
+             * #GstVulkanInstance. This value can be any valid Vulkan API version and may
+             * not match gst_vulkan_instance_get_version() in any way.  This version is the
+             * maximum allowed vulkan API to be used in any capacity.
+             *
+             * This will not return valid values until gst_vulkan_instance_open() has been
+             * called.
+             */
+            get_api_version(): [number, number, number];
+            /**
              * Retrieves information about an extension.
              *
              * Will not find any extensions before gst_vulkan_instance_fill_info() has been
@@ -1373,7 +1313,7 @@ declare module 'gi://GstVulkan?version=1.0' {
              */
             get_proc_address(name: string): any | null;
             /**
-             * Retrieve the vulkan instance configured version.  Only returns the supported
+             * Retrieve the vulkan instance supported version.  Only returns the supported
              * API version by the instance without taking into account the requested API
              * version.  This means gst_vulkan_instance_check_version() will return
              * different values if a specific version has been requested (which is the
@@ -1386,7 +1326,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             open(): boolean;
         }
 
-        module VulkanMemoryAllocator {
+        namespace VulkanMemoryAllocator {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Allocator.ConstructorProps {}
@@ -1405,7 +1345,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        module VulkanOperation {
+        namespace VulkanOperation {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {
@@ -1455,6 +1395,7 @@ declare module 'gi://GstVulkan?version=1.0' {
              * it updates the `frame` barrier state by calling internally
              * gst_vulkan_operation_update_frame().
              * @param frame a Vulkan Image #GstBuffer
+             * @param src_stage source pipeline stage (VkPipelineStageFlags or   VkPipelineStageFlags2)
              * @param dst_stage destination pipeline stage (VkPipelineStageFlags or   VkPipelineStageFlags2)
              * @param new_access the new access flags (VkAccessFlags2 or VkAccessFlags)
              * @param new_layout the new VkImageLayout
@@ -1463,6 +1404,7 @@ declare module 'gi://GstVulkan?version=1.0' {
              */
             add_frame_barrier(
                 frame: Gst.Buffer,
+                src_stage: number,
                 dst_stage: number,
                 new_access: number,
                 new_layout: Vulkan.ImageLayout,
@@ -1481,11 +1423,14 @@ declare module 'gi://GstVulkan?version=1.0' {
              */
             begin(): boolean;
             /**
-             * Begins a query operation in the current command buffer.
-             * @param id
+             * Begins a query operation with `id` in the current command buffer. If video maintenance1 extension
+             * is available the query will be recorded as a video inline query. If NULL is passed to `base,`
+             * the query will be recorded as a normal query anyway.
+             * @param base a VkBaseInStructure base
+             * @param id query id
              * @returns whether the begin command was set
              */
-            begin_query(id: number): boolean;
+            begin_query(base: Vulkan.BaseInStructure, id: number): boolean;
             /**
              * Discards barriers, and all the semaphore arrays populated by
              * gst_vulkan_operation_add_dependency_frame().
@@ -1512,8 +1457,9 @@ declare module 'gi://GstVulkan?version=1.0' {
              */
             end(): boolean;
             /**
-             * Ends a query operation in the current command buffer.
-             * @param id
+             * Ends a query operation with `id` in the current command buffer. A query with
+             * `id` has had started with gst_vulkan_operation_begin_query()
+             * @param id query id
              * @returns whether the end command was set
              */
             end_query(id: number): boolean;
@@ -1563,7 +1509,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             wait(): boolean;
         }
 
-        module VulkanPhysicalDevice {
+        namespace VulkanPhysicalDevice {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {
@@ -1604,6 +1550,22 @@ declare module 'gi://GstVulkan?version=1.0' {
             // Methods
 
             /**
+             * Note: This is the intersection of the exposed supported API version as would
+             * be returned by gst_vulkan_physical_device_get_api_version() and
+             * gst_vulkan_instance_check_version().  The latter will take into account any
+             * requested API version and may result in a different result than directly
+             * comparing against gst_vulkan_instance_get_version().
+             * @param major the API major version to check
+             * @param minor the API minor version to check
+             * @param patch the API patch version to check
+             * @returns whether the #GstVulkanPhysicalDevice supports the version specified          by @major, @minor and @patch.
+             */
+            check_api_version(major: number, minor: number, patch: number): boolean;
+            /**
+             * Retrieves the advertised Vulkan API version of the #GstVulkanPhysicalDevice.
+             */
+            get_api_version(): [number, number, number];
+            /**
              * Retrieves information about a device extension.
              *
              * Will not find any extensions before gst_vulkan_instance_fill_info() has been
@@ -1624,7 +1586,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             get_layer_info(name: string): [boolean, string, number, number];
         }
 
-        module VulkanQueue {
+        namespace VulkanQueue {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {}
@@ -1669,12 +1631,6 @@ declare module 'gi://GstVulkan?version=1.0' {
             // Methods
 
             create_command_pool(): VulkanCommandPool;
-            /**
-             * Creates a #GstVulkanDecoder object if `codec` decoding is supported by `queue`
-             * @param codec the VkVideoCodecOperationFlagBitsKHR to decode
-             * @returns the #GstVulkanDecoder object
-             */
-            create_decoder(codec: number): VulkanDecoder | null;
             get_device(): VulkanDevice | null;
             /**
              * Locks the queue for command submission using `vkQueueSubmit()` to meet the
@@ -1689,7 +1645,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             submit_unlock(): void;
         }
 
-        module VulkanSwapper {
+        namespace VulkanSwapper {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {
@@ -1731,7 +1687,7 @@ declare module 'gi://GstVulkan?version=1.0' {
 
             // Methods
 
-            choose_queue(available_queue: VulkanQueue): boolean;
+            choose_queue(available_queue?: VulkanQueue | null): boolean;
             get_supported_caps(): Gst.Caps;
             get_surface_rectangles(): [
                 GstVideo.VideoRectangle | null,
@@ -1742,7 +1698,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             set_caps(caps: Gst.Caps): boolean;
         }
 
-        module VulkanTrashFenceList {
+        namespace VulkanTrashFenceList {
             // Constructor properties interface
 
             interface ConstructorProps extends VulkanTrashList.ConstructorProps {}
@@ -1760,7 +1716,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             static ['new'](): VulkanTrashFenceList;
         }
 
-        module VulkanTrashList {
+        namespace VulkanTrashList {
             // Constructor properties interface
 
             interface ConstructorProps extends VulkanHandlePool.ConstructorProps {}
@@ -1806,7 +1762,7 @@ declare module 'gi://GstVulkan?version=1.0' {
             wait(timeout: number): boolean;
         }
 
-        module VulkanVideoFilter {
+        namespace VulkanVideoFilter {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.BaseTransform.ConstructorProps {}
@@ -1826,9 +1782,15 @@ declare module 'gi://GstVulkan?version=1.0' {
             constructor(properties?: Partial<VulkanVideoFilter.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Methods
+
+            get_device(): VulkanDevice | null;
+            get_instance(): VulkanInstance | null;
+            get_queue(): VulkanQueue | null;
         }
 
-        module VulkanWindow {
+        namespace VulkanWindow {
             // Signal callback interfaces
 
             interface Close {
@@ -2101,37 +2063,6 @@ declare module 'gi://GstVulkan?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        type VulkanDecoderClass = typeof VulkanDecoder;
-        /**
-         * It contains the whole state for decoding a single picture.
-         */
-        class VulkanDecoderPicture {
-            static $gtype: GObject.GType<VulkanDecoderPicture>;
-
-            // Fields
-
-            slice_offs: any[];
-
-            // Constructors
-
-            _init(...args: any[]): void;
-
-            // Methods
-
-            /**
-             * Releases the internal resource of `pic`.
-             */
-            release(): void;
-        }
-
-        abstract class VulkanDecoderPrivate {
-            static $gtype: GObject.GType<VulkanDecoderPrivate>;
-
-            // Constructors
-
-            _init(...args: any[]): void;
-        }
-
         type VulkanDescriptorCacheClass = typeof VulkanDescriptorCache;
         abstract class VulkanDescriptorCachePrivate {
             static $gtype: GObject.GType<VulkanDescriptorCachePrivate>;
@@ -2189,6 +2120,30 @@ declare module 'gi://GstVulkan?version=1.0' {
             _init(...args: any[]): void;
         }
 
+        /**
+         * Encoder query result. Expected to be used in gst_vulkan_operation_get_query()
+         */
+        class VulkanEncodeQueryResult {
+            static $gtype: GObject.GType<VulkanEncodeQueryResult>;
+
+            // Fields
+
+            offset: number;
+            data_size: number;
+            status: number;
+
+            // Constructors
+
+            constructor(
+                properties?: Partial<{
+                    offset: number;
+                    data_size: number;
+                    status: number;
+                }>,
+            );
+            _init(...args: any[]): void;
+        }
+
         class VulkanFence {
             static $gtype: GObject.GType<VulkanFence>;
 
@@ -2231,6 +2186,18 @@ declare module 'gi://GstVulkan?version=1.0' {
             poffset: Uint8Array;
             w_sub: Uint8Array;
             h_sub: Uint8Array;
+
+            // Constructors
+
+            _init(...args: any[]): void;
+        }
+
+        class VulkanFormatMap {
+            static $gtype: GObject.GType<VulkanFormatMap>;
+
+            // Fields
+
+            format: GstVideo.VideoFormat;
 
             // Constructors
 
@@ -2523,14 +2490,14 @@ declare module 'gi://GstVulkan?version=1.0' {
             // Fields
 
             video: number;
-            query: boolean;
+            query_result_status: boolean;
 
             // Constructors
 
             constructor(
                 properties?: Partial<{
                     video: number;
-                    query: boolean;
+                    query_result_status: boolean;
                 }>,
             );
             _init(...args: any[]): void;
@@ -2615,17 +2582,6 @@ declare module 'gi://GstVulkan?version=1.0' {
         type VulkanWindowClass = typeof VulkanWindow;
         abstract class VulkanWindowPrivate {
             static $gtype: GObject.GType<VulkanWindowPrivate>;
-
-            // Constructors
-
-            _init(...args: any[]): void;
-        }
-
-        /**
-         * Codec specific parameters.
-         */
-        class VulkanDecoderParameters {
-            static $gtype: GObject.GType<VulkanDecoderParameters>;
 
             // Constructors
 

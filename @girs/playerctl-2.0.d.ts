@@ -101,7 +101,7 @@ declare module 'gi://Playerctl?version=2.0' {
          * @returns A list of player names.
          */
         function list_players(): PlayerName[];
-        module Player {
+        namespace Player {
             // Signal callback interfaces
 
             interface Exit {
@@ -362,7 +362,7 @@ declare module 'gi://Playerctl?version=2.0' {
             stop(): void;
         }
 
-        module PlayerManager {
+        namespace PlayerManager {
             // Signal callback interfaces
 
             interface NameAppeared {

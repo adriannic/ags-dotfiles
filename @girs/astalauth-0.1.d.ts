@@ -28,7 +28,7 @@ declare module 'gi://AstalAuth?version=0.1' {
         const MICRO_VERSION: number;
         const MINOR_VERSION: number;
         const VERSION: string;
-        module Pam {
+        namespace Pam {
             // Signal callback interfaces
 
             interface AuthError {

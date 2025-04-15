@@ -2,6 +2,7 @@
 /// <reference path="./xlib-2.0.d.ts" />
 /// <reference path="./gdk-3.0.d.ts" />
 /// <reference path="./cairo-1.0.d.ts" />
+/// <reference path="./cairo.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
 /// <reference path="./pango-1.0.d.ts" />
@@ -26,7 +27,7 @@ declare module 'gi://AyatanaAppIndicator3?version=0.1' {
     import type Gtk from 'gi://Gtk?version=3.0';
     import type xlib from 'gi://xlib?version=2.0';
     import type Gdk from 'gi://Gdk?version=3.0';
-    import type cairo from 'gi://cairo?version=1.0';
+    import type cairo from 'cairo';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
     import type Pango from 'gi://Pango?version=1.0';
@@ -136,7 +137,7 @@ declare module 'gi://AyatanaAppIndicator3?version=0.1' {
          * String identifier for the #AppIndicator::scroll-event signal.
          */
         const INDICATOR_SIGNAL_SCROLL_EVENT: string;
-        module Indicator {
+        namespace Indicator {
             // Signal callback interfaces
 
             interface ConnectionChanged {
@@ -407,13 +408,46 @@ declare module 'gi://AyatanaAppIndicator3?version=0.1' {
 
             // Virtual methods
 
+            /**
+             * Slot for #AppIndicator::connection-changed.
+             * @param connected
+             */
             vfunc_connection_changed(connected: boolean): void;
+            /**
+             * Slot for #AppIndicator::new-attention-icon.
+             */
             vfunc_new_attention_icon(): void;
+            /**
+             * Slot for #AppIndicator::new-icon.
+             */
             vfunc_new_icon(): void;
+            /**
+             * Slot for #AppIndicator::new-icon-theme-path
+             * @param icon_theme_path
+             */
             vfunc_new_icon_theme_path(icon_theme_path: string): void;
+            /**
+             * Slot for #AppIndicator::new-label.
+             * @param label
+             * @param guide
+             */
             vfunc_new_label(label: string, guide: string): void;
+            /**
+             * Slot for #AppIndicator::new-status.
+             * @param status
+             */
             vfunc_new_status(status: string): void;
+            /**
+             * Slot for #AppIndicator::scroll-event
+             * @param delta
+             * @param direction
+             */
             vfunc_scroll_event(delta: number, direction: Gdk.ScrollDirection): void;
+            /**
+             * The function that gets called if an Application
+             *              Indicator area appears after the fallback has been created.
+             * @param status_icon
+             */
             vfunc_unfallback(status_icon: Gtk.StatusIcon): void;
 
             // Methods

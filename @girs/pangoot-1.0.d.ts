@@ -3,6 +3,7 @@
 /// <reference path="./fontconfig-2.0.d.ts" />
 /// <reference path="./pango-1.0.d.ts" />
 /// <reference path="./cairo-1.0.d.ts" />
+/// <reference path="./cairo.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
 /// <reference path="./harfbuzz-0.0.d.ts" />
@@ -24,7 +25,7 @@ declare module 'gi://PangoOT?version=1.0' {
     import type PangoFc from 'gi://PangoFc?version=1.0';
     import type fontconfig from 'gi://fontconfig?version=2.0';
     import type Pango from 'gi://Pango?version=1.0';
-    import type cairo from 'gi://cairo?version=1.0';
+    import type cairo from 'cairo';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
     import type HarfBuzz from 'gi://HarfBuzz?version=0.0';
@@ -137,7 +138,7 @@ declare module 'gi://PangoOT?version=1.0' {
          * @returns `PangoScript` corresponding to @script_tag or %PANGO_SCRIPT_UNKNOWN if none found.
          */
         function tag_to_script(script_tag: Tag): Pango.Script;
-        module Info {
+        namespace Info {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -247,7 +248,7 @@ declare module 'gi://PangoOT?version=1.0' {
             list_scripts(table_type: TableType | null): Tag;
         }
 
-        module Ruleset {
+        namespace Ruleset {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}

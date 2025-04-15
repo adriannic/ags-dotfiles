@@ -276,6 +276,12 @@ declare module 'gi://GstVideo?version=1.0' {
              * An event cancelling all currently active touch points.
              */
             TOUCH_CANCEL,
+            /**
+             * A mouse button double click event.
+             * Use gst_navigation_event_parse_mouse_button_event() to extract the details
+             * from the event.
+             */
+            MOUSE_DOUBLE_CLICK,
         }
         /**
          * A set of notifications that may be received on the bus when navigation
@@ -1481,6 +1487,26 @@ declare module 'gi://GstVideo?version=1.0' {
              * packed RGB with alpha, 8 bits per channel
              */
             RBGA,
+            /**
+             * packed 4:2:2 YUV, 16 bits per channel (Y-U-Y-V)
+             */
+            Y216_LE,
+            /**
+             * packed 4:2:2 YUV, 16 bits per channel (Y-U-Y-V)
+             */
+            Y216_BE,
+            /**
+             * packed 4:4:4:4 YUV, 16 bits per channel(U-Y-V-A)
+             */
+            Y416_LE,
+            /**
+             * packed 4:4:4:4 YUV, 16 bits per channel(U-Y-V-A)
+             */
+            Y416_BE,
+            /**
+             * 10-bit grayscale, packed into 16bit words (6 bits left padding)
+             */
+            GRAY10_LE16,
         }
         /**
          * The orientation of the GL texture.
@@ -1850,11 +1876,11 @@ declare module 'gi://GstVideo?version=1.0' {
              */
             static VERT: number;
             /**
-             * Flip across upper left/lower right diagonal
+             * Rotate counter-clockwise 90 degrees and flip vertically
              */
             static UL_LR: number;
             /**
-             * Flip across upper right/lower left diagonal
+             * Rotate clockwise 90 degrees and flip vertically
              */
             static UR_LL: number;
             /**
@@ -2368,6 +2394,10 @@ declare module 'gi://GstVideo?version=1.0' {
          * passthrough template caps.
          */
         const VIDEO_FORMATS_ANY_STR: string;
+        /**
+         * Number of video formats in #GstVideoFormat.
+         */
+        const VIDEO_FORMAT_LAST: number;
         const VIDEO_FPS_RANGE: string;
         const VIDEO_MAX_COMPONENTS: number;
         const VIDEO_MAX_PLANES: number;
@@ -2624,7 +2654,7 @@ declare module 'gi://GstVideo?version=1.0' {
         function buffer_add_video_sei_user_data_unregistered_meta(
             buffer: Gst.Buffer,
             uuid: number,
-            data: number,
+            data: number | null,
             size: number,
         ): VideoSEIUserDataUnregisteredMeta;
         /**
@@ -2771,6 +2801,20 @@ declare module 'gi://GstVideo?version=1.0' {
          * @returns a new #GstEvent
          */
         function navigation_event_new_mouse_button_release(
+            button: number,
+            x: number,
+            y: number,
+            state: NavigationModifierType | null,
+        ): Gst.Event;
+        /**
+         * Create a new navigation event for the given key mouse double click.
+         * @param button The number of the pressed mouse button.
+         * @param x The x coordinate of the mouse cursor.
+         * @param y The y coordinate of the mouse cursor.
+         * @param state a bit-mask representing the state of the modifier keys (e.g. Control, Shift and Alt).
+         * @returns a new #GstEvent
+         */
+        function navigation_event_new_mouse_double_click(
             button: number,
             x: number,
             y: number,
@@ -3302,6 +3346,23 @@ declare module 'gi://GstVideo?version=1.0' {
         function video_crop_meta_api_get_type(): GObject.GType;
         function video_crop_meta_get_info(): Gst.MetaInfo;
         /**
+         * Converting the video format into dma drm fourcc/modifier pair.
+         * If no matching fourcc found, then DRM_FORMAT_INVALID is returned
+         * and `modifier` will be set to DRM_FORMAT_MOD_INVALID.
+         * @param format a #GstVideoFormat
+         * @param modifier return location for the modifier
+         * @returns the DRM_FORMAT_* corresponding to @format.
+         */
+        function video_dma_drm_format_from_gst_format(format: VideoFormat | null, modifier?: number | null): number;
+        /**
+         * Converting a dma drm fourcc and modifier pair into a #GstVideoFormat. If
+         * no matching video format is found, then GST_VIDEO_FORMAT_UNKNOWN is returned.
+         * @param fourcc the dma drm fourcc value.
+         * @param modifier the dma drm modifier.
+         * @returns the GST_VIDEO_FORMAT_* corresponding to the @fourcc and @modifier          pair.
+         */
+        function video_dma_drm_format_to_gst_format(fourcc: number, modifier: number): VideoFormat;
+        /**
          * Converting the video format into dma drm fourcc. If no
          * matching fourcc found, then DRM_FORMAT_INVALID is returned.
          * @param format a #GstVideoFormat
@@ -3497,8 +3558,10 @@ declare module 'gi://GstVideo?version=1.0' {
          */
         function video_format_to_fourcc(format: VideoFormat | null): number;
         /**
-         * Returns a string containing a descriptive name for
-         * the #GstVideoFormat if there is one, or NULL otherwise.
+         * Returns a string containing a descriptive name for the #GstVideoFormat.
+         *
+         * Since 1.26 this can also be used with %GST_VIDEO_FORMAT_UNKNOWN, previous
+         * versions were printing a critical warning and returned %NULL.
          * @param format a #GstVideoFormat video format
          * @returns the name corresponding to @format
          */
@@ -4133,7 +4196,7 @@ declare module 'gi://GstVideo?version=1.0' {
              */
             V_COSITED,
             /**
-             * choma samples are sited on alternate lines
+             * chroma samples are sited on alternate lines
              */
             ALT_LINE,
             /**
@@ -4598,7 +4661,7 @@ declare module 'gi://GstVideo?version=1.0' {
              */
             INTERLACED,
         }
-        module ColorBalanceChannel {
+        namespace ColorBalanceChannel {
             // Signal callback interfaces
 
             interface ValueChanged {
@@ -4648,7 +4711,7 @@ declare module 'gi://GstVideo?version=1.0' {
             vfunc_value_changed(value: number): void;
         }
 
-        module VideoAggregator {
+        namespace VideoAggregator {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.Aggregator.ConstructorProps {
@@ -4739,7 +4802,7 @@ declare module 'gi://GstVideo?version=1.0' {
             get_execution_task_pool(): Gst.TaskPool;
         }
 
-        module VideoAggregatorConvertPad {
+        namespace VideoAggregatorConvertPad {
             // Constructor properties interface
 
             interface ConstructorProps extends VideoAggregatorPad.ConstructorProps {
@@ -4782,7 +4845,7 @@ declare module 'gi://GstVideo?version=1.0' {
             update_conversion_info(): void;
         }
 
-        module VideoAggregatorPad {
+        namespace VideoAggregatorPad {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.AggregatorPad.ConstructorProps {
@@ -4906,7 +4969,7 @@ declare module 'gi://GstVideo?version=1.0' {
             set_needs_alpha(needs_alpha: boolean): void;
         }
 
-        module VideoAggregatorParallelConvertPad {
+        namespace VideoAggregatorParallelConvertPad {
             // Constructor properties interface
 
             interface ConstructorProps extends VideoAggregatorConvertPad.ConstructorProps {}
@@ -4927,7 +4990,7 @@ declare module 'gi://GstVideo?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        module VideoBufferPool {
+        namespace VideoBufferPool {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.BufferPool.ConstructorProps {}
@@ -4949,7 +5012,7 @@ declare module 'gi://GstVideo?version=1.0' {
             static ['new'](): VideoBufferPool;
         }
 
-        module VideoDecoder {
+        namespace VideoDecoder {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Element.ConstructorProps {
@@ -5699,7 +5762,7 @@ declare module 'gi://GstVideo?version=1.0' {
             set_use_default_pad_acceptcaps(use: boolean): void;
         }
 
-        module VideoEncoder {
+        namespace VideoEncoder {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Element.ConstructorProps, Gst.Preset.ConstructorProps {
@@ -5965,11 +6028,25 @@ declare module 'gi://GstVideo?version=1.0' {
              */
             allocate_output_frame(frame: VideoCodecFrame, size: number): Gst.FlowReturn;
             /**
+             * Removes `frame` from the list of pending frames, releases it
+             * and posts a QoS message with the frame's details on the bus.
+             * Similar to calling gst_video_encoder_finish_frame() without a buffer
+             * attached to `frame,` but this function additionally stores events
+             * from `frame` as pending, to be pushed out alongside the next frame
+             * submitted via gst_video_encoder_finish_frame().
+             * @param frame a #GstVideoCodecFrame
+             */
+            drop_frame(frame: VideoCodecFrame): void;
+            /**
              * `frame` must have a valid encoded data buffer, whose metadata fields
              * are then appropriately set according to frame data or no buffer at
              * all if the frame should be dropped.
              * It is subsequently pushed downstream or provided to `pre_push`.
              * In any case, the frame is considered finished and released.
+             *
+             * If `frame` does not have a buffer attached, it will be dropped, and
+             * a QoS message will be posted on the bus. Events from `frame` will be
+             * pushed out immediately.
              *
              * After calling this function the output buffer of the frame is to be
              * considered read-only. This function will also change the metadata
@@ -6078,6 +6155,14 @@ declare module 'gi://GstVideo?version=1.0' {
              * @returns a #GstCaps owned by caller
              */
             proxy_getcaps(caps?: Gst.Caps | null, filter?: Gst.Caps | null): Gst.Caps;
+            /**
+             * Removes `frame` from list of pending frames and releases it, similar
+             * to calling gst_video_encoder_finish_frame() without a buffer attached
+             * to the frame, but does not post a QoS message or do any additional
+             * processing. Events from `frame` are moved to the pending events list.
+             * @param frame a #GstVideoCodecFrame
+             */
+            release_frame(frame: VideoCodecFrame): void;
             /**
              * Set the codec headers to be sent downstream whenever requested.
              * @param headers a list of #GstBuffer containing the codec header
@@ -6361,7 +6446,21 @@ declare module 'gi://GstVideo?version=1.0' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -6491,7 +6590,12 @@ declare module 'gi://GstVideo?version=1.0' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -6641,14 +6745,34 @@ declare module 'gi://GstVideo?version=1.0' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module VideoFilter {
+        namespace VideoFilter {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.BaseTransform.ConstructorProps {}
@@ -6708,7 +6832,7 @@ declare module 'gi://GstVideo?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        module VideoSink {
+        namespace VideoSink {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.BaseSink.ConstructorProps {
@@ -7962,8 +8086,12 @@ declare module 'gi://GstVideo?version=1.0' {
          * - padding-bottom (uint): extra pixels on the bottom
          * - padding-left (uint): extra pixels on the left side
          * - padding-right (uint): extra pixels on the right side
-         * The padding fields have the same semantic as #GstVideoMeta.alignment
-         * and so represent the paddings requested on produced video buffers.
+         * - stride-align0 (uint): stride align requirements for plane 0
+         * - stride-align1 (uint): stride align requirements for plane 1
+         * - stride-align2 (uint): stride align requirements for plane 2
+         * - stride-align3 (uint): stride align requirements for plane 3
+         * The padding and stride-align fields have the same semantic as #GstVideoMeta.alignment
+         * and so represent the paddings and stride-align requested on produced video buffers.
          *
          * Since 1.24 it can be serialized using gst_meta_serialize() and
          * gst_meta_deserialize().
@@ -8932,7 +9060,7 @@ declare module 'gi://GstVideo?version=1.0' {
             get_ancillary(): [VideoVBIParserResult, VideoAncillary];
         }
 
-        module ColorBalance {
+        namespace ColorBalance {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -9033,7 +9161,7 @@ declare module 'gi://GstVideo?version=1.0' {
             new (): ColorBalance; // This allows `obj instanceof ColorBalance`
         };
 
-        module Navigation {
+        namespace Navigation {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -9092,6 +9220,19 @@ declare module 'gi://GstVideo?version=1.0' {
              * @param state a bit-mask representing the state of the modifier keys (e.g. Control, Shift and Alt).
              */
             event_new_mouse_button_release(
+                button: number,
+                x: number,
+                y: number,
+                state: NavigationModifierType,
+            ): Gst.Event;
+            /**
+             * Create a new navigation event for the given key mouse double click.
+             * @param button The number of the pressed mouse button.
+             * @param x The x coordinate of the mouse cursor.
+             * @param y The y coordinate of the mouse cursor.
+             * @param state a bit-mask representing the state of the modifier keys (e.g. Control, Shift and Alt).
+             */
+            event_new_mouse_double_click(
                 button: number,
                 x: number,
                 y: number,
@@ -9354,7 +9495,7 @@ declare module 'gi://GstVideo?version=1.0' {
              * are sent relative to the display space of the related output area. This is
              * usually the size in pixels of the window associated with the element
              * implementing the #GstNavigation interface.
-             * @param event The type of mouse event, as a text string. Recognised values are "mouse-button-press", "mouse-button-release" and "mouse-move".
+             * @param event The type of mouse event, as a text string. Recognised values are "mouse-button-press", "mouse-button-release", "mouse-move" and "mouse-double-click".
              * @param button The button number of the button being pressed or released. Pass 0 for mouse-move events.
              * @param x The x coordinate of the mouse event.
              * @param y The y coordinate of the mouse event.
@@ -9390,7 +9531,7 @@ declare module 'gi://GstVideo?version=1.0' {
             new (): Navigation; // This allows `obj instanceof Navigation`
         };
 
-        module VideoDirection {
+        namespace VideoDirection {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -9416,7 +9557,7 @@ declare module 'gi://GstVideo?version=1.0' {
             new (): VideoDirection; // This allows `obj instanceof VideoDirection`
         };
 
-        module VideoOrientation {
+        namespace VideoOrientation {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -9525,7 +9666,7 @@ declare module 'gi://GstVideo?version=1.0' {
             new (): VideoOrientation; // This allows `obj instanceof VideoOrientation`
         };
 
-        module VideoOverlay {
+        namespace VideoOverlay {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}

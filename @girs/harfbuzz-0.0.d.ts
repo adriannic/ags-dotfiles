@@ -29,11 +29,26 @@ declare module 'gi://HarfBuzz?version=0.0' {
          *
          * In `HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES,` non-base
          * characters are merged into the cluster of the base character that precedes them.
+         * There is also cluster merging every time the clusters will otherwise become non-monotone.
          *
          * In `HB_BUFFER_CLUSTER_LEVEL_MONOTONE_CHARACTERS,` non-base characters are initially
          * assigned their own cluster values, which are not merged into preceding base
          * clusters. This allows HarfBuzz to perform additional operations like reorder
-         * sequences of adjacent marks.
+         * sequences of adjacent marks. The output is still monotone, but the cluster
+         * values are more granular.
+         *
+         * In `HB_BUFFER_CLUSTER_LEVEL_CHARACTERS,` non-base characters are assigned their
+         * own cluster values, which are not merged into preceding base clusters. Moreover,
+         * the cluster values are not merged into monotone order. This is the most granular
+         * cluster level, and it is useful for clients that need to know the exact cluster
+         * values of each character, but is harder to use for clients, since clusters
+         * might appear in any order.
+         *
+         * In `HB_BUFFER_CLUSTER_LEVEL_GRAPHEMES,` non-base characters are merged into the
+         * cluster of the base character that precedes them. This is similar to the Unicode
+         * Grapheme Cluster algorithm, but it is not exactly the same. The output is
+         * not forced to be monotone. This is useful for clients that want to use HarfBuzz
+         * as a cheap implementation of the Unicode Grapheme Cluster algorithm.
          *
          * `HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES` is the default, because it maintains
          * backward compatibility with older versions of HarfBuzz. New client programs that
@@ -48,11 +63,26 @@ declare module 'gi://HarfBuzz?version=0.0' {
          *
          * In `HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES,` non-base
          * characters are merged into the cluster of the base character that precedes them.
+         * There is also cluster merging every time the clusters will otherwise become non-monotone.
          *
          * In `HB_BUFFER_CLUSTER_LEVEL_MONOTONE_CHARACTERS,` non-base characters are initially
          * assigned their own cluster values, which are not merged into preceding base
          * clusters. This allows HarfBuzz to perform additional operations like reorder
-         * sequences of adjacent marks.
+         * sequences of adjacent marks. The output is still monotone, but the cluster
+         * values are more granular.
+         *
+         * In `HB_BUFFER_CLUSTER_LEVEL_CHARACTERS,` non-base characters are assigned their
+         * own cluster values, which are not merged into preceding base clusters. Moreover,
+         * the cluster values are not merged into monotone order. This is the most granular
+         * cluster level, and it is useful for clients that need to know the exact cluster
+         * values of each character, but is harder to use for clients, since clusters
+         * might appear in any order.
+         *
+         * In `HB_BUFFER_CLUSTER_LEVEL_GRAPHEMES,` non-base characters are merged into the
+         * cluster of the base character that precedes them. This is similar to the Unicode
+         * Grapheme Cluster algorithm, but it is not exactly the same. The output is
+         * not forced to be monotone. This is useful for clients that want to use HarfBuzz
+         * as a cheap implementation of the Unicode Grapheme Cluster algorithm.
          *
          * `HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES` is the default, because it maintains
          * backward compatibility with older versions of HarfBuzz. New client programs that
@@ -77,6 +107,10 @@ declare module 'gi://HarfBuzz?version=0.0' {
              * Don't group cluster values.
              */
             CHARACTERS,
+            /**
+             * Only group clusters, but don't enforce monotone order.
+             */
+            GRAPHEMES,
             /**
              * Default cluster level,
              *   equal to `HB_BUFFER_CLUSTER_LEVEL_MONOTONE_GRAPHEMES`.
@@ -1559,7 +1593,7 @@ declare module 'gi://HarfBuzz?version=0.0' {
          * @param buffer An #hb_buffer_t
          * @param source source #hb_buffer_t
          * @param start start index into source buffer to copy.  Use 0 to copy from start of buffer.
-         * @param end end index into source buffer to copy.  Use @HB_FEATURE_GLOBAL_END to copy to end of buffer.
+         * @param end end index into source buffer to copy.  Use @UINT_MAX (or ((unsigned int) -1)) to copy to end of buffer.
          */
         function buffer_append(buffer: buffer_t, source: buffer_t, start: number, end: number): void;
         /**
@@ -1587,7 +1621,7 @@ declare module 'gi://HarfBuzz?version=0.0' {
          * @param buf string to deserialize
          * @param font font for getting glyph IDs
          * @param format the #hb_buffer_serialize_format_t of the input @buf
-         * @returns `true` if parse was successful, `false` if an error occurred.
+         * @returns `true` if the full string was parsed, `false` otherwise.
          */
         function buffer_deserialize_glyphs(
             buffer: buffer_t,
@@ -1601,7 +1635,7 @@ declare module 'gi://HarfBuzz?version=0.0' {
          * @param buffer an #hb_buffer_t buffer.
          * @param buf string to deserialize
          * @param format the #hb_buffer_serialize_format_t of the input @buf
-         * @returns `true` if parse was successful, `false` if an error occurred.
+         * @returns `true` if the full string was parsed, `false` otherwise.
          */
         function buffer_deserialize_unicode(
             buffer: buffer_t,
@@ -2135,6 +2169,14 @@ declare module 'gi://HarfBuzz?version=0.0' {
          */
         function buffer_set_unicode_funcs(buffer: buffer_t, unicode_funcs: unicode_funcs_t): void;
         /**
+         * Allocates `nmemb` elements of `size` bytes each, initialized to zero,
+         * using the allocator set at compile-time. Typically just calloc().
+         * @param nmemb The number of elements to allocate.
+         * @param size The size of each element.
+         * @returns A pointer to the allocated memory.
+         */
+        function calloc(nmemb: number, size: number): any | null;
+        /**
          * Fetches the alpha channel of the given `color`.
          * @param color an #hb_color_t we are interested in its channels.
          * @returns Alpha channel value
@@ -2447,6 +2489,24 @@ declare module 'gi://HarfBuzz?version=0.0' {
          */
         function face_create_from_file_or_fail(file_name: string, index: number): face_t;
         /**
+         * A thin wrapper around the face loader functions registered with HarfBuzz.
+         * If `loader_name` is `NULL` or the empty string, the first available loader
+         * is used.
+         *
+         * For example, the FreeType ("ft") loader might be able to load
+         * WOFF and WOFF2 files if FreeType is built with those features,
+         * whereas the OpenType ("ot") loader will not.
+         * @param file_name A font filename
+         * @param index The index of the face within the file
+         * @param loader_name The name of the loader to use, or `NULL`
+         * @returns The new face object, or `NULL` if the file cannot be read or the loader fails to load the face.
+         */
+        function face_create_from_file_or_fail_using(
+            file_name: string,
+            index: number,
+            loader_name?: string | null,
+        ): face_t;
+        /**
          * Like hb_face_create(), but returns `NULL` if the blob data
          * contains no usable font face at the specified index.
          * @param blob #hb_blob_t to work upon
@@ -2454,6 +2514,20 @@ declare module 'gi://HarfBuzz?version=0.0' {
          * @returns The new face object, or `NULL` if no face is found at the specified index.
          */
         function face_create_or_fail(blob: blob_t, index: number): face_t;
+        /**
+         * A thin wrapper around the face loader functions registered with HarfBuzz.
+         * If `loader_name` is `NULL` or the empty string, the first available loader
+         * is used.
+         *
+         * For example, the FreeType ("ft") loader might be able to load
+         * WOFF and WOFF2 files if FreeType is built with those features,
+         * whereas the OpenType ("ot") loader will not.
+         * @param blob #hb_blob_t to work upon
+         * @param index The index of the face within @blob
+         * @param loader_name The name of the loader to use, or `NULL`
+         * @returns The new face object, or `NULL` if the loader fails to load the face.
+         */
+        function face_create_or_fail_using(blob: blob_t, index: number, loader_name?: string | null): face_t;
         /**
          * Fetches the singleton empty face object.
          * @returns The empty face object
@@ -2497,21 +2571,28 @@ declare module 'gi://HarfBuzz?version=0.0' {
          */
         function face_is_immutable(face: face_t): bool_t;
         /**
+         * Retrieves the list of face loaders supported by HarfBuzz.
+         * @returns a    `NULL`-terminated array of supported face loaders    constant strings. The returned array is owned by HarfBuzz    and should not be modified or freed.
+         */
+        function face_list_loaders(): string[];
+        /**
          * Makes the given face object immutable.
          * @param face A face object
          */
         function face_make_immutable(face: face_t): void;
         /**
-         * Fetches a pointer to the binary blob that contains the
-         * specified face. Returns an empty blob if referencing face data is not
-         * possible.
+         * Fetches a pointer to the binary blob that contains the specified face.
+         * If referencing the face data is not possible, this function creates a blob
+         * out of individual table blobs if hb_face_get_table_tags() works with this
+         * face, otherwise it returns an empty blob.
          * @param face A face object
          * @returns A pointer to the blob for @face
          */
         function face_reference_blob(face: face_t): blob_t;
         /**
          * Fetches a reference to the specified table within
-         * the specified face.
+         * the specified face. Returns an empty blob if referencing table data is not
+         * possible.
          * @param face A face object
          * @param tag The #hb_tag_t of the table to query
          * @returns A pointer to the @tag table within @face
@@ -2600,6 +2681,9 @@ declare module 'gi://HarfBuzz?version=0.0' {
          * Converts a #hb_feature_t into a `NULL`-terminated string in the format
          * understood by hb_feature_from_string(). The client in responsible for
          * allocating big enough size for `buf,` 128 bytes is more than enough.
+         *
+         * Note that the feature value will be omitted if it is '1', but the
+         * string won't include any whitespace.
          * @param feature an #hb_feature_t to convert
          */
         function feature_to_string(feature: feature_t): string[];
@@ -3356,6 +3440,11 @@ declare module 'gi://HarfBuzz?version=0.0' {
          */
         function font_is_immutable(font: font_t): bool_t;
         /**
+         * Retrieves the list of font functions supported by HarfBuzz.
+         * @returns a    `NULL`-terminated array of supported font functions    constant strings. The returned array is owned by HarfBuzz    and should not be modified or freed.
+         */
+        function font_list_funcs(): string[];
+        /**
          * Makes `font` immutable.
          * @param font #hb_font_t to work upon
          */
@@ -3391,6 +3480,18 @@ declare module 'gi://HarfBuzz?version=0.0' {
          * @param face The #hb_face_t to assign
          */
         function font_set_face(font: font_t, face: face_t): void;
+        /**
+         * Sets the font-functions structure to use for a font, based on the
+         * specified name.
+         *
+         * If `name` is `NULL` or the empty string, the default (first) functioning font-functions
+         * are used.  This default can be changed by setting the `HB_FONT_FUNCS` environment
+         * variable to the name of the desired font-functions.
+         * @param font #hb_font_t to work upon
+         * @param name The name of the font-functions structure to use, or `NULL`
+         * @returns `true` if the font-functions was found and set, `false` otherwise
+         */
+        function font_set_funcs_using(font: font_t, name: string): bool_t;
         /**
          * Sets the parent font of `font`.
          * @param font #hb_font_t to work upon
@@ -3559,6 +3660,12 @@ declare module 'gi://HarfBuzz?version=0.0' {
             y: position_t,
         ): [position_t, position_t];
         /**
+         * Frees the memory pointed to by `ptr,` using the allocator set at
+         * compile-time. Typically just free().
+         * @param ptr The pointer to the memory to free.
+         */
+        function free(ptr?: any | null): void;
+        /**
          * Creates an #hb_face_t face object from the specified FT_Face.
          *
          * Note that this is using the FT_Face object just to get at the underlying
@@ -3579,10 +3686,23 @@ declare module 'gi://HarfBuzz?version=0.0' {
         function ft_face_create_cached(ft_face: freetype2.Face): face_t;
         /**
          * Creates an #hb_face_t face object from the specified
+         * font blob and face index.
+         *
+         * This is similar in functionality to hb_face_create_from_blob_or_fail(),
+         * but uses the FreeType library for loading the font blob. This can
+         * be useful, for example, to load WOFF and WOFF2 font data.
+         * @param blob A blob
+         * @param index The index of the face within the blob
+         * @returns The new face object, or `NULL` if loading fails (eg. blob does not contain valid font data).
+         */
+        function ft_face_create_from_blob_or_fail(blob: blob_t, index: number): face_t;
+        /**
+         * Creates an #hb_face_t face object from the specified
          * font file and face index.
          *
          * This is similar in functionality to hb_face_create_from_file_or_fail(),
-         * but uses the FreeType library for loading the font file.
+         * but uses the FreeType library for loading the font file. This can
+         * be useful, for example, to load WOFF and WOFF2 font data.
          * @param file_name A font filename
          * @param index The index of the face within the file
          * @returns The new face object, or `NULL` if no face is found at the specified index or the file cannot be read.
@@ -3683,6 +3803,10 @@ declare module 'gi://HarfBuzz?version=0.0' {
          * This function should be called after changing the size or
          * variation-axis settings on the `font`.
          * This call is fast if nothing has changed on `font`.
+         *
+         * Note that as of version 11.0.0, calling this function is not necessary,
+         * as HarfBuzz will automatically detect changes to the font and update
+         * the underlying FT_Face as needed.
          * @param font #hb_font_t to work upon
          * @returns true if changed, false otherwise
          */
@@ -3754,6 +3878,13 @@ declare module 'gi://HarfBuzz?version=0.0' {
          * @returns A `NULL`-terminated string representing the @language. Must not be freed by the caller.
          */
         function language_to_string(language: language_t): string;
+        /**
+         * Allocates `size` bytes of memory, using the allocator set at
+         * compile-time. Typically just malloc().
+         * @param size The size of the memory to allocate.
+         * @returns A pointer to the allocated memory.
+         */
+        function malloc(size: number): any | null;
         /**
          * Tests whether memory allocation for a set was successful.
          * @param map A map
@@ -4905,6 +5036,13 @@ declare module 'gi://HarfBuzz?version=0.0' {
          */
         function ot_shape_plan_collect_lookups(shape_plan: shape_plan_t, table_tag: tag_t): set_t;
         /**
+         * Fetches the list of OpenType feature tags enabled for a shaping plan, if possible.
+         * @param shape_plan A shaping plan
+         * @param start_offset The index of first feature to retrieve
+         * @returns Total number of feature tagss.
+         */
+        function ot_shape_plan_get_feature_tags(shape_plan: shape_plan_t, start_offset: number): [number, tag_t[]];
+        /**
          * Converts an #hb_language_t to an #hb_tag_t.
          * @param language an #hb_language_t to convert.
          */
@@ -5362,11 +5500,27 @@ declare module 'gi://HarfBuzz?version=0.0' {
             ymax: number,
         ): void;
         /**
+         * Push the transform reflecting the font's scale and slant
+         * settings onto the paint functions.
+         * @param funcs paint functions
+         * @param paint_data associated data passed by the caller
+         * @param font a font
+         */
+        function paint_push_font_transform(funcs: paint_funcs_t, paint_data: any | null, font: font_t): void;
+        /**
          * Perform a "push-group" paint operation.
          * @param funcs paint functions
          * @param paint_data associated data passed by the caller
          */
         function paint_push_group(funcs: paint_funcs_t, paint_data?: any | null): void;
+        /**
+         * Push the inverse of the transform reflecting the font's
+         * scale and slant settings onto the paint functions.
+         * @param funcs paint functions
+         * @param paint_data associated data passed by the caller
+         * @param font a font
+         */
+        function paint_push_inverse_font_transform(funcs: paint_funcs_t, paint_data: any | null, font: font_t): void;
         /**
          * Perform a "push-transform" paint operation.
          * @param funcs paint functions
@@ -5430,6 +5584,14 @@ declare module 'gi://HarfBuzz?version=0.0' {
             start_angle: number,
             end_angle: number,
         ): void;
+        /**
+         * Reallocates the memory pointed to by `ptr` to `size` bytes, using the
+         * allocator set at compile-time. Typically just realloc().
+         * @param ptr The pointer to the memory to reallocate.
+         * @param size The new size of the memory.
+         * @returns A pointer to the reallocated memory.
+         */
+        function realloc(ptr: any | null, size: number): any | null;
         /**
          * Converts an ISO 15924 script tag to a corresponding #hb_script_t.
          * @param tag an #hb_tag_t representing an ISO 15924 tag.
@@ -5725,38 +5887,8 @@ declare module 'gi://HarfBuzz?version=0.0' {
             shaper_list?: string[] | null,
         ): bool_t;
         /**
-         * See hb_shape_full() for basic details. If `shaper_list` is not `NULL`, the specified
-         * shapers will be used in the given order, otherwise the default shapers list
-         * will be used.
-         *
-         * In addition, justify the shaping results such that the shaping results reach
-         * the target advance width/height, depending on the buffer direction.
-         *
-         * If the advance of the buffer shaped with hb_shape_full() is already known,
-         * put that in *advance. Otherwise set *advance to zero.
-         *
-         * This API is currently experimental and will probably change in the future.
-         * @param font a mutable #hb_font_t to use for shaping
-         * @param buffer an #hb_buffer_t to shape
-         * @param features an array of user    specified #hb_feature_t or `NULL`
-         * @param shaper_list a `NULL`-terminated    array of shapers to use or `NULL`
-         * @param min_target_advance Minimum advance width/height to aim for.
-         * @param max_target_advance Maximum advance width/height to aim for.
-         * @param advance Input/output advance width/height of the buffer.
-         * @returns false if all shapers failed, true otherwise XSince: EXPERIMENTAL
-         */
-        function shape_justify(
-            font: font_t,
-            buffer: buffer_t,
-            features: feature_t[] | null,
-            shaper_list: string[] | null,
-            min_target_advance: number,
-            max_target_advance: number,
-            advance: number,
-        ): [bool_t, number, tag_t, number];
-        /**
          * Retrieves the list of shapers supported by HarfBuzz.
-         * @returns an array of    constant strings
+         * @returns a    `NULL`-terminated array of supported shapers constant string.    The returned array is owned by HarfBuzz and should not be    modified or freed.
          */
         function shape_list_shapers(): string[];
         /**
@@ -6086,6 +6218,8 @@ declare module 'gi://HarfBuzz?version=0.0' {
          * Converts an #hb_variation_t into a `NULL`-terminated string in the format
          * understood by hb_variation_from_string(). The client in responsible for
          * allocating big enough size for `buf,` 128 bytes is more than enough.
+         *
+         * Note that the string won't include any whitespace.
          * @param variation an #hb_variation_t to convert
          */
         function variation_to_string(variation: variation_t): string[];
@@ -9014,6 +9148,12 @@ declare module 'gi://HarfBuzz?version=0.0' {
 
         /**
          * Current drawing state.
+         *
+         * The `slant_xy` is a slanting factor for synthetic oblique. If the font's
+         * oblique angle is not 0, this factor is used to slant the drawing. For
+         * fonts with uniform x and y scales, this factor is calculated as
+         * tan(oblique_angle). For fonts with non-uniform scales, this factor is
+         * calculated as tan(oblique_angle) * x_scale / y_scale, or 0 if y_scale is 0.
          */
         class draw_state_t {
             static $gtype: GObject.GType<draw_state_t>;
@@ -9025,6 +9165,7 @@ declare module 'gi://HarfBuzz?version=0.0' {
             path_start_y: number;
             current_x: number;
             current_y: number;
+            slant_xy: number;
 
             // Constructors
 
@@ -9035,6 +9176,7 @@ declare module 'gi://HarfBuzz?version=0.0' {
                     path_start_y: number;
                     current_x: number;
                     current_y: number;
+                    slant_xy: number;
                 }>,
             );
             _init(...args: any[]): void;
@@ -9086,6 +9228,9 @@ declare module 'gi://HarfBuzz?version=0.0' {
              * Converts a #hb_feature_t into a `NULL`-terminated string in the format
              * understood by hb_feature_from_string(). The client in responsible for
              * allocating big enough size for `buf,` 128 bytes is more than enough.
+             *
+             * Note that the feature value will be omitted if it is '1', but the
+             * string won't include any whitespace.
              */
             _string(): string[];
         }
@@ -9556,6 +9701,8 @@ declare module 'gi://HarfBuzz?version=0.0' {
              * Converts an #hb_variation_t into a `NULL`-terminated string in the format
              * understood by hb_variation_from_string(). The client in responsible for
              * allocating big enough size for `buf,` 128 bytes is more than enough.
+             *
+             * Note that the string won't include any whitespace.
              */
             _string(): string[];
         }

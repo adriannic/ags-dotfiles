@@ -1,5 +1,6 @@
 /// <reference path="./gdk-4.0.d.ts" />
 /// <reference path="./cairo-1.0.d.ts" />
+/// <reference path="./cairo.d.ts" />
 /// <reference path="./gobject-2.0.d.ts" />
 /// <reference path="./glib-2.0.d.ts" />
 /// <reference path="./pangocairo-1.0.d.ts" />
@@ -22,7 +23,7 @@
 declare module 'gi://GdkWayland?version=4.0' {
     // Module dependencies
     import type Gdk from 'gi://Gdk?version=4.0';
-    import type cairo from 'gi://cairo?version=1.0';
+    import type cairo from 'cairo';
     import type GObject from 'gi://GObject?version=2.0';
     import type GLib from 'gi://GLib?version=2.0';
     import type PangoCairo from 'gi://PangoCairo?version=1.0';
@@ -41,7 +42,7 @@ declare module 'gi://GdkWayland?version=4.0' {
         interface WaylandToplevelExported {
             (toplevel: WaylandToplevel, handle: string): void;
         }
-        module WaylandDevice {
+        namespace WaylandDevice {
             // Constructor properties interface
 
             interface ConstructorProps extends Gdk.Device.ConstructorProps {}
@@ -86,7 +87,7 @@ declare module 'gi://GdkWayland?version=4.0' {
             get_xkb_keymap(): any | null;
         }
 
-        module WaylandDisplay {
+        namespace WaylandDisplay {
             // Constructor properties interface
 
             interface ConstructorProps extends Gdk.Display.ConstructorProps {}
@@ -153,7 +154,7 @@ declare module 'gi://GdkWayland?version=4.0' {
             set_startup_notification_id(startup_id: string): void;
         }
 
-        module WaylandGLContext {
+        namespace WaylandGLContext {
             // Constructor properties interface
 
             interface ConstructorProps extends Gdk.GLContext.ConstructorProps {}
@@ -172,7 +173,7 @@ declare module 'gi://GdkWayland?version=4.0' {
             _init(...args: any[]): void;
         }
 
-        module WaylandMonitor {
+        namespace WaylandMonitor {
             // Constructor properties interface
 
             interface ConstructorProps extends Gdk.Monitor.ConstructorProps {}
@@ -195,7 +196,7 @@ declare module 'gi://GdkWayland?version=4.0' {
             _init(...args: any[]): void;
         }
 
-        module WaylandPopup {
+        namespace WaylandPopup {
             // Constructor properties interface
 
             interface ConstructorProps extends WaylandSurface.ConstructorProps, Gdk.Popup.ConstructorProps {}
@@ -591,7 +592,7 @@ declare module 'gi://GdkWayland?version=4.0' {
             translate_coordinates(to: Gdk.Surface, x: number, y: number): [boolean, number, number];
         }
 
-        module WaylandSeat {
+        namespace WaylandSeat {
             // Constructor properties interface
 
             interface ConstructorProps extends Gdk.Seat.ConstructorProps {}
@@ -614,7 +615,7 @@ declare module 'gi://GdkWayland?version=4.0' {
             _init(...args: any[]): void;
         }
 
-        module WaylandSurface {
+        namespace WaylandSurface {
             // Constructor properties interface
 
             interface ConstructorProps extends Gdk.Surface.ConstructorProps {}
@@ -635,9 +636,16 @@ declare module 'gi://GdkWayland?version=4.0' {
             constructor(properties?: Partial<WaylandSurface.ConstructorProps>, ...args: any[]);
 
             _init(...args: any[]): void;
+
+            // Methods
+
+            /**
+             * Forces next commit.
+             */
+            force_next_commit(): void;
         }
 
-        module WaylandToplevel {
+        namespace WaylandToplevel {
             // Constructor properties interface
 
             interface ConstructorProps extends WaylandSurface.ConstructorProps, Gdk.Toplevel.ConstructorProps {}

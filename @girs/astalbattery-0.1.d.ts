@@ -118,7 +118,7 @@ declare module 'gi://AstalBattery?version=0.1' {
          * Get the DisplayDevice.
          */
         function get_default(): Device;
-        module Device {
+        namespace Device {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -540,7 +540,7 @@ declare module 'gi://AstalBattery?version=0.1' {
             get_device_type_icon(): string;
         }
 
-        module UPower {
+        namespace UPower {
             // Signal callback interfaces
 
             interface DeviceAdded {
@@ -563,8 +563,8 @@ declare module 'gi://AstalBattery?version=0.1' {
                 onBattery: boolean;
                 lid_is_closed: boolean;
                 lidIsClosed: boolean;
-                lis_is_present: boolean;
-                lisIsPresent: boolean;
+                lid_is_present: boolean;
+                lidIsPresent: boolean;
                 critical_action: string;
                 criticalAction: string;
             }
@@ -611,11 +611,11 @@ declare module 'gi://AstalBattery?version=0.1' {
             /**
              * Indicates if the system has a lid device.
              */
-            get lis_is_present(): boolean;
+            get lid_is_present(): boolean;
             /**
              * Indicates if the system has a lid device.
              */
-            get lisIsPresent(): boolean;
+            get lidIsPresent(): boolean;
             /**
              * When the system's power supply is critical (critically low batteries or UPS), the system will take this action.
              */
@@ -652,7 +652,7 @@ declare module 'gi://AstalBattery?version=0.1' {
             get_daemon_version(): string;
             get_on_battery(): boolean;
             get_lid_is_closed(): boolean;
-            get_lis_is_present(): boolean;
+            get_lid_is_present(): boolean;
             get_critical_action(): string;
         }
 

@@ -35,8 +35,6 @@ declare module 'gi://AstalCava?version=0.1' {
             ALSA,
             PULSE,
             SNDIO,
-            OSS,
-            JACK,
             SHMEM,
             WINSCAP,
         }
@@ -44,7 +42,7 @@ declare module 'gi://AstalCava?version=0.1' {
          * gets the default Cava object.
          */
         function get_default(): Cava | null;
-        module Cava {
+        namespace Cava {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {

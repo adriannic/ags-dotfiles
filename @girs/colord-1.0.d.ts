@@ -1001,7 +1001,7 @@ declare module 'gi://Colord?version=1.0' {
             CHARACTERIZATION,
             ALL,
         }
-        module Client {
+        namespace Client {
             // Signal callback interfaces
 
             interface Changed {
@@ -2028,7 +2028,7 @@ declare module 'gi://Colord?version=1.0' {
             import_profile_sync(file: Gio.File, cancellable?: Gio.Cancellable | null): Profile;
         }
 
-        module Device {
+        namespace Device {
             // Signal callback interfaces
 
             interface Changed {
@@ -2837,7 +2837,7 @@ declare module 'gi://Colord?version=1.0' {
             to_string(): string;
         }
 
-        module Edid {
+        namespace Edid {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -2940,7 +2940,7 @@ declare module 'gi://Colord?version=1.0' {
             reset(): void;
         }
 
-        module Icc {
+        namespace Icc {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -3377,7 +3377,7 @@ declare module 'gi://Colord?version=1.0' {
             to_string(): string;
         }
 
-        module It8 {
+        namespace It8 {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -3623,7 +3623,7 @@ declare module 'gi://Colord?version=1.0' {
             set_title(title: string): void;
         }
 
-        module Profile {
+        namespace Profile {
             // Signal callback interfaces
 
             interface Changed {
@@ -4041,7 +4041,7 @@ declare module 'gi://Colord?version=1.0' {
             to_string(): string;
         }
 
-        module Sensor {
+        namespace Sensor {
             // Signal callback interfaces
 
             interface ButtonPressed {

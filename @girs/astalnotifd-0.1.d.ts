@@ -45,7 +45,7 @@ declare module 'gi://AstalNotifd?version=0.1' {
         const MICRO_VERSION: number;
         const VERSION: string;
         function get_default(): Notifd;
-        module Notifd {
+        namespace Notifd {
             // Signal callback interfaces
 
             interface Notified {
@@ -149,7 +149,7 @@ declare module 'gi://AstalNotifd?version=0.1' {
             get_notifications(): Notification[];
         }
 
-        module Notification {
+        namespace Notification {
             // Signal callback interfaces
 
             interface Resolved {

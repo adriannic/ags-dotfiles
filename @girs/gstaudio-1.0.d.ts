@@ -338,6 +338,14 @@ declare module 'gi://GstAudio?version=1.0' {
              * Surround right (between rear right and side right)
              */
             SURROUND_RIGHT,
+            /**
+             * Top surround left (between rear left and side left).
+             */
+            TOP_SURROUND_LEFT,
+            /**
+             * Top surround right (between rear right and side right).
+             */
+            TOP_SURROUND_RIGHT,
         }
         /**
          * Set of available dithering methods.
@@ -1009,6 +1017,10 @@ declare module 'gi://GstAudio?version=1.0' {
          */
         const AUDIO_FORMATS_ALL: string;
         /**
+         * Number of audio formats in #GstAudioFormat.
+         */
+        const AUDIO_FORMAT_LAST: number;
+        /**
          * Maximum range of allowed sample rates, for use in template caps strings.
          */
         const AUDIO_RATE_RANGE: string;
@@ -1305,6 +1317,14 @@ declare module 'gi://GstAudio?version=1.0' {
          * @returns The #GstAudioFormatInfo for @format.
          */
         function audio_format_get_info(format: AudioFormat | null): AudioFormatInfo;
+        /**
+         * Returns a string containing a descriptive name for the #GstAudioFormat.
+         *
+         * Since 1.26 this can also be used with %GST_AUDIO_FORMAT_UNKNOWN, previous
+         * versions were printing a critical warning and returned %NULL.
+         * @param format a #GstAudioFormat audio format
+         * @returns the name corresponding to @format
+         */
         function audio_format_to_string(format: AudioFormat | null): string;
         /**
          * Return all the raw audio formats supported by GStreamer.
@@ -1389,6 +1409,12 @@ declare module 'gi://GstAudio?version=1.0' {
          * positions `to`. `from` and `to` must contain the same number of
          * positions and the same positions, only in a different order.
          *
+         * This function internally calls gst_audio_get_channel_reorder_map() and
+         * gst_audio_reorder_channels_with_reorder_map(). It is more efficient to call
+         * gst_audio_get_channel_reorder_map() once to retrieve the reorder map and
+         * then call gst_audio_reorder_channels_with_reorder_map() with the same
+         * reorder map until the channel positions change.
+         *
          * Note: this function assumes the audio data is in interleaved layout
          * @param data The pointer to   the memory.
          * @param format The %GstAudioFormat of the buffer.
@@ -1402,6 +1428,22 @@ declare module 'gi://GstAudio?version=1.0' {
             from: AudioChannelPosition[] | null,
             to: AudioChannelPosition[] | null,
         ): boolean;
+        /**
+         * Reorders `data` with the given `reorder_map`.
+         *
+         * The reorder map can be retrieved for example with
+         * gst_audio_get_channel_reorder_map().
+         *
+         * Note: this function assumes the audio data is in interleaved layout
+         * @param data The pointer to   the memory.
+         * @param bps The number of bytes per sample.
+         * @param reorder_map The channel reorder map.
+         */
+        function audio_reorder_channels_with_reorder_map(
+            data: Uint8Array | string,
+            bps: number,
+            reorder_map: number[],
+        ): void;
         /**
          * Make a new resampler.
          * @param method a #GstAudioResamplerMethod
@@ -1869,7 +1911,7 @@ declare module 'gi://GstAudio?version=1.0' {
              */
             VARIABLE_RATE,
         }
-        module AudioAggregator {
+        namespace AudioAggregator {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.Aggregator.ConstructorProps {
@@ -2039,7 +2081,7 @@ declare module 'gi://GstAudio?version=1.0' {
             set_sink_caps(pad: AudioAggregatorPad, caps: Gst.Caps): void;
         }
 
-        module AudioAggregatorConvertPad {
+        namespace AudioAggregatorConvertPad {
             // Constructor properties interface
 
             interface ConstructorProps extends AudioAggregatorPad.ConstructorProps {
@@ -2070,7 +2112,7 @@ declare module 'gi://GstAudio?version=1.0' {
             _init(...args: any[]): void;
         }
 
-        module AudioAggregatorPad {
+        namespace AudioAggregatorPad {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.AggregatorPad.ConstructorProps {
@@ -2120,7 +2162,7 @@ declare module 'gi://GstAudio?version=1.0' {
             vfunc_update_conversion_info(): void;
         }
 
-        module AudioBaseSink {
+        namespace AudioBaseSink {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.BaseSink.ConstructorProps {
@@ -2318,7 +2360,7 @@ declare module 'gi://GstAudio?version=1.0' {
             set_slave_method(method: AudioBaseSinkSlaveMethod | null): void;
         }
 
-        module AudioBaseSrc {
+        namespace AudioBaseSrc {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.PushSrc.ConstructorProps {
@@ -2436,7 +2478,7 @@ declare module 'gi://GstAudio?version=1.0' {
             set_slave_method(method: AudioBaseSrcSlaveMethod | null): void;
         }
 
-        module AudioCdSrc {
+        namespace AudioCdSrc {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.PushSrc.ConstructorProps, Gst.URIHandler.ConstructorProps {
@@ -2691,7 +2733,21 @@ declare module 'gi://GstAudio?version=1.0' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -2821,7 +2877,12 @@ declare module 'gi://GstAudio?version=1.0' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -2971,14 +3032,34 @@ declare module 'gi://GstAudio?version=1.0' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module AudioClock {
+        namespace AudioClock {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.SystemClock.ConstructorProps {}
@@ -3041,7 +3122,7 @@ declare module 'gi://GstAudio?version=1.0' {
             reset(time: Gst.ClockTime): void;
         }
 
-        module AudioDecoder {
+        namespace AudioDecoder {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Element.ConstructorProps {
@@ -3539,7 +3620,7 @@ declare module 'gi://GstAudio?version=1.0' {
             set_use_default_pad_acceptcaps(use: boolean): void;
         }
 
-        module AudioEncoder {
+        namespace AudioEncoder {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Element.ConstructorProps, Gst.Preset.ConstructorProps {
@@ -4243,7 +4324,21 @@ declare module 'gi://GstAudio?version=1.0' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -4373,7 +4468,12 @@ declare module 'gi://GstAudio?version=1.0' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -4523,14 +4623,34 @@ declare module 'gi://GstAudio?version=1.0' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module AudioFilter {
+        namespace AudioFilter {
             // Constructor properties interface
 
             interface ConstructorProps extends GstBase.BaseTransform.ConstructorProps {}
@@ -4577,7 +4697,7 @@ declare module 'gi://GstAudio?version=1.0' {
             vfunc_setup(info: AudioInfo): boolean;
         }
 
-        module AudioRingBuffer {
+        namespace AudioRingBuffer {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {}
@@ -4840,6 +4960,20 @@ declare module 'gi://GstAudio?version=1.0' {
              */
             device_is_open(): boolean;
             /**
+             * Gets the current segment base number of the ringbuffer.
+             *
+             * MT safe.
+             * @returns Current segment base number of the ringbuffer.
+             */
+            get_segbase(): number;
+            /**
+             * Gets the current segment number of the ringbuffer.
+             *
+             * MT safe.
+             * @returns Current segment number of the ringbuffer.
+             */
+            get_segdone(): number;
+            /**
              * Check if the ringbuffer is acquired and ready to use.
              * @returns TRUE if the ringbuffer is acquired, FALSE on error. MT safe.
              */
@@ -4950,6 +5084,13 @@ declare module 'gi://GstAudio?version=1.0' {
              * @param sample the sample number to set
              */
             set_sample(sample: number): void;
+            /**
+             * Sets the current segment number of the ringbuffer.
+             *
+             * MT safe.
+             * @param segdone the segment number to set
+             */
+            set_segdone(segdone: number): void;
             set_timestamp(readseg: number, timestamp: Gst.ClockTime): void;
             /**
              * Start processing samples from the ringbuffer.
@@ -4963,7 +5104,7 @@ declare module 'gi://GstAudio?version=1.0' {
             stop(): boolean;
         }
 
-        module AudioSink {
+        namespace AudioSink {
             // Constructor properties interface
 
             interface ConstructorProps extends AudioBaseSink.ConstructorProps {}
@@ -5064,7 +5205,7 @@ declare module 'gi://GstAudio?version=1.0' {
             vfunc_write(data: Uint8Array | string): number;
         }
 
-        module AudioSrc {
+        namespace AudioSrc {
             // Constructor properties interface
 
             interface ConstructorProps extends AudioBaseSrc.ConstructorProps {}
@@ -5919,6 +6060,14 @@ declare module 'gi://GstAudio?version=1.0' {
         }
 
         type AudioRingBufferClass = typeof AudioRingBuffer;
+        abstract class AudioRingBufferPrivate {
+            static $gtype: GObject.GType<AudioRingBufferPrivate>;
+
+            // Constructors
+
+            _init(...args: any[]): void;
+        }
+
         /**
          * The structure containing the format specification of the ringbuffer.
          *
@@ -6240,7 +6389,7 @@ declare module 'gi://GstAudio?version=1.0' {
         }
 
         type StreamVolumeInterface = typeof StreamVolume;
-        module StreamVolume {
+        namespace StreamVolume {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {

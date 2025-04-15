@@ -206,6 +206,23 @@ declare module 'gi://GstPlay?version=1.0' {
         function play_error_quark(): GLib.Quark;
         function play_message_get_name(message_type: PlayMessage | null): string;
         /**
+         * Reads the stream ID the play message `msg` applies to, if any.
+         * @param msg A #GstMessage
+         * @returns The stream ID this message applies to
+         */
+        function play_message_get_stream_id(msg: Gst.Message): string | null;
+        /**
+         * Reads the URI the play message `msg` applies to.
+         * @param msg A #GstMessage
+         * @returns The URI this message applies to
+         */
+        function play_message_get_uri(msg: Gst.Message): string;
+        /**
+         * Parse the given buffering `msg` and extract the corresponding value
+         * @param msg A #GstMessage
+         */
+        function play_message_parse_buffering(msg: Gst.Message): number;
+        /**
          * Parse the given buffering `msg` and extract the corresponding value
          * @param msg A #GstMessage
          */
@@ -214,12 +231,34 @@ declare module 'gi://GstPlay?version=1.0' {
          * Parse the given duration-changed `msg` and extract the corresponding #GstClockTime
          * @param msg A #GstMessage
          */
+        function play_message_parse_duration_changed(msg: Gst.Message): Gst.ClockTime | null;
+        /**
+         * Parse the given duration-changed `msg` and extract the corresponding #GstClockTime
+         * @param msg A #GstMessage
+         */
         function play_message_parse_duration_updated(msg: Gst.Message): Gst.ClockTime | null;
         /**
-         * Parse the given error `msg` and extract the corresponding #GError
+         * Parse the given error `msg` and extract the corresponding #GError.
+         *
+         * Since 1.26 the details will always contain the URI this refers to in an
+         * "uri" field of type string, and (if known) the string "stream-id" it is
+         * referring to.
          * @param msg A #GstMessage
          */
         function play_message_parse_error(msg: Gst.Message): [GLib.Error | null, Gst.Structure | null];
+        /**
+         * Parses missing plugin descriptions and installer details from a
+         * GST_PLAY_ERROR_MISSING_PLUGIN error message.
+         *
+         * Both arrays will have the same length, and strings at the same index
+         * correspond to each other.
+         *
+         * The installer details can be passed to gst_install_plugins_sync() or
+         * gst_install_plugins_async().
+         * @param msg A #GstMessage
+         * @returns %TRUE if the message contained a missing-plugin error.
+         */
+        function play_message_parse_error_missing_plugin(msg: Gst.Message): [boolean, string[] | null, string[] | null];
         /**
          * Parse the given media-info-updated `msg` and extract the corresponding media information
          * @param msg A #GstMessage
@@ -236,6 +275,11 @@ declare module 'gi://GstPlay?version=1.0' {
          */
         function play_message_parse_position_updated(msg: Gst.Message): Gst.ClockTime | null;
         /**
+         * Parse the given seek-done `msg` and extract the corresponding #GstClockTime
+         * @param msg A #GstMessage
+         */
+        function play_message_parse_seek_done(msg: Gst.Message): Gst.ClockTime | null;
+        /**
          * Parse the given state-changed `msg` and extract the corresponding #GstPlayState
          * @param msg A #GstMessage
          */
@@ -245,6 +289,11 @@ declare module 'gi://GstPlay?version=1.0' {
          * @param msg A #GstMessage
          */
         function play_message_parse_type(msg: Gst.Message): PlayMessage | null;
+        /**
+         * Parse the given uri-loaded `msg` and extract the corresponding value
+         * @param msg A #GstMessage
+         */
+        function play_message_parse_uri_loaded(msg: Gst.Message): string;
         /**
          * Parse the given video-dimensions-changed `msg` and extract the corresponding video dimensions
          * @param msg A #GstMessage
@@ -256,17 +305,36 @@ declare module 'gi://GstPlay?version=1.0' {
          */
         function play_message_parse_volume_changed(msg: Gst.Message): number;
         /**
-         * Parse the given warning `msg` and extract the corresponding #GError
+         * Parse the given warning `msg` and extract the corresponding #GError.
+         *
+         * Since 1.26 the details will always contain the URI this refers to in an
+         * "uri" field of type string, and (if known) the string "stream-id" it is
+         * referring to.
          * @param msg A #GstMessage
          */
         function play_message_parse_warning(msg: Gst.Message): [GLib.Error | null, Gst.Structure | null];
+        /**
+         * Parses missing plugin descriptions and installer details from a
+         * GST_PLAY_ERROR_MISSING_PLUGIN warning message.
+         *
+         * Both arrays will have the same length, and strings at the same index
+         * correspond to each other.
+         *
+         * The installer details can be passed to gst_install_plugins_sync() or
+         * gst_install_plugins_async().
+         * @param msg A #GstMessage
+         * @returns %TRUE if the message contained a missing-plugin error.
+         */
+        function play_message_parse_warning_missing_plugin(
+            msg: Gst.Message,
+        ): [boolean, string[] | null, string[] | null];
         /**
          * Gets a string representing the given state.
          * @param state a #GstPlayState
          * @returns a string with the name of the state.
          */
         function play_state_get_name(state: PlayState | null): string;
-        module Play {
+        namespace Play {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Object.ConstructorProps {
@@ -583,6 +651,7 @@ declare module 'gi://GstPlay?version=1.0' {
              * @param enabled TRUE or FALSE
              */
             set_audio_track_enabled(enabled: boolean): void;
+            set_audio_track_id(stream_id?: string | null): boolean;
             /**
              * Sets audio-video-offset property by value of `offset`
              * @param offset #gint64 in nanoseconds
@@ -637,6 +706,7 @@ declare module 'gi://GstPlay?version=1.0' {
              * @param enabled TRUE or FALSE
              */
             set_subtitle_track_enabled(enabled: boolean): void;
+            set_subtitle_track_id(stream_id?: string | null): boolean;
             /**
              * Sets the external subtitle URI. This should be combined with a call to
              * gst_play_set_subtitle_track_enabled(`play,` TRUE) so the subtitles are actually
@@ -649,6 +719,11 @@ declare module 'gi://GstPlay?version=1.0' {
              * @param offset #gint64 in nanoseconds
              */
             set_subtitle_video_offset(offset: number): void;
+            set_track_ids(
+                audio_stream_id?: string | null,
+                video_stream_id?: string | null,
+                subtitle_stream_id?: string | null,
+            ): boolean;
             /**
              * Sets the next URI to play.
              * @param uri next URI to play.
@@ -660,6 +735,7 @@ declare module 'gi://GstPlay?version=1.0' {
              * @param enabled TRUE or FALSE
              */
             set_video_track_enabled(enabled: boolean): void;
+            set_video_track_id(stream_id?: string | null): boolean;
             set_visualization(name?: string | null): boolean;
             /**
              * Enable or disable the visualization.
@@ -678,7 +754,7 @@ declare module 'gi://GstPlay?version=1.0' {
             stop(): void;
         }
 
-        module PlayAudioInfo {
+        namespace PlayAudioInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends PlayStreamInfo.ConstructorProps {}
@@ -705,7 +781,7 @@ declare module 'gi://GstPlay?version=1.0' {
             get_sample_rate(): number;
         }
 
-        module PlayMediaInfo {
+        namespace PlayMediaInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -748,7 +824,7 @@ declare module 'gi://GstPlay?version=1.0' {
             is_seekable(): boolean;
         }
 
-        module PlaySignalAdapter {
+        namespace PlaySignalAdapter {
             // Signal callback interfaces
 
             interface Buffering {
@@ -900,7 +976,7 @@ declare module 'gi://GstPlay?version=1.0' {
             get_play(): Play;
         }
 
-        module PlayStreamInfo {
+        namespace PlayStreamInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -935,6 +1011,11 @@ declare module 'gi://GstPlay?version=1.0' {
              */
             get_index(): number;
             /**
+             * A string stream id identifying this #GstPlayStreamInfo.
+             * @returns stream id string.
+             */
+            get_stream_id(): string;
+            /**
              * Function to return human readable name for the stream type
              * of the given `info` (ex: "audio", "video", "subtitle")
              * @returns a human readable name
@@ -943,7 +1024,7 @@ declare module 'gi://GstPlay?version=1.0' {
             get_tags(): Gst.TagList | null;
         }
 
-        module PlaySubtitleInfo {
+        namespace PlaySubtitleInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends PlayStreamInfo.ConstructorProps {}
@@ -966,7 +1047,7 @@ declare module 'gi://GstPlay?version=1.0' {
             get_language(): string | null;
         }
 
-        module PlayVideoInfo {
+        namespace PlayVideoInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends PlayStreamInfo.ConstructorProps {}
@@ -997,7 +1078,7 @@ declare module 'gi://GstPlay?version=1.0' {
             get_width(): number;
         }
 
-        module PlayVideoOverlayVideoRenderer {
+        namespace PlayVideoOverlayVideoRenderer {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PlayVideoRenderer.ConstructorProps {
@@ -1188,7 +1269,21 @@ declare module 'gi://GstPlay?version=1.0' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -1316,7 +1411,12 @@ declare module 'gi://GstPlay?version=1.0' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -1466,11 +1566,31 @@ declare module 'gi://GstPlay?version=1.0' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
         type PlayAudioInfoClass = typeof PlayAudioInfo;
@@ -1517,7 +1637,7 @@ declare module 'gi://GstPlay?version=1.0' {
             free(): void;
         }
 
-        module PlayVideoRenderer {
+        namespace PlayVideoRenderer {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}

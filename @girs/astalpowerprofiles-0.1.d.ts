@@ -25,7 +25,7 @@ declare module 'gi://AstalPowerProfiles?version=0.1' {
         const MICRO_VERSION: number;
         const VERSION: string;
         function get_default(): PowerProfiles;
-        module PowerProfiles {
+        namespace PowerProfiles {
             // Signal callback interfaces
 
             interface ProfileReleased {

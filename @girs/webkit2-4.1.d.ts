@@ -8,6 +8,7 @@
 /// <reference path="./xlib-2.0.d.ts" />
 /// <reference path="./gdk-3.0.d.ts" />
 /// <reference path="./cairo-1.0.d.ts" />
+/// <reference path="./cairo.d.ts" />
 /// <reference path="./pango-1.0.d.ts" />
 /// <reference path="./harfbuzz-0.0.d.ts" />
 /// <reference path="./freetype2-2.0.d.ts" />
@@ -34,7 +35,7 @@ declare module 'gi://WebKit2?version=4.1' {
     import type Gtk from 'gi://Gtk?version=3.0';
     import type xlib from 'gi://xlib?version=2.0';
     import type Gdk from 'gi://Gdk?version=3.0';
-    import type cairo from 'gi://cairo?version=1.0';
+    import type cairo from 'cairo';
     import type Pango from 'gi://Pango?version=1.0';
     import type HarfBuzz from 'gi://HarfBuzz?version=0.0';
     import type freetype2 from 'gi://freetype2?version=2.0';
@@ -1384,6 +1385,44 @@ declare module 'gi://WebKit2?version=4.1' {
             AUTHOR,
         }
         /**
+         * Enum values used to denote errors happening when creating a #WebKitWebExtensionMatchPattern
+         */
+        class WebExtensionMatchPatternError extends GLib.Error {
+            static $gtype: GObject.GType<WebExtensionMatchPatternError>;
+
+            // Static fields
+
+            /**
+             * An unknown error occured.
+             */
+            static UNKNOWN: number;
+            /**
+             * The scheme component was invalid.
+             */
+            static INVALID_SCHEME: number;
+            /**
+             * The host component was invalid.
+             */
+            static INVALID_HOST: number;
+            /**
+             * The path component was invalid.
+             */
+            static INVALID_PATH: number;
+
+            // Constructors
+
+            constructor(options: { message: string; code: number });
+            _init(...args: any[]): void;
+
+            // Static methods
+
+            /**
+             * Gets the quark for the domain of Web Extension Match Pattern errors.
+             */
+            static quark(): GLib.Quark;
+        }
+
+        /**
          * Enum values used for setting if a #WebKitWebView is intended for
          * WebExtensions.
          */
@@ -1649,6 +1688,19 @@ declare module 'gi://WebKit2?version=4.1' {
          * @returns user message error domain.
          */
         function user_message_error_quark(): GLib.Quark;
+        /**
+         * Gets the quark for the domain of Web Extension Match Pattern errors.
+         * @returns web extension match pattern error domain.
+         */
+        function web_extension_match_pattern_error_quark(): GLib.Quark;
+        /**
+         * Registers a custom URL scheme that can be used in match patterns.
+         *
+         * This method should be used to register any custom URL schemes used by the app for the extension base URLs,
+         * other than `webkit-extension`, or if extensions should have access to other supported URL schemes when using `<all_urls>`.
+         * @param urlScheme The custom URL scheme to register
+         */
+        function web_extension_match_pattern_register_custom_URL_scheme(urlScheme: string): void;
         interface URISchemeRequestCallback {
             (request: URISchemeRequest): void;
         }
@@ -1838,6 +1890,35 @@ declare module 'gi://WebKit2?version=4.1' {
             TRANSPARENT_BACKGROUND,
         }
         /**
+         * Enum values representing matching options.
+         */
+
+        /**
+         * Enum values representing matching options.
+         */
+        export namespace WebExtensionMatchPatternOptions {
+            export const $gtype: GObject.GType<WebExtensionMatchPatternOptions>;
+        }
+
+        enum WebExtensionMatchPatternOptions {
+            /**
+             * No special matching options.
+             */
+            NONE,
+            /**
+             * The scheme components should be ignored while matching.
+             */
+            IGNORE_SCHEMES,
+            /**
+             * The host components should be ignored while matching.
+             */
+            IGNORE_PATHS,
+            /**
+             * Two patterns should be checked in either direction while matching (A matches B, or B matches A). Invalid for matching URLs.
+             */
+            MATCH_BIDIRECTIONALLY,
+        }
+        /**
          * Enum values with flags representing types of Website data.
          */
 
@@ -1910,7 +1991,7 @@ declare module 'gi://WebKit2?version=4.1' {
              */
             ALL,
         }
-        module AuthenticationRequest {
+        namespace AuthenticationRequest {
             // Signal callback interfaces
 
             interface Authenticated {
@@ -2071,7 +2152,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_proposed_credential(credential: Credential): void;
         }
 
-        module AutomationSession {
+        namespace AutomationSession {
             // Signal callback interfaces
 
             interface CreateWebView {
@@ -2155,7 +2236,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_application_info(info: ApplicationInfo): void;
         }
 
-        module BackForwardList {
+        namespace BackForwardList {
             // Signal callback interfaces
 
             interface Changed {
@@ -2260,7 +2341,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_nth_item(index: number): BackForwardListItem | null;
         }
 
-        module BackForwardListItem {
+        namespace BackForwardListItem {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.InitiallyUnowned.ConstructorProps {}
@@ -2306,7 +2387,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_uri(): string;
         }
 
-        module ClipboardPermissionRequest {
+        namespace ClipboardPermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PermissionRequest.ConstructorProps {}
@@ -2465,7 +2546,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -2593,7 +2688,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -2743,14 +2843,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module ColorChooserRequest {
+        namespace ColorChooserRequest {
             // Signal callback interfaces
 
             interface Finished {
@@ -2843,7 +2963,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_rgba(rgba: Gdk.RGBA): void;
         }
 
-        module ContextMenu {
+        namespace ContextMenu {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -2986,7 +3106,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_user_data(user_data: GLib.Variant): void;
         }
 
-        module ContextMenuItem {
+        namespace ContextMenuItem {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.InitiallyUnowned.ConstructorProps {}
@@ -3064,7 +3184,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_submenu(submenu?: ContextMenu | null): void;
         }
 
-        module CookieManager {
+        namespace CookieManager {
             // Signal callback interfaces
 
             interface Changed {
@@ -3452,7 +3572,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_persistent_storage(filename: string, storage: CookiePersistentStorage | null): void;
         }
 
-        module DeviceInfoPermissionRequest {
+        namespace DeviceInfoPermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PermissionRequest.ConstructorProps {}
@@ -3611,7 +3731,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -3739,7 +3873,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -3889,14 +4028,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module Download {
+        namespace Download {
             // Signal callback interfaces
 
             interface CreatedDestination {
@@ -4129,7 +4288,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_destination(destination: string): void;
         }
 
-        module EditorState {
+        namespace EditorState {
             // Signal callback interfaces
 
             interface Changed {
@@ -4221,7 +4380,7 @@ declare module 'gi://WebKit2?version=4.1' {
             is_undo_available(): boolean;
         }
 
-        module FaviconDatabase {
+        namespace FaviconDatabase {
             // Signal callback interfaces
 
             interface FaviconChanged {
@@ -4342,7 +4501,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_favicon_uri(page_uri: string): string;
         }
 
-        module FileChooserRequest {
+        namespace FileChooserRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -4502,7 +4661,7 @@ declare module 'gi://WebKit2?version=4.1' {
             select_files(files: string[]): void;
         }
 
-        module FindController {
+        namespace FindController {
             // Signal callback interfaces
 
             interface CountedMatches {
@@ -4698,7 +4857,7 @@ declare module 'gi://WebKit2?version=4.1' {
             search_previous(): void;
         }
 
-        module FormSubmissionRequest {
+        namespace FormSubmissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -4753,7 +4912,7 @@ declare module 'gi://WebKit2?version=4.1' {
             submit(): void;
         }
 
-        module GeolocationManager {
+        namespace GeolocationManager {
             // Signal callback interfaces
 
             interface Start {
@@ -4837,7 +4996,7 @@ declare module 'gi://WebKit2?version=4.1' {
             update_position(position: GeolocationPosition): void;
         }
 
-        module GeolocationPermissionRequest {
+        namespace GeolocationPermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PermissionRequest.ConstructorProps {}
@@ -5012,7 +5171,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -5140,7 +5313,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -5290,14 +5468,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module HitTestResult {
+        namespace HitTestResult {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -5474,7 +5672,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_media_uri(): string;
         }
 
-        module InputMethodContext {
+        namespace InputMethodContext {
             // Signal callback interfaces
 
             interface Committed {
@@ -5715,7 +5913,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_input_purpose(purpose: InputPurpose | null): void;
         }
 
-        module InstallMissingMediaPluginsPermissionRequest {
+        namespace InstallMissingMediaPluginsPermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PermissionRequest.ConstructorProps {}
@@ -5881,7 +6079,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -6009,7 +6221,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -6159,14 +6376,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module MediaKeySystemPermissionRequest {
+        namespace MediaKeySystemPermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PermissionRequest.ConstructorProps {}
@@ -6328,7 +6565,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -6456,7 +6707,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -6606,14 +6862,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module NavigationPolicyDecision {
+        namespace NavigationPolicyDecision {
             // Constructor properties interface
 
             interface ConstructorProps extends PolicyDecision.ConstructorProps {
@@ -6746,7 +7022,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_request(): URIRequest;
         }
 
-        module Notification {
+        namespace Notification {
             // Signal callback interfaces
 
             interface Clicked {
@@ -6845,7 +7121,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_title(): string;
         }
 
-        module NotificationPermissionRequest {
+        namespace NotificationPermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PermissionRequest.ConstructorProps {}
@@ -7004,7 +7280,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -7132,7 +7422,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -7282,14 +7577,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module OptionMenu {
+        namespace OptionMenu {
             // Signal callback interfaces
 
             interface Close {
@@ -7378,7 +7693,7 @@ declare module 'gi://WebKit2?version=4.1' {
             select_item(index: number): void;
         }
 
-        module Plugin {
+        namespace Plugin {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -7430,7 +7745,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_path(): string | null;
         }
 
-        module PointerLockPermissionRequest {
+        namespace PointerLockPermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PermissionRequest.ConstructorProps {}
@@ -7589,7 +7904,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -7717,7 +8046,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -7867,14 +8201,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module PolicyDecision {
+        namespace PolicyDecision {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -7934,7 +8288,7 @@ declare module 'gi://WebKit2?version=4.1' {
             use_with_policies(policies: WebsitePolicies): void;
         }
 
-        module PrintCustomWidget {
+        namespace PrintCustomWidget {
             // Signal callback interfaces
 
             interface Apply {
@@ -8037,7 +8391,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_widget(): Gtk.Widget;
         }
 
-        module PrintOperation {
+        namespace PrintOperation {
             // Signal callback interfaces
 
             interface CreateCustomWidget {
@@ -8204,7 +8558,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_print_settings(print_settings: Gtk.PrintSettings): void;
         }
 
-        module ResponsePolicyDecision {
+        namespace ResponsePolicyDecision {
             // Constructor properties interface
 
             interface ConstructorProps extends PolicyDecision.ConstructorProps {
@@ -8277,7 +8631,7 @@ declare module 'gi://WebKit2?version=4.1' {
             is_mime_type_supported(): boolean;
         }
 
-        module SecurityManager {
+        namespace SecurityManager {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -8402,7 +8756,7 @@ declare module 'gi://WebKit2?version=4.1' {
             uri_scheme_is_secure(scheme: string): boolean;
         }
 
-        module Settings {
+        namespace Settings {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -8528,6 +8882,8 @@ declare module 'gi://WebKit2?version=4.1' {
                 serifFontFamily: string;
                 user_agent: string;
                 userAgent: string;
+                webrtc_udp_ports_range: string;
+                webrtcUdpPortsRange: string;
                 zoom_text_only: boolean;
                 zoomTextOnly: boolean;
             }
@@ -9419,6 +9775,28 @@ declare module 'gi://WebKit2?version=4.1' {
             get userAgent(): string;
             set userAgent(val: string);
             /**
+             * Allow customization of the WebRTC UDP ports range.
+             *
+             * In some constrained environments where a firewall blocks UDP network traffic excepted on a
+             * specific port range, this settings can be used to give hints to the WebRTC backend regarding
+             * which ports to allocate. The format is min-port:max-port, so for instance 20000:30000. The
+             * default empty string value means the OS will use no hints from the WebRTC backend. Using 0
+             * for one of the values is allowed and means the value is unspecified.
+             */
+            get webrtc_udp_ports_range(): string;
+            set webrtc_udp_ports_range(val: string);
+            /**
+             * Allow customization of the WebRTC UDP ports range.
+             *
+             * In some constrained environments where a firewall blocks UDP network traffic excepted on a
+             * specific port range, this settings can be used to give hints to the WebRTC backend regarding
+             * which ports to allocate. The format is min-port:max-port, so for instance 20000:30000. The
+             * default empty string value means the OS will use no hints from the WebRTC backend. Using 0
+             * for one of the values is allowed and means the value is unspecified.
+             */
+            get webrtcUdpPortsRange(): string;
+            set webrtcUdpPortsRange(val: string);
+            /**
              * Whether #WebKitWebView:zoom-level affects only the
              * text of the page or all the contents. Other contents containing text
              * like form controls will be also affected by zoom factor when
@@ -9448,8 +9826,7 @@ declare module 'gi://WebKit2?version=4.1' {
             /**
              * Convert `points` to the equivalent value in pixels.
              *
-             * Convert `points` to the equivalent value in pixels, based on the current
-             * screen DPI. Applications can use this function to convert font size values
+             * Applications can use this function to convert font size values
              * in points to font size values in pixels when setting the font size properties
              * of #WebKitSettings.
              * @param points the font size in points to convert to pixels
@@ -9458,8 +9835,7 @@ declare module 'gi://WebKit2?version=4.1' {
             /**
              * Convert `pixels` to the equivalent value in points.
              *
-             * Convert `pixels` to the equivalent value in points, based on the current
-             * screen DPI. Applications can use this function to convert font size values
+             * Applications can use this function to convert font size values
              * in pixels to font size values in points when getting the font size properties
              * of #WebKitSettings.
              * @param pixels the font size in pixels to convert to points
@@ -9825,6 +10201,11 @@ declare module 'gi://WebKit2?version=4.1' {
              */
             get_user_agent(): string;
             /**
+             * Get the [property`Settings:`webrtc-udp-ports-range] property.
+             * @returns The WebRTC UDP ports range, or %NULL if un-set.
+             */
+            get_webrtc_udp_ports_range(): string;
+            /**
              * Get the #WebKitSettings:zoom-text-only property.
              * @returns %TRUE If zoom level of the view should only affect the text    or %FALSE if all view contents should be scaled.
              */
@@ -10163,13 +10544,18 @@ declare module 'gi://WebKit2?version=4.1' {
                 application_version?: string | null,
             ): void;
             /**
+             * Set the [property`Settings:`webrtc-udp-ports-range] property.
+             * @param udp_port_range Value to be set
+             */
+            set_webrtc_udp_ports_range(udp_port_range: string): void;
+            /**
              * Set the #WebKitSettings:zoom-text-only property.
              * @param zoom_text_only Value to be set
              */
             set_zoom_text_only(zoom_text_only: boolean): void;
         }
 
-        module URIRequest {
+        namespace URIRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -10227,7 +10613,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_uri(uri: string): void;
         }
 
-        module URIResponse {
+        namespace URIResponse {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -10353,7 +10739,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_uri(): string;
         }
 
-        module URISchemeRequest {
+        namespace URISchemeRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -10436,7 +10822,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_web_view(): WebView;
         }
 
-        module URISchemeResponse {
+        namespace URISchemeResponse {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -10511,7 +10897,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_status(status_code: number, reason_phrase?: string | null): void;
         }
 
-        module UserContentFilterStore {
+        namespace UserContentFilterStore {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -10846,7 +11232,7 @@ declare module 'gi://WebKit2?version=4.1' {
             save_from_file_finish(result: Gio.AsyncResult): UserContentFilter;
         }
 
-        module UserContentManager {
+        namespace UserContentManager {
             // Signal callback interfaces
 
             interface ScriptMessageReceived {
@@ -11075,7 +11461,7 @@ declare module 'gi://WebKit2?version=4.1' {
             unregister_script_message_handler_in_world(name: string, world_name: string): void;
         }
 
-        module UserMediaPermissionRequest {
+        namespace UserMediaPermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PermissionRequest.ConstructorProps {
@@ -11258,7 +11644,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -11386,7 +11786,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -11536,14 +11941,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module UserMessage {
+        namespace UserMessage {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.InitiallyUnowned.ConstructorProps {
@@ -11630,7 +12055,7 @@ declare module 'gi://WebKit2?version=4.1' {
             send_reply(reply: UserMessage): void;
         }
 
-        module WebContext {
+        namespace WebContext {
             // Signal callback interfaces
 
             interface AutomationStarted {
@@ -11853,9 +12278,8 @@ declare module 'gi://WebKit2?version=4.1' {
             /**
              * Adds a path to be mounted in the sandbox.
              *
-             * `path` must exist before any web process has been created; otherwise,
-             * it will be silently ignored. It is a fatal error to add paths after
-             * a web process has been spawned.
+             * `path` must exist before any web process has been created. It is a fatal error
+             * to add paths after a web process has been spawned.
              *
              * Paths under `/sys`, `/proc`, and `/dev` are invalid. Attempting to
              * add all of `/` is not valid. Since 2.40, adding the user's entire
@@ -12305,7 +12729,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_web_process_count_limit(limit: number): void;
         }
 
-        module WebInspector {
+        namespace WebInspector {
             // Signal callback interfaces
 
             interface Attach {
@@ -12489,7 +12913,7 @@ declare module 'gi://WebKit2?version=4.1' {
             show(): void;
         }
 
-        module WebResource {
+        namespace WebResource {
             // Signal callback interfaces
 
             interface Failed {
@@ -12672,7 +13096,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_uri(): string;
         }
 
-        module WebView {
+        namespace WebView {
             // Signal callback interfaces
 
             interface Authenticate {
@@ -12988,15 +13412,29 @@ declare module 'gi://WebKit2?version=4.1' {
              */
             get favicon(): any;
             /**
-             * Whether the #WebKitWebView is controlled by automation. This should only be used when
-             * creating a new #WebKitWebView as a response to #WebKitAutomationSession::create-web-view
-             * signal request.
+             * Whether the #WebKitWebView is controlled by automation tools (e.g. WebDriver, Selenium). This is
+             * required for views returned as a response to #WebKitAutomationSession::create-web-view signal,
+             * alongside any view you want to control during an automation session.
+             *
+             * As a %G_PARAM_CONSTRUCT_ONLY, you need to set it during construction and it can't be modified.
+             *
+             * If #WebKitWebView:related-view is also passed during construction, #WebKitWebView:is-controlled-by-automation
+             * ignores its own parameter and inherits directly from the related view #WebKitWebView:is-controlled-by-automation
+             * property. This is the recommended way when creating new views as a response to the #WebKitWebView::create
+             * signal. For example, as response to JavaScript `window.open()` calls during an automation session.
              */
             get is_controlled_by_automation(): boolean;
             /**
-             * Whether the #WebKitWebView is controlled by automation. This should only be used when
-             * creating a new #WebKitWebView as a response to #WebKitAutomationSession::create-web-view
-             * signal request.
+             * Whether the #WebKitWebView is controlled by automation tools (e.g. WebDriver, Selenium). This is
+             * required for views returned as a response to #WebKitAutomationSession::create-web-view signal,
+             * alongside any view you want to control during an automation session.
+             *
+             * As a %G_PARAM_CONSTRUCT_ONLY, you need to set it during construction and it can't be modified.
+             *
+             * If #WebKitWebView:related-view is also passed during construction, #WebKitWebView:is-controlled-by-automation
+             * ignores its own parameter and inherits directly from the related view #WebKitWebView:is-controlled-by-automation
+             * property. This is the recommended way when creating new views as a response to the #WebKitWebView::create
+             * signal. For example, as response to JavaScript `window.open()` calls during an automation session.
              */
             get isControlledByAutomation(): boolean;
             /**
@@ -15192,7 +15630,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -15320,7 +15772,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -15470,14 +15927,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module WebViewBase {
+        namespace WebViewBase {
             // Constructor properties interface
 
             interface ConstructorProps
@@ -15613,7 +16090,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -15741,7 +16232,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -15891,14 +16387,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module WebsiteDataAccessPermissionRequest {
+        namespace WebsiteDataAccessPermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps, PermissionRequest.ConstructorProps {}
@@ -16069,7 +16585,21 @@ declare module 'gi://WebKit2?version=4.1' {
              * @returns the data if found,          or %NULL if no such data exists.
              */
             get_data(key: string): any | null;
-            get_property(property_name: string): any;
+            /**
+             * Gets a property of an object.
+             *
+             * The value can be:
+             * - an empty GObject.Value initialized by G_VALUE_INIT, which will be automatically initialized with the expected type of the property (since GLib 2.60)
+             * - a GObject.Value initialized with the expected type of the property
+             * - a GObject.Value initialized with a type to which the expected type of the property can be transformed
+             *
+             * In general, a copy is made of the property contents and the caller is responsible for freeing the memory by calling GObject.Value.unset.
+             *
+             * Note that GObject.Object.get_property is really intended for language bindings, GObject.Object.get is much more convenient for C programming.
+             * @param property_name The name of the property to get
+             * @param value Return location for the property value. Can be an empty GObject.Value initialized by G_VALUE_INIT (auto-initialized with expected type since GLib 2.60), a GObject.Value initialized with the expected property type, or a GObject.Value initialized with a transformable type
+             */
+            get_property(property_name: string, value: GObject.Value | any): any;
             /**
              * This function gets back user data pointers stored via
              * g_object_set_qdata().
@@ -16197,7 +16727,12 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param data data to associate with that key
              */
             set_data(key: string, data?: any | null): void;
-            set_property(property_name: string, value: any): void;
+            /**
+             * Sets a property on an object.
+             * @param property_name The name of the property to set
+             * @param value The value to set the property to
+             */
+            set_property(property_name: string, value: GObject.Value | any): void;
             /**
              * Remove a specified datum from the object's data associations,
              * without invoking the association's destroy handler.
@@ -16347,14 +16882,34 @@ declare module 'gi://WebKit2?version=4.1' {
              * @param pspec
              */
             vfunc_set_property(property_id: number, value: GObject.Value | any, pspec: GObject.ParamSpec): void;
+            /**
+             * Disconnects a handler from an instance so it will not be called during any future or currently ongoing emissions of the signal it has been connected to.
+             * @param id Handler ID of the handler to be disconnected
+             */
             disconnect(id: number): void;
+            /**
+             * Sets multiple properties of an object at once. The properties argument should be a dictionary mapping property names to values.
+             * @param properties Object containing the properties to set
+             */
             set(properties: { [key: string]: any }): void;
-            block_signal_handler(id: number): any;
-            unblock_signal_handler(id: number): any;
-            stop_emission_by_name(detailedName: string): any;
+            /**
+             * Blocks a handler of an instance so it will not be called during any signal emissions
+             * @param id Handler ID of the handler to be blocked
+             */
+            block_signal_handler(id: number): void;
+            /**
+             * Unblocks a handler so it will be called again during any signal emissions
+             * @param id Handler ID of the handler to be unblocked
+             */
+            unblock_signal_handler(id: number): void;
+            /**
+             * Stops a signal's emission by the given signal name. This will prevent the default handler and any subsequent signal handlers from being invoked.
+             * @param detailedName Name of the signal to stop emission of
+             */
+            stop_emission_by_name(detailedName: string): void;
         }
 
-        module WebsiteDataManager {
+        namespace WebsiteDataManager {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -16909,7 +17464,7 @@ declare module 'gi://WebKit2?version=4.1' {
             set_tls_errors_policy(policy: TLSErrorsPolicy | null): void;
         }
 
-        module WebsitePolicies {
+        namespace WebsitePolicies {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -16950,7 +17505,7 @@ declare module 'gi://WebKit2?version=4.1' {
             get_autoplay_policy(): AutoplayPolicy;
         }
 
-        module WindowProperties {
+        namespace WindowProperties {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -18769,6 +19324,109 @@ declare module 'gi://WebKit2?version=4.1' {
             _init(...args: any[]): void;
         }
 
+        /**
+         * Represents a way to specify a group of URLs for use in WebExtensions.
+         *
+         * All match patterns are specified as strings. Apart from the special `<all_urls>` pattern, match patterns
+         * consist of three parts: scheme, host, and path.
+         *
+         * Generally, match patterns are returned from a #WebKitWebExtension.
+         */
+        class WebExtensionMatchPattern {
+            static $gtype: GObject.GType<WebExtensionMatchPattern>;
+
+            // Constructors
+
+            constructor(properties?: Partial<{}>);
+            _init(...args: any[]): void;
+
+            static new_all_hosts_and_schemes(): WebExtensionMatchPattern;
+
+            static new_all_urls(): WebExtensionMatchPattern;
+
+            static new_with_scheme(scheme: string, host: string, path: string): WebExtensionMatchPattern;
+
+            static new_with_string(string: string): WebExtensionMatchPattern;
+
+            // Static methods
+
+            /**
+             * Registers a custom URL scheme that can be used in match patterns.
+             *
+             * This method should be used to register any custom URL schemes used by the app for the extension base URLs,
+             * other than `webkit-extension`, or if extensions should have access to other supported URL schemes when using `<all_urls>`.
+             * @param urlScheme The custom URL scheme to register
+             */
+            static register_custom_URL_scheme(urlScheme: string): void;
+
+            // Methods
+
+            /**
+             * Gets the host part of the pattern string, unless `webkit_web_extension_match_pattern_get_matches_all_urls` is %TRUE.
+             * @returns The host string.
+             */
+            get_host(): string;
+            /**
+             * Gets whether the match pattern matches all host. This happens when
+             * the pattern is `<all_urls>`, or if `*` is set as the host string.
+             * @returns Whether this match pattern matches all hosts.
+             */
+            get_matches_all_hosts(): boolean;
+            /**
+             * Gets whether the match pattern matches all URLs, in other words, whether
+             * the pattern is `<all_urls>`.
+             * @returns Whether this match pattern matches all URLs.
+             */
+            get_matches_all_urls(): boolean;
+            /**
+             * Gets the path part of the pattern string, unless [method`WebExtensionMatchPattern`.get_matches_all_urls] is %TRUE.
+             * @returns The path string.
+             */
+            get_path(): string;
+            /**
+             * Gets the scheme part of the pattern string, unless `webkit_web_extension_match_pattern_get_matches_all_urls` is %TRUE.
+             * @returns The scheme string.
+             */
+            get_scheme(): string;
+            /**
+             * Gets the original pattern string.
+             * @returns The original pattern string.
+             */
+            get_string(): string;
+            /**
+             * Matches the `matchPattern` against the specified `pattern` with options.
+             * @param pattern The #WebKitWebExtensionMatchPattern to match with @matchPattern.
+             * @param options The #WebKitWebExtensionMatchPatternOptions use while matching.
+             * @returns Whether the pattern matches the specified @pattern.
+             */
+            matches_pattern(
+                pattern: WebExtensionMatchPattern,
+                options: WebExtensionMatchPatternOptions | null,
+            ): boolean;
+            /**
+             * Matches the `matchPattern` against the specified URL with options.
+             * @param url The URL to match against the pattern.
+             * @param options The #WebKitWebExtensionMatchPatternOptions use while matching.
+             * @returns Whether the pattern matches the specified URL.
+             */
+            matches_url(url: string, options: WebExtensionMatchPatternOptions | null): boolean;
+            /**
+             * Atomically acquires a reference on the given `matchPattern`.
+             *
+             * This function is MT-safe and may be called from any thread.
+             * @returns The same @matchPattern with an additional reference.
+             */
+            ref(): WebExtensionMatchPattern;
+            /**
+             * Atomically releases a reference on the given `matchPattern`.
+             *
+             * If the reference was the last, the resources associated to the
+             * `matchPattern` are freed. This function is MT-safe and may be called from
+             * any thread.
+             */
+            unref(): void;
+        }
+
         type WebInspectorClass = typeof WebInspector;
         abstract class WebInspectorPrivate {
             static $gtype: GObject.GType<WebInspectorPrivate>;
@@ -18948,7 +19606,7 @@ declare module 'gi://WebKit2?version=4.1' {
             _init(...args: any[]): void;
         }
 
-        module PermissionRequest {
+        namespace PermissionRequest {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}

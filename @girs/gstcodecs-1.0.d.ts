@@ -348,7 +348,7 @@ declare module 'gi://GstCodecs?version=1.0' {
          * @returns %TRUE if feature is active
          */
         function vp9_seg_feature_active(params: Vp9SegmentationParams, segment_id: number, feature: number): boolean;
-        module AV1Decoder {
+        namespace AV1Decoder {
             // Constructor properties interface
 
             interface ConstructorProps extends GstVideo.VideoDecoder.ConstructorProps {}
@@ -419,7 +419,7 @@ declare module 'gi://GstCodecs?version=1.0' {
             vfunc_start_picture(picture: AV1Picture, dpb: AV1Dpb): Gst.FlowReturn;
         }
 
-        module H264Decoder {
+        namespace H264Decoder {
             // Constructor properties interface
 
             interface ConstructorProps extends GstVideo.VideoDecoder.ConstructorProps {
@@ -533,7 +533,7 @@ declare module 'gi://GstCodecs?version=1.0' {
             set_process_ref_pic_lists(process: boolean): void;
         }
 
-        module H265Decoder {
+        namespace H265Decoder {
             // Constructor properties interface
 
             interface ConstructorProps extends GstVideo.VideoDecoder.ConstructorProps {}
@@ -615,7 +615,65 @@ declare module 'gi://GstCodecs?version=1.0' {
             set_process_ref_pic_lists(process: boolean): void;
         }
 
-        module Mpeg2Decoder {
+        namespace H266Decoder {
+            // Constructor properties interface
+
+            interface ConstructorProps extends GstVideo.VideoDecoder.ConstructorProps {}
+        }
+
+        /**
+         * The opaque #GstH266Decoder data structure.
+         */
+        abstract class H266Decoder extends GstVideo.VideoDecoder {
+            static $gtype: GObject.GType<H266Decoder>;
+
+            // Constructors
+
+            constructor(properties?: Partial<H266Decoder.ConstructorProps>, ...args: any[]);
+
+            _init(...args: any[]): void;
+
+            // Virtual methods
+
+            /**
+             * Provides per slice data with parsed slice header and required raw bitstream
+             * for subclass to decode it.
+             * @param picture a #GstH266Picture
+             * @param slice a #GstH266Slice
+             */
+            vfunc_decode_slice(picture: H266Picture, slice: H266Slice): Gst.FlowReturn;
+            /**
+             * Optional. Called per one #GstH266Picture to notify subclass to finish
+             * decoding process for the #GstH266Picture
+             * @param picture a #GstH266Picture
+             */
+            vfunc_end_picture(picture: H266Picture): Gst.FlowReturn;
+            /**
+             * Optional. Called by baseclass to query whether delaying output is
+             * preferred by subclass or not.
+             * @param live whether upstream is live or not
+             */
+            vfunc_get_preferred_output_delay(live: boolean): number;
+            /**
+             * Optional. Called whenever new #GstH266Picture is created.
+             * Subclass can set implementation specific user data
+             * on the #GstH266Picture via gst_h266_picture_set_user_data
+             * @param frame a #GstVideoCodecFrame
+             * @param picture a #GstH266Picture
+             */
+            vfunc_new_picture(frame: GstVideo.VideoCodecFrame, picture: H266Picture): Gst.FlowReturn;
+            vfunc_output_picture(frame: GstVideo.VideoCodecFrame, picture: H266Picture): Gst.FlowReturn;
+            /**
+             * Optional. Called per one #GstH266Picture to notify subclass to prepare
+             * decoding process for the #GstH266Picture
+             * @param picture a #GstH266Picture
+             * @param slice a #GstH266Slice
+             * @param dpb a #GstH266Dpb
+             */
+            vfunc_start_picture(picture: H266Picture, slice: H266Slice, dpb: H266Dpb): Gst.FlowReturn;
+        }
+
+        namespace Mpeg2Decoder {
             // Constructor properties interface
 
             interface ConstructorProps extends GstVideo.VideoDecoder.ConstructorProps {}
@@ -693,7 +751,7 @@ declare module 'gi://GstCodecs?version=1.0' {
             ): Gst.FlowReturn;
         }
 
-        module Vp8Decoder {
+        namespace Vp8Decoder {
             // Constructor properties interface
 
             interface ConstructorProps extends GstVideo.VideoDecoder.ConstructorProps {}
@@ -754,7 +812,7 @@ declare module 'gi://GstCodecs?version=1.0' {
             vfunc_start_picture(picture: Vp8Picture): Gst.FlowReturn;
         }
 
-        module Vp9Decoder {
+        namespace Vp9Decoder {
             // Constructor properties interface
 
             interface ConstructorProps extends GstVideo.VideoDecoder.ConstructorProps {}
@@ -1165,6 +1223,121 @@ declare module 'gi://GstCodecs?version=1.0' {
 
         class H265Slice {
             static $gtype: GObject.GType<H265Slice>;
+
+            // Constructors
+
+            constructor(
+                properties?: Partial<{
+                    header: unknown;
+                    nalu: unknown;
+                }>,
+            );
+            _init(...args: any[]): void;
+        }
+
+        type H266DecoderClass = typeof H266Decoder;
+        abstract class H266DecoderPrivate {
+            static $gtype: GObject.GType<H266DecoderPrivate>;
+
+            // Constructors
+
+            _init(...args: any[]): void;
+        }
+
+        /**
+         * The #GstH266Dpb represents the dpb for decoding.
+         */
+        abstract class H266Dpb {
+            static $gtype: GObject.GType<H266Dpb>;
+
+            // Constructors
+
+            _init(...args: any[]): void;
+
+            // Methods
+
+            /**
+             * Store the `picture` and perform increase pic_latency_cnt as defined in
+             * "C.5.2.3 Additional bumping" process
+             * @param picture a #GstH266Picture
+             */
+            add(picture: H266Picture): void;
+            /**
+             * Perform bumping process as defined in C.5.2.4 "Bumping" process.
+             * If `drain` is %TRUE, `dpb` will remove a #GstH266Picture from internal array
+             * so that returned #GstH266Picture could hold the last reference of it.
+             * @param drain whether draining or not
+             * @returns a #GstH266Picture which is needed to be outputted
+             */
+            bump(drain: boolean): H266Picture | null;
+            /**
+             * Clear all stored #GstH266Picture
+             */
+            clear(): void;
+            /**
+             * Delete unneeded pictures from dpb as defined in "C.5.2.2 Output and
+             * removal of pictures from the DPB".
+             */
+            delete_unused(): void;
+            /**
+             * Free the `dpb`
+             */
+            free(): void;
+            get_max_num_pics(): number;
+            /**
+             * Find a picture which has matching poc
+             * @param poc a picture order count
+             * @returns a #GstH266Picture
+             */
+            get_picture_by_poc(poc: number): H266Picture | null;
+            /**
+             * Find a picture which has matching poc_lsb
+             * @param poc_lsb a picture order count lsb
+             * @returns a #GstH266Picture
+             */
+            get_picture_by_poc_lsb(poc_lsb: number): H266Picture | null;
+            get_pictures_all(): H266Picture[];
+            get_size(): number;
+            /**
+             * Mark all pictures are no needed for output
+             */
+            mark_all_non_output(): void;
+            /**
+             * Mark all pictures are not referenced
+             */
+            mark_all_non_ref(): void;
+            needs_bump(
+                max_num_reorder_pics: number,
+                max_latency_increase: number,
+                max_dec_pic_buffering: number,
+            ): boolean;
+            num_ref_pictures(): number;
+            /**
+             * Set the number of maximum allowed pictures to store
+             * @param max_num_pics the maximum number of picture
+             */
+            set_max_num_pics(max_num_pics: number): void;
+        }
+
+        /**
+         * The #GstH266Picture represents a picture for decoding.
+         */
+        class H266Picture {
+            static $gtype: GObject.GType<H266Picture>;
+
+            // Constructors
+
+            constructor(properties?: Partial<{}>);
+            _init(...args: any[]): void;
+
+            static ['new'](): H266Picture;
+        }
+
+        /**
+         * The #GstH266Slice represents a slice for decoding.
+         */
+        class H266Slice {
+            static $gtype: GObject.GType<H266Slice>;
 
             // Constructors
 

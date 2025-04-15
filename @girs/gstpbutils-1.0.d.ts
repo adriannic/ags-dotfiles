@@ -314,6 +314,30 @@ declare module 'gi://GstPbutils?version=1.0' {
          */
         function codec_utils_aac_get_sample_rate_from_index(sr_idx: number): number;
         /**
+         * Creates the corresponding AV1 Codec Configuration Record
+         * @param caps a video/x-av1 #GstCaps
+         * @returns The AV1 Codec Configuration Record, or %NULL if there was an error.
+         */
+        function codec_utils_av1_create_av1c_from_caps(caps: Gst.Caps): Gst.Buffer | null;
+        /**
+         * Parses the provided `av1`c and returns the corresponding caps
+         * @param av1c a #GstBuffer containing a AV1CodecConfigurationRecord
+         * @returns The parsed AV1 caps, or %NULL if there is an error
+         */
+        function codec_utils_av1_create_caps_from_av1c(av1c: Gst.Buffer): Gst.Caps | null;
+        /**
+         * Transform a seq_level_idx into the level string
+         * @param seq_level_idx A seq_level_idx
+         * @returns the level string or %NULL if the seq_level_idx is unknown
+         */
+        function codec_utils_av1_get_level(seq_level_idx: number): string | null;
+        /**
+         * Transform a level string from the caps into the seq_level_idx
+         * @param level A level string from caps
+         * @returns the seq_level_idx or 31 (max-level) if the level is unknown
+         */
+        function codec_utils_av1_get_seq_level_idx(level: string): number;
+        /**
          * Converts a RFC 6381 compatible codec string to #GstCaps. More than one codec
          * string can be present (separated by `,`).
          *
@@ -446,6 +470,46 @@ declare module 'gi://GstPbutils?version=1.0' {
          */
         function codec_utils_h265_get_tier(profile_tier_level: Uint8Array | string): string | null;
         /**
+         * Sets the level, tier and profile in `caps` if it can be determined from
+         * `decoder_configuration`. See gst_codec_utils_h266_get_level(),
+         * gst_codec_utils_h266_get_tier() and gst_codec_utils_h266_get_profile()
+         * for more details on the parameters.
+         * @param caps the #GstCaps to which the level, tier and profile are to be added
+         * @param decoder_configuration Pointer to the VvcDecoderConfigurationRecord struct as defined in ISO/IEC 14496-15
+         * @returns %TRUE if the level, tier, profile could be set, %FALSE otherwise.
+         */
+        function codec_utils_h266_caps_set_level_tier_and_profile(
+            caps: Gst.Caps,
+            decoder_configuration: Uint8Array | string,
+        ): boolean;
+        /**
+         * Converts the level indication (general_level_idc) in the stream's
+         * ptl_record structure into a string.
+         * @param ptl_record Pointer to the VvcPTLRecord structure as defined in ISO/IEC 14496-15.
+         * @returns The level as a const string, or %NULL if there is an error.
+         */
+        function codec_utils_h266_get_level(ptl_record: Uint8Array | string): string | null;
+        /**
+         * Transform a level string from the caps into the level_idc
+         * @param level A level string from caps
+         * @returns the level_idc or 0 if the level is unknown
+         */
+        function codec_utils_h266_get_level_idc(level: string): number;
+        /**
+         * Converts the profile indication (general_profile_idc) in the stream's
+         * ptl_record structure into a string.
+         * @param ptl_record Pointer to the VvcPTLRecord structure as defined in ISO/IEC 14496-15.
+         * @returns The profile as a const string, or %NULL if there is an error.
+         */
+        function codec_utils_h266_get_profile(ptl_record: Uint8Array | string): string | null;
+        /**
+         * Converts the tier indication (general_tier_flag) in the stream's
+         * ptl_record structure into a string.
+         * @param ptl_record Pointer to the VvcPTLRecord structure as defined in ISO/IEC 14496-15.
+         * @returns The tier as a const string, or %NULL if there is an error.
+         */
+        function codec_utils_h266_get_tier(ptl_record: Uint8Array | string): string | null;
+        /**
          * Sets the level and profile in `caps` if it can be determined from
          * `vis_obj_seq`. See gst_codec_utils_mpeg4video_get_level() and
          * gst_codec_utils_mpeg4video_get_profile() for more details on the
@@ -574,7 +638,7 @@ declare module 'gi://GstPbutils?version=1.0' {
          * installed but no suitable video decoder and no suitable audio decoder).
          * @param details NULL-terminated array     of installer string details (see below)
          * @param ctx a #GstInstallPluginsContext, or NULL
-         * @param func the function to call when the installer program returns
+         * @param func the function to call when the     installer program returns
          * @returns result code whether an external installer could be started
          */
         function install_plugins_async(
@@ -714,6 +778,18 @@ declare module 'gi://GstPbutils?version=1.0' {
          * @returns a newly-allocated detail string, or NULL on error. Free string          with g_free() when not needed any longer.
          */
         function missing_plugin_message_get_installer_detail(msg: Gst.Message): string | null;
+        /**
+         * Get the stream-id of the stream for which an element is missing.
+         * @param msg A missing-plugin #GstMessage of type #GST_MESSAGE_ELEMENT
+         * @returns The stream-id or %NULL if none is specified.
+         */
+        function missing_plugin_message_get_stream_id(msg: Gst.Message): string | null;
+        /**
+         * Set the stream-id of the stream for which an element is missing.
+         * @param msg A missing-plugin #GstMessage of type #GST_MESSAGE_ELEMENT
+         * @param stream_id The stream id for which an element is missing
+         */
+        function missing_plugin_message_set_stream_id(msg: Gst.Message, stream_id: string): void;
         /**
          * Returns an opaque string containing all the details about the missing
          * element to be passed to an external installer called via
@@ -967,7 +1043,7 @@ declare module 'gi://GstPbutils?version=1.0' {
              */
             METADATA,
         }
-        module AudioVisualizer {
+        namespace AudioVisualizer {
             // Constructor properties interface
 
             interface ConstructorProps extends Gst.Element.ConstructorProps {
@@ -1015,7 +1091,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             vfunc_setup(): boolean;
         }
 
-        module Discoverer {
+        namespace Discoverer {
             // Signal callback interfaces
 
             interface Discovered {
@@ -1172,7 +1248,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             stop(): void;
         }
 
-        module DiscovererAudioInfo {
+        namespace DiscovererAudioInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends DiscovererStreamInfo.ConstructorProps {}
@@ -1201,7 +1277,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             get_sample_rate(): number;
         }
 
-        module DiscovererContainerInfo {
+        namespace DiscovererContainerInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends DiscovererStreamInfo.ConstructorProps {}
@@ -1225,7 +1301,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             get_tags(): Gst.TagList | null;
         }
 
-        module DiscovererInfo {
+        namespace DiscovererInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -1309,7 +1385,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             to_variant(flags: DiscovererSerializeFlags | null): GLib.Variant;
         }
 
-        module DiscovererStreamInfo {
+        namespace DiscovererStreamInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -1363,7 +1439,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             get_toc(): Gst.Toc | null;
         }
 
-        module DiscovererSubtitleInfo {
+        namespace DiscovererSubtitleInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends DiscovererStreamInfo.ConstructorProps {}
@@ -1387,7 +1463,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             get_language(): string | null;
         }
 
-        module DiscovererVideoInfo {
+        namespace DiscovererVideoInfo {
             // Constructor properties interface
 
             interface ConstructorProps extends DiscovererStreamInfo.ConstructorProps {}
@@ -1420,7 +1496,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             is_interlaced(): boolean;
         }
 
-        module EncodingAudioProfile {
+        namespace EncodingAudioProfile {
             // Constructor properties interface
 
             interface ConstructorProps extends EncodingProfile.ConstructorProps {}
@@ -1446,7 +1522,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             ): EncodingAudioProfile;
         }
 
-        module EncodingContainerProfile {
+        namespace EncodingContainerProfile {
             // Constructor properties interface
 
             interface ConstructorProps extends EncodingProfile.ConstructorProps {}
@@ -1492,7 +1568,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             get_profiles(): EncodingProfile[];
         }
 
-        module EncodingProfile {
+        namespace EncodingProfile {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {
@@ -1567,6 +1643,13 @@ declare module 'gi://GstPbutils?version=1.0' {
              * @param info The #GstDiscovererInfo to read from
              */
             static from_discoverer(info: DiscovererInfo): EncodingProfile | null;
+            /**
+             * Converts a string in the "encoding profile serialization format" into a
+             * GstEncodingProfile. Refer to the encoding-profile documentation for details
+             * on the format.
+             * @param string The string to convert into a GstEncodingProfile.
+             */
+            static from_string(string: string): EncodingProfile | null;
 
             // Methods
 
@@ -1658,15 +1741,34 @@ declare module 'gi://GstPbutils?version=1.0' {
              */
             set_presence(presence: number): void;
             /**
-             * Sets the name of the #GstElement that implements the #GstPreset interface
-             * to use for the profile.
+             * Sets the name of the preset to be used in the profile.
              * This is the name that has been set when saving the preset.
+             * You can list the available presets for a specific element factory
+             * using  `$ gst-inspect-1.0 element-factory-name`, for example for
+             * `x264enc`:
+             *
+             * ``` bash
+             * $ gst-inspect-1.0 x264enc
+             * ...
+             * Presets:
+             *  "Profile Baseline": Baseline Profile
+             *  "Profile High": High Profile
+             *  "Profile Main": Main Profile
+             *  "Profile YouTube": YouTube recommended settings (https://support.google.com/youtube/answer/1722171)
+             *  "Quality High": High quality
+             *  "Quality Low": Low quality
+             *  "Quality Normal": Normal quality
+             *  "Zero Latency"
+             * ```
+             *  }
              * @param preset the element preset to use
              */
             set_preset(preset?: string | null): void;
             /**
-             * Sets the name of the #GstPreset's factory to be used in the profile.
-             * @param preset_name The name of the preset to use in this @profile.
+             * Sets the name of the #GstPreset's factory to be used in the profile. This
+             * is the name of the **element factory** that implements the #GstPreset interface not
+             * the name of the preset itself (see #gst_encoding_profile_set_preset).
+             * @param preset_name The name of the element factory to use in this @profile.
              */
             set_preset_name(preset_name?: string | null): void;
             /**
@@ -1685,9 +1787,15 @@ declare module 'gi://GstPbutils?version=1.0' {
              * @param single_segment #TRUE if the stream represented by @profile should use a single segment before the encoder, #FALSE otherwise.
              */
             set_single_segment(single_segment: boolean): void;
+            /**
+             * Converts a GstEncodingProfile to a string in the "Encoding Profile
+             * serialization format".
+             * @returns A string representation of the GstEncodingProfile.
+             */
+            to_string(): string;
         }
 
-        module EncodingTarget {
+        namespace EncodingTarget {
             // Constructor properties interface
 
             interface ConstructorProps extends GObject.Object.ConstructorProps {}
@@ -1765,7 +1873,7 @@ declare module 'gi://GstPbutils?version=1.0' {
             save_to_file(filepath: string): boolean;
         }
 
-        module EncodingVideoProfile {
+        namespace EncodingVideoProfile {
             // Constructor properties interface
 
             interface ConstructorProps extends EncodingProfile.ConstructorProps {}

@@ -175,7 +175,7 @@ declare module 'gi://Malcontent?version=0' {
              */
             INTERACTIVE,
         }
-        module Manager {
+        namespace Manager {
             // Signal callback interfaces
 
             interface AppFilterChanged {
