@@ -119,11 +119,13 @@ export default function NotificationWidget(notification: Notifd.Notification) {
                   halign={Gtk.Align.START}
                   xalign={0}
                   label={notification.summary}
+                  maxWidthChars={44}
                   wrap
                 />
                 {notification.body && <label
                   className="body"
                   wrap
+                  maxWidthChars={44}
                   useMarkup
                   halign={Gtk.Align.START}
                   xalign={0}
