@@ -24,7 +24,7 @@ const urgency = (n: Notifd.Notification) => {
   }
 }
 
-export default function Notification(notification: Notifd.Notification) {
+export default function NotificationWidget(notification: Notifd.Notification) {
   const revealer_outer = Variable(false);
   const revealer_inner = Variable(false);
 
@@ -119,12 +119,11 @@ export default function Notification(notification: Notifd.Notification) {
                   halign={Gtk.Align.START}
                   xalign={0}
                   label={notification.summary}
-                  truncate
+                  wrap
                 />
                 {notification.body && <label
                   className="body"
                   wrap
-                  maxWidthChars={44}
                   useMarkup
                   halign={Gtk.Align.START}
                   xalign={0}

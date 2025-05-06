@@ -1,8 +1,8 @@
-import { Astal, Gtk, Gdk } from "astal/gtk3"
+import { Astal, Gdk, Gtk } from "astal/gtk3"
 import Notifd from "gi://AstalNotifd"
-import Notification from "./Notification"
-import { type Subscribable } from "astal/binding"
+import NotificationWidget from "./Notification"
 import { Variable, bind } from "astal"
+import GObject, { register, property, signal } from "astal/gobject"
 
 export enum NotificationState {
   INVISIBLE,
@@ -10,69 +10,93 @@ export enum NotificationState {
   FROZEN
 }
 
-export const visible: Map<number, Variable<NotificationState>> = new Map();
+export const visible: Map<number, Variable<NotificationState>> = new Map()
 
-class NotificationMap implements Subscribable {
-  private map: Map<number, Gtk.Widget> = new Map()
-  private var: Variable<Array<Gtk.Widget>> = Variable([])
+@register()
+class NotificationMap extends GObject.Object {
+  #map: Map<number, Notifd.Notification> = new Map()
+  #subs = new Set<(v: Array<Notifd.Notification>) => void>
 
-  private notify() {
-    this.var.set([...this.map.values()].reverse())
+  #delete(key: number) {
+    const v = this.#map.get(key)
+    this.#map.delete(key)
   }
 
   constructor() {
+    super()
     const notifd = Notifd.get_default()
 
     // Clean up all old notifications
-    notifd.notifications.forEach((notification) => notification.dismiss());
+    notifd.notifications.forEach((notification) => notification.dismiss())
 
     notifd.connect("notified", (_, id) => {
       if (!visible.has(id)) {
         visible.set(id, Variable(NotificationState.VISIBLE))
       }
-      visible.get(id)?.set(NotificationState.VISIBLE);
-      this.set(id, Notification(notifd.get_notification(id)!))
-    });
+      visible.get(id)?.set(NotificationState.VISIBLE)
+      this.add(id, notifd.get_notification(id))
+    })
 
     notifd.connect("resolved", (_, id) => {
       this.delete(id)
     })
   }
 
-  private set(key: number, value: Gtk.Widget) {
-    this.map.get(key)?.destroy()
-    this.map.set(key, value)
-    this.notify()
+  add(key: number, value: Notifd.Notification) {
+    this.delete(key)
+    this.#map.set(key, value)
+    this.added(value)
   }
 
-  private delete(key: number) {
-    this.map.get(key)?.destroy()
-    this.map.delete(key)
-    this.notify()
+  delete(key: number) {
+    const value = this.#map.get(key)
+    this.#delete(key)
+    if (value instanceof Notifd.Notification) {
+      this.removed(value)
+    }
   }
 
-  get() {
-    return this.var.get()
-  }
-
-  subscribe(callback: (list: Array<Gtk.Widget>) => void) {
-    return this.var.subscribe(callback)
-  }
+  @signal(Notifd.Notification)
+  declare added: (notif: Notifd.Notification) => void
+  @signal(Notifd.Notification)
+  declare removed: (notif: Notifd.Notification) => void
 }
+
+const notifications = new NotificationMap()
 
 export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
   const { TOP, RIGHT } = Astal.WindowAnchor
-  const notifications = new NotificationMap()
+  const widget_map: Map<number, Gtk.Widget> = new Map()
 
   return <window
     className="NotificationPopups"
     gdkmonitor={gdkmonitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
     margin={4}
-    layer={Astal.Layer.OVERLAY}
+    layer={Astal.Layer.TOP}
     anchor={TOP | RIGHT}>
-    <box vertical>
-      {bind(notifications)}
-    </box>
+    <box vertical
+      setup={(self: any) => {
+        const updateBoxChildren = () => {
+          const children = Array.from(widget_map.values()).reverse()
+          self.set_children(children)
+        }
+
+        self.hook(notifications, "added", (_: any, notif: Notifd.Notification) => {
+          if (!widget_map.has(notif.get_id())) {
+            const widget = NotificationWidget(notif)
+            widget_map.set(notif.get_id(), widget)
+            updateBoxChildren()
+          }
+        })
+
+        self.hook(notifications, "removed", (_: any, notif: Notifd.Notification) => {
+          if (widget_map.has(notif.get_id())) {
+            widget_map.delete(notif.get_id())
+            updateBoxChildren()
+          }
+        })
+      }}
+    />
   </window>
 }
