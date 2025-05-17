@@ -32,14 +32,12 @@ export default function NotificationWidget(notification: Notifd.Notification) {
 
   const open = () => {
     revealer_outer.set(true);
-    timeout(Settings.ANIMATION_SPEED_IN_MILLIS, () => revealer_inner.set(true));
   };
 
   const close = () => {
     is_visible.set(NotificationState.INVISIBLE);
-    revealer_inner.set(false);
-    timeout(Settings.ANIMATION_SPEED_IN_MILLIS, () => revealer_outer.set(false));
-    timeout(Settings.ANIMATION_SPEED_IN_MILLIS * 2, () => notification.dismiss());
+    revealer_outer.set(false);
+    timeout(Settings.ANIMATION_SPEED_IN_MILLIS, () => notification.dismiss());
   };
 
   const timer = timeout(Settings.TIMEOUT, close);
@@ -48,7 +46,7 @@ export default function NotificationWidget(notification: Notifd.Notification) {
   return <box>
     <box hexpand />
     <revealer
-      transitionType={Gtk.RevealerTransitionType.SLIDE_LEFT}
+      transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}
       transitionDuration={Settings.ANIMATION_SPEED_IN_MILLIS}
       revealChild={bind(revealer_outer)}>
       <eventbox
@@ -92,49 +90,44 @@ export default function NotificationWidget(notification: Notifd.Notification) {
               label={time(notification.time)}
             />
           </box>
-          <revealer
-            transitionType={Gtk.RevealerTransitionType.SLIDE_DOWN}
-            transitionDuration={Settings.ANIMATION_SPEED_IN_MILLIS}
-            revealChild={bind(revealer_inner)}>
-            <box className="content">
-              {notification.image && fileExists(notification.image) && <box
-                valign={Gtk.Align.START}
-                className="image"
-                css={`background-image: url('${notification.image}')`}
+          <box className="content">
+            {notification.image && fileExists(notification.image) && <box
+              valign={Gtk.Align.START}
+              className="image"
+              css={`background-image: url('${notification.image}')`}
+            />}
+            {notification.image && isIcon(notification.image) && <box
+              expand={false}
+              valign={Gtk.Align.START}
+              className="icon-image">
+              <icon icon={notification.image} expand halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER} />
+            </box>}
+            {!notification.image && (notification.appIcon || notification.desktopEntry) && <box
+              valign={Gtk.Align.START}
+              className="image"
+              css={`background-image: url('${notification.appIcon}')`}
+            />}
+            <box vertical>
+              <label
+                className="summary"
+                halign={Gtk.Align.START}
+                xalign={0}
+                label={notification.summary}
+                maxWidthChars={44}
+                wrap
+              />
+              {notification.body && <label
+                className="body"
+                wrap
+                maxWidthChars={44}
+                useMarkup
+                halign={Gtk.Align.START}
+                xalign={0}
+                label={notification.body}
+                hexpand
               />}
-              {notification.image && isIcon(notification.image) && <box
-                expand={false}
-                valign={Gtk.Align.START}
-                className="icon-image">
-                <icon icon={notification.image} expand halign={Gtk.Align.CENTER} valign={Gtk.Align.CENTER} />
-              </box>}
-              {!notification.image && (notification.appIcon || notification.desktopEntry) && <box
-                valign={Gtk.Align.START}
-                className="image"
-                css={`background-image: url('${notification.appIcon}')`}
-              />}
-              <box vertical>
-                <label
-                  className="summary"
-                  halign={Gtk.Align.START}
-                  xalign={0}
-                  label={notification.summary}
-                  maxWidthChars={44}
-                  wrap
-                />
-                {notification.body && <label
-                  className="body"
-                  wrap
-                  maxWidthChars={44}
-                  useMarkup
-                  halign={Gtk.Align.START}
-                  xalign={0}
-                  label={notification.body}
-                  hexpand
-                />}
-              </box>
             </box>
-          </revealer>
+          </box>
           {notification.get_actions().length > 0 && <box>
             {notification.get_actions().map(({ label, id }) => (
               <button
